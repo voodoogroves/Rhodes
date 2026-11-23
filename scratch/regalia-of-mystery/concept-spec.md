@@ -57,9 +57,9 @@ Each stage must be useful and installable on its own.
 ## 0.1: Blade of Bastet
 
 - **Base:** the player converts a Chinese Officer Sword they already have (plus materials). It inherits the sword's vanilla stats: damage, speed and mods.
-- **The one change:** a built-in armor penetration (a share of the target's armor is ignored). Standalone strength still to confirm: either the vanilla legendary "Penetrating" level (30%) or a weaker 15% (Rifleman rank 1). Vanilla range is 15% to 30%.
+- **The one change:** built-in armor penetration of **30%** (the vanilla legendary "Penetrating" level; target's armor ignored). Decided.
 - Keeps the sword's workbench mods and the open legendary slot.
-- **With Eye of Ra worn (0.2 or later): ignores ALL armor (100%).** This matches the Fallout 76 original, which also goes to full armor-ignore. Accepted as fine because the base weapon is a low-tier melee sword.
+- **With Eye of Ra worn (0.2 or later): ignores ALL armor (100%).** This matches the Fallout 76 original, which also goes to full armor-ignore. Accepted as fine because the base weapon is a low-tier melee sword. The Blade is not meant to outclass guaranteed legendaries such as Throatslicer, a Furious power fist or a Staggering Ripper; theme comes first (see Intent).
 
 ## References (not decisions)
 
