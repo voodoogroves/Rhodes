@@ -112,7 +112,23 @@ MO2 lists plugins in the game's `Data` folder that aren't in a mod folder as "Un
 - About 18 official: base game, 6 DLC, 10 Creation Club `cc*.esl`. Normal.
 - The rest are third-party (Sim Settlements, Clothing Overhaul, SKK, Eli's mods, and so on), almost certainly from the in-game Mods menu. They load, but MO2 can't version or update them.
 
-For mod development, make a separate **test profile** in MO2 and untick the unmanaged third-party plugins, leaving vanilla, DLC and CC. This doesn't touch the game folder. Not yet done.
+For mod development, use a separate **Test profile** with the third-party plugins disabled, leaving vanilla, DLC and CC. This doesn't touch the game folder. Don't delete the unmanaged mods: they're packed as BA2s named after their plugins (107 non-Bethesda archives; the only loose `Data` folders are F4SE's `Scripts`, `Video` and xEdit's cache), so unticking a plugin also stops its assets loading.
+
+**Building the Test profile by hand** (done 2026-11-23, with MO2 closed; MO2 accepted it and showed the right plugin list):
+
+```bash
+cd ~/Games/mo2-lint/mo2-fallout4-steam/profiles
+cp -r Default Test
+# in Test/plugins.txt: strip the leading * from every line except the plugins to keep
+# (files use CRLF line endings; keep them)
+# in Test/settings.ini: LocalSaves=false -> LocalSaves=true
+```
+
+- `*Unmanaged:` lines in `modlist.txt` can't be switched off there; `plugins.txt` is what controls loading.
+- Official DLC and Creation Club plugins aren't listed in `plugins.txt` (the game enables CC through `Fallout4.ccc`), so they stay on.
+- Kept enabled: `cheatterminal.esp` (needs only `Fallout4.esm`) for god mode, spawning items and moving around during tests.
+- `LocalSaves=true` keeps test saves out of the normal profile. In MO2 pick **Test** from the profile dropdown; answer No if asked to transfer saves.
+- Game launch with this profile: not yet tested.
 
 ## Fallout 4 caveats *(upstream)*
 
@@ -140,6 +156,6 @@ A rebuilt Deck doesn't need to copy this approach. Use mo2-lint for new games.
 ## Open
 
 - Confirm FO4Edit loads the plugin list and shows records (it opens; list not yet checked). Remove `PROTON_LOG=1` from the launch options.
-- Make the clean test profile (see "Unmanaged mods").
+- Launch the game from the Test profile and confirm the cheat terminal works and the third-party mods are gone.
 - Test a Nexus download to see which instance receives it.
 - Decide whether to migrate Cyberpunk to mo2-lint.
