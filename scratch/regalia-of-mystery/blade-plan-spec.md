@@ -101,6 +101,10 @@ About 14 components plus the sword, in line with vanilla sword mods (the Shock m
 
 *To verify:* that the item description shows in the Chemistry Station crafting menu; and (only for the later holotape) that a recipe can create a `NOTE` and that it opens its terminal from the inventory.
 
+## Later options (not for 0.1)
+
+- **Own crafting category** on the Chemistry Station, and a **craftable holotape** for the instructions. Chris has seen other mods do both and can find examples when we want them; they replace my "could not confirm" notes above. Locked for now: `RecipeUtility` and description-only instructions.
+
 ## Known errors in the Gemini brainstorm that this spec corrects
 
 - Wrong sword ID; wrong condition indices; wrong `Run On` for "Target"; `MOD2`/`MOD3` swapped; wrong slot numbers; invented material paths; a script that would not run. See the Alexandria note `memory/fo4-xedit-reference.md`.
