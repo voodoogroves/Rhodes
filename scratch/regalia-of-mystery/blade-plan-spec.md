@@ -48,7 +48,7 @@ Why this over copying the OMOD: the vanilla legendary OMOD occupies `ap_Legendar
 
 ## Crafting and discovery
 
-**Recipe (`COBJ`):** consume `1x Chinese Officer Sword` plus materials; create `MoM_WEAP_BladeOfBastet`. The brainstorm proposed: 2 Silver, 2 Circuitry, 1 Fiber Optics, perk gates (Blacksmith 1, Science! 1). *Component FormIDs and the perk gates are not verified and the brainstorm's IDs contain known duplicates; re-derive all of them in xEdit.* **Workbench: to decide.** A weapon workbench only crafts mods in vanilla, so the Chemistry Station (utility category) is the likely home; the keyword names were not confirmed.
+**Recipe (`COBJ`):** consume `1x Chinese Officer Sword` plus materials; create `MoM_WEAP_BladeOfBastet`. The brainstorm proposed: 2 Silver, 2 Circuitry, 1 Fiber Optics, perk gates (Blacksmith 1, Science! 1). *Component FormIDs and the perk gates are not verified and the brainstorm's IDs contain known duplicates; re-derive all of them in xEdit.* **Workbench: Chemistry Station** (see below).
 
 **Workbench: Chemistry Station (keyword `WorkbenchChemlab`).** Verified: in Fallout4.esm, the DLC and the installed Creation Club files, the 20 recipes that create a weapon item (mines and grenades) all use this station; the weapon and armor workbenches are built around mods, not new items. The recipe's category/filter keyword is *to verify*.
 
