@@ -48,7 +48,23 @@ Why this over copying the OMOD: the vanilla legendary OMOD occupies `ap_Legendar
 
 ## Crafting and discovery
 
-**Recipe (`COBJ`):** consume `1x Chinese Officer Sword` plus materials; create `MoM_WEAP_BladeOfBastet`. The brainstorm proposed: 2 Silver, 2 Circuitry, 1 Fiber Optics, perk gates (Blacksmith 1, Science! 1). *Component FormIDs and the perk gates are not verified and the brainstorm's IDs contain known duplicates; re-derive all of them in xEdit.* **Workbench: Chemistry Station** (see below).
+**Recipe (`COBJ`), proposed:** consume the sword, plus materials; create `MoM_WEAP_BladeOfBastet`.
+
+| Ingredient | Amount | Why |
+|---|---|---|
+| Chinese Officer Sword (`00147BE4`) | 1 | the conversion base (vanilla recipes already use items as ingredients: the Baseball grenade uses a `Baseball`, the Bottlecap mine a `LunchBoxKids01`) |
+| Steel (`c_Steel`) | 4 | the blade work |
+| Silver (`c_Silver`) | 3 | the ceremonial theme |
+| Circuitry (`c_Circuitry`) | 2 | the fine mechanism |
+| Adhesive (`c_Adhesive`) | 3 | common, matches other melee recipes |
+
+About 12 components plus the sword, in line with vanilla sword mods (the Shock mod costs 18 components; Shock+Serrated 26). No fiber optics, gold or nuclear material, which are scarcer.
+
+**Perk gate: Blacksmith rank 2 only** (`Blacksmith02`, via the `HasPerk` condition, function index `448`). The sword's own Serrated and Shock mods use the same rank (Verified), and the story gate already limits who sees it, so a second perk gate (Science) would be ceremony.
+
+*Component names above are verified to exist in the game (31 components, including Silver, Steel, Circuitry, Adhesive). FormIDs still need reading in xEdit.* *To verify in-game:* whether a sword that already has mods installed counts as the ingredient, and what the player gets back (the Blade comes unmodded).
+
+**Workbench: Chemistry Station** (see below).
 
 **Workbench: Chemistry Station (keyword `WorkbenchChemlab`).** Verified: in Fallout4.esm, the DLC and the installed Creation Club files, the 20 recipes that create a weapon item (mines and grenades) all use this station; the weapon and armor workbenches are built around mods, not new items. The recipe's category/filter keyword is *to verify*.
 
@@ -79,4 +95,4 @@ A holotape (or similar) explaining the conversion. It cannot be placed in the wo
 
 ## Open items
 
-- Instructions item (holotape) mechanism; recipe category keyword; materials and perk gates; gate behaviour (`GetStage >= 390`) tested in-game; the damage/template tracing.
+- Materials and perk gate (proposed above, awaiting agreement); instructions item (holotape) mechanism; recipe category keyword; materials and perk gates; gate behaviour (`GetStage >= 390`) tested in-game; the damage/template tracing.
