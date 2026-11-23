@@ -69,10 +69,10 @@ Why this over copying the OMOD: the vanilla legendary OMOD occupies `ap_Legendar
 | Steel (`c_Steel`) | 4 | the blade work |
 | Silver (`c_Silver`) | 3 | the ceremonial theme |
 | Gold (`c_Gold`) | 2 | scarcer on purpose: it should not be too easy |
-| Circuitry (`c_Circuitry`) | 2 | the fine mechanism |
+| Crystal (`c_Crystal`) | 2 | a gem inlay in the hilt; fits the Eye of Ra and the regalia theme, and is plentiful early |
 | Adhesive (`c_Adhesive`) | 3 | common, matches other melee recipes |
 
-About 14 components plus the sword, in line with vanilla sword mods (the Shock mod costs 18 components; Shock+Serrated 26). Gold is the deliberate friction. No fiber optics or nuclear material.
+About 14 components plus the sword, in line with vanilla sword mods (the Shock mod costs 18 components; Shock+Serrated 26). Gold is the deliberate friction. No fiber optics, circuitry or nuclear material.
 
 **Perk gate: Blacksmith rank 2 only** (`Blacksmith02`, via the `HasPerk` condition, function index `448`). The sword's own Serrated and Shock mods use the same rank (Verified), and the story gate already limits who sees it, so a second perk gate (Science) would be ceremony.
 
@@ -109,4 +109,4 @@ A holotape (or similar) explaining the conversion. It cannot be placed in the wo
 
 ## Open items
 
-- Materials and perk gate (proposed above, awaiting agreement); instructions item (holotape) mechanism; recipe category keyword; materials and perk gates; gate behaviour (`GetStage >= 390`) tested in-game; the damage/template tracing.
+- instructions item (holotape) mechanism; recipe category keyword; materials and perk gates; gate behaviour (`GetStage >= 390`) tested in-game; the damage/template tracing.
