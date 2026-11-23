@@ -1,8 +1,8 @@
 # Concept spec: Order of Mysteries Regalia & Arsenal
 
-*Location: Rhodes `scratch/regalia-of-mystery/` while we plan; published to `fo4-regalia-of-mystery` once firm.*
+*Location: Rhodes `scratch/regalia-of-mystery/` while we plan. Published to `fo4-regalia-of-mystery` only when true: the repo holds no speculation. The Gemini brainstorm is archived in Alexandria `historical/regalia/`.*
 
-*Status: DRAFT for agreement. Intent only. No FormIDs, condition numbers, record types or numbers; those belong in `plan-spec.md`. Source material: `gemini-brainstorming.md`.*
+*Status: agreed (draft). Intent only. No FormIDs, condition numbers, record types or numbers; those belong in `spec-regalia.md` (set-wide) and `spec-blade-of-bastet.md` (per item). Source material: the Gemini brainstorm (archived in Alexandria `historical/regalia/gemini-brainstorming.md`).*
 
 ## What this is
 
@@ -41,7 +41,7 @@ Each stage must be useful and installable on its own.
 2. **Light and simple to install.** A single light plugin, no scripts, no archives.
 3. **Doesn't touch vanilla.** No changes to existing records; coexists with major gameplay overhauls.
 4. **Works on Steam Deck** through Mod Organizer 2 and xEdit.
-5. **Baseline is Anniversary Edition plus all DLC.** Using DLC or Creation Club assets is fine, but each use is called out in the plan-spec (it makes that DLC a hard requirement).
+5. **Baseline is Anniversary Edition plus all DLC.** Using DLC or Creation Club assets is fine, but each use is called out in `spec-regalia.md` (it makes that DLC a hard requirement).
 
 ## Decided
 
@@ -50,7 +50,7 @@ Each stage must be useful and installable on its own.
 - **0.1 is the Blade of Bastet**, made by converting a Chinese Officer Sword the player already has, with vanilla stats inherited.
 - Male characters can wear the dress (the Fallout wiki shows men in the vanilla dresses on the same rig), so no separate male outfit is planned; confirm in-game.
 - The look is the **Mistress** of Mysteries (there is no male counterpart in the lore). The green accent was for a visible Eye of Ra; it returns only if visible jewelry is added after 1.0.
-- **Discovery gate: the Silver Shroud costume** (item or quest stage), because it needs no vanilla edits. Players who skip that quest won't see the recipes; accepted.
+- **Discovery gate: the Silver Shroud quest, once the player has answered Kent either way** (refuse, "I am the Mistress", or accept and wear the mask). It needs no vanilla edits. Players who have not reached that point in the quest won't see the recipes; accepted.
 - **Eye of Ra before 1.0 is non-visible**: a worn item on the neck slot that only carries the catalyst effect, shown as the Silver Locket in the inventory (like a ring, but on the neck). Visible jewelry (cape or other) is considered after that, not before.
 - Phantom Device is cut. Staging: 0.1 = one item, 0.2 = Veil plus one more, 1.0 = release.
 
@@ -59,6 +59,8 @@ Each stage must be useful and installable on its own.
 - **Base:** the player converts a Chinese Officer Sword they already have (plus materials). It inherits the sword's vanilla stats: damage, speed and mods.
 - **The one change:** built-in armor penetration of **30%** (the vanilla legendary "Penetrating" level; target's armor ignored). Decided.
 - Keeps the sword's workbench mods and the open legendary slot.
+- **Instructions:** a short in-game explanation of how the conversion works (a holotape or similar), available once the recipes are discovered. How it reaches the player without editing vanilla records is settled in `spec-regalia.md`.
+- The converted weapon is renamed Blade of Bastet.
 - **With Eye of Ra worn (0.2 or later): ignores ALL armor (100%).** This matches the Fallout 76 original, which also goes to full armor-ignore. Accepted as fine because the base weapon is a low-tier melee sword. The Blade is not meant to outclass guaranteed legendaries such as Throatslicer, a Furious power fist or a Staggering Ripper; theme comes first (see Intent).
 
 ## References (not decisions)
@@ -71,7 +73,7 @@ Each stage must be useful and installable on its own.
 
 ## Open questions
 
-None for now. To verify in the plan-spec: that a worn item with no mesh behaves well on the neck slot.
+None for now. To verify in the specs: that a worn item with no mesh behaves well on the neck slot.
 
 ## Out of scope (for now)
 
@@ -79,4 +81,4 @@ Phantom Device (cut), visible Eye of Ra jewelry (after 1.0 planning), custom art
 
 ## Next
 
-Agree this file, then write `plan-spec.md` (mechanics, records, recipes), verified against the xEdit definitions in Alexandria.
+This file is agreed. Mechanics live in `spec-regalia.md` and one `spec-<item>.md` per item (`spec-blade-of-bastet.md` first), verified against the xEdit definitions in Alexandria.

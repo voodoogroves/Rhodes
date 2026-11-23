@@ -11,14 +11,20 @@ The personal side draws on the Seven Wonders of the Ancient World. A name is pic
 | Place | Role |
 |---|---|
 | **Rhodes** (this repo) | The harbor. Hub and base for the work surface. Common scripts and anything that applies across projects live here. Brainstorming lives here too, in `scratch/`. |
-| **Alexandria** | Knowledge. Curated, topical (not general) memory plus generated output. Kept in separate subdirectories (`memory/`, `output/`) so generated material is never mistaken for a source of truth. |
-| **Project repos** | One repo per produced project. They dock to Rhodes and hold the work itself. Current: `fo4-pax`, `fo4-regalia-of-mystery`. |
+| **Alexandria** | Knowledge and the archive. Curated, topical (not general) memory, generated output, and archived ideas, kept in separate subdirectories (`memory/`, `output/`, `historical/`) so generated or old material is never mistaken for a source of truth. |
+| **Project repos** | One repo per produced project. They dock to Rhodes and hold the work itself. They contain only what is true: no speculation. Current: `fo4-pax`, `fo4-regalia-of-mystery`. |
 
 All repos are under the GitHub account `voodoogroves`.
 
 ## Brainstorming
 
 Ideas start as `scratch/<idea>/` in Rhodes, one folder or file per idea. It is not known up front whether an idea is one project, so don't promote it to its own repo until it needs one. Current scratch folders: `pax`, `regalia-of-mystery`.
+
+## How work flows
+
+- **Rhodes is the real work space.** Drafts, plans and speculation live here in `scratch/` until they are settled.
+- **Project repos only hold what is true.** A spec is published to its project repo once it is verified. If testing shows a spec is wrong, the spec is updated so it is true again.
+- **Alexandria is for keeping.** Ideas that are shelved or superseded are archived to `historical/` (and finished knowledge goes to `memory/`), so they can be found later. Scratch folders in Rhodes are archived there when retired, not just deleted.
 
 ## Branches
 
@@ -49,6 +55,6 @@ Where each project's plans and specs live (project repo vs Rhodes) is undecided.
 
 - Issues vs a Project board for tracking (undecided, see `decisions.md`).
 - Ground rules: still being defined. Do not invent more.
-- Alexandria's exact structure beyond `memory/` and `output/`.
+- Alexandria's exact structure beyond `memory/`, `output/` and `historical/`.
 - Branch convention in project repos.
 - Where the repos are cloned on the Steam Deck.
