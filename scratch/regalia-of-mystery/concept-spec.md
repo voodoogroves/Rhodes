@@ -52,14 +52,17 @@ Each stage must be useful and installable on its own.
 - **Discovery gate: the Silver Shroud costume** (item or quest stage), because it needs no vanilla edits. Players who skip that quest won't see the recipes; accepted.
 - Phantom Device is cut. Staging is v1 = one item, v2 = Veil plus one more.
 
-## Open questions
-
-None for now.
-
 ## References (not decisions)
 
 - **Cape body colour:** the Institute division-head uniform green (`Materials\Clothes\InstituteUniform\InstUniformMDH_green.BGSM` / `FDH`), a medium leaf green (about rgb 83,132,88 where green). Reference only. A material swap replaces the whole texture, and the cape's texture layout (UVs) differs from the uniform's, so the real result must be checked in-game before we commit to it.
 - **Cape and brooch:** the Maxson cape (`FCapeMaxon.nif` / `MCapeMaxon.nif`) uses one material and one texture holding the red cloth and the dark metal clasp plates together. A swap cannot change the clasp or symbol on its own.
+
+- **UCO (Unified Clothing Overhaul), checked against its plugin:** `ClothesUCOCape` makes the vanilla Maxson cape a standalone wearable on slot 54, using the same vanilla meshes (`FCapeMaxon` / `MCapeMaxon`) and the same single texture; it adds no cape art. `ClothesUCOScarf` sits on the neck slot (50) and uses the vanilla `Armor\Metal\MScarf.nif`; UCO ships no scarf or cape textures. So a standalone cape is proven workable, and slot choice for Eye of Ra matters for UCO users (50 and 54 are both taken by UCO items).
+- **Round symbol:** the round disc on the cape's texture, lower right, in the same image as the cloth. Cannot be replaced on its own by a swap.
+
+## Open questions
+
+1. **Eye of Ra form.** Either a visible green cape (a free slot, with the swap and UV caveats above), or a **non-visible** worn item that only carries the catalyst effect, shown as the Silver Locket in the inventory, like a ring but on the neck slot. The invisible option avoids the cape's texture and slot problems; the cost is that you never see it on the character.
 
 ## Out of scope (for now)
 
