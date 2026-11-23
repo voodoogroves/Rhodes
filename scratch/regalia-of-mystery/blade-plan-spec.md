@@ -56,6 +56,10 @@ Why this over copying the OMOD: the vanilla legendary OMOD occupies `ap_Legendar
 - Condition: has the costume **or** quest stage reached. The brainstorm's stage `20` is **unverified**; read the quest's stages in xEdit.
 - Condition encoding (Verified): `GetItemCount` index 47, `GetStageDone` index 59, `>=` is Type `96`, `==` is Type `0`, the OR flag is `1` on the first of two OR'd conditions. Run On: Subject `0`.
 
+## Instructions item
+
+A holotape (or similar) explaining the conversion. It cannot be placed in the world or given by a script without editing vanilla records or using Papyrus, so the likely route is a craftable item shown with the recipes once discovered. *To verify:* the holotape/note record type that shows text without a script (probably a note that opens a terminal), and that it can be crafted at the same station.
+
 ## Known errors in the Gemini brainstorm that this spec corrects
 
 - Wrong sword ID; wrong condition indices; wrong `Run On` for "Target"; `MOD2`/`MOD3` swapped; wrong slot numbers; invented material paths; a script that would not run. See the Alexandria note `memory/fo4-xedit-reference.md`.
@@ -70,4 +74,4 @@ Why this over copying the OMOD: the vanilla legendary OMOD occupies `ap_Legendar
 
 ## Open items
 
-- Workbench and category; materials and perk gates; Silver Shroud stage number and which costume item; the damage/template tracing.
+- Instructions item (holotape) mechanism; workbench and category; materials and perk gates; Silver Shroud stage number and which costume item; the damage/template tracing.
