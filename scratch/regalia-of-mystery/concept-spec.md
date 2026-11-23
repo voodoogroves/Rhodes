@@ -50,7 +50,7 @@ Each stage must be useful and installable on its own.
 - **0.1 is the Blade of Bastet**, made by converting a Chinese Officer Sword the player already has, with vanilla stats inherited.
 - Male characters can wear the dress (the Fallout wiki shows men in the vanilla dresses on the same rig), so no separate male outfit is planned; confirm in-game.
 - The look is the **Mistress** of Mysteries (there is no male counterpart in the lore). The green accent was for a visible Eye of Ra; it returns only if visible jewelry is added after 1.0.
-- **Discovery gate: the Silver Shroud costume** (item or quest stage), because it needs no vanilla edits. Players who skip that quest won't see the recipes; accepted.
+- **Discovery gate: the Silver Shroud quest, once the player has answered Kent either way** (refuse, "I am the Mistress", or accept and wear the mask). It needs no vanilla edits. Players who have not reached that point in the quest won't see the recipes; accepted.
 - **Eye of Ra before 1.0 is non-visible**: a worn item on the neck slot that only carries the catalyst effect, shown as the Silver Locket in the inventory (like a ring, but on the neck). Visible jewelry (cape or other) is considered after that, not before.
 - Phantom Device is cut. Staging: 0.1 = one item, 0.2 = Veil plus one more, 1.0 = release.
 

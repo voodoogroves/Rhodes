@@ -54,9 +54,12 @@ Why this over copying the OMOD: the vanilla legendary OMOD occupies `ap_Legendar
 
 **Discovery gate:**
 - Quest `MS04` = `QUST 00027556`. The brainstorm's stage `20` does not exist. Stages that do exist (from the quest's log text): `25` Kent's call, `100` Kent wants a costume from Hubris Comics, `200` found the costume, `390` refused to be the Shroud, `400` agreed to be the Shroud (wear the costume, patrol), `410`-`1360` the missions, `1400` Sinjin dealt with, `1425` the Silver Shroud story wrapped up.
-- Gate options: stage `200` (found the costume), stage `400` (took up the identity), `1425` (finished). **Proposed: stage `400`.** One condition, `GetStageDone(MS04, 400) == 1`: no item check (an item check cannot see stored gear), no OR.
-- Condition encoding (Verified): `GetStageDone` index `59`; `==` is Type `0`; Run On Subject `0`. The `MS04` quest is the vanilla Silver Shroud quest; the costume items (`MS04_SilverShroudCostume 000E1A25` etc.) are not needed under this gate.
-- *To verify:* that `GetStageDone` stays true after the stage is passed and the quest advances, and that stage 400 is set when the player agrees.
+- **Gate: the player has answered Kent, either way (stage 390 or later).** Refuse at 390 ("I am the Mistress") or accept at 400; both unlock the recipe, and players still at stages 25 to 200 do not get it.
+- **Single condition:** `GetStage(MS04) >= 390`. `GetStage` is condition index `58` (Verified in the xEdit definitions); `>=` is Type `96`; comparison value `390`; Run On Subject `0`. No item check (an item check cannot see stored gear) and no OR.
+- **Fallback if `GetStage` misbehaves:** two conditions, `GetStageDone(MS04, 390) == 1` OR `GetStageDone(MS04, 400) == 1` (`GetStageDone` is index `59`; OR flag `1` on the first).
+- Rejected: stage 200 (found the costume; loses the choice theme), 1425 (too late), 390 alone (probably excludes everyone who accepts the role).
+- Condition encoding (Verified): the `MS04` quest is the vanilla Silver Shroud quest; the costume items (`MS04_SilverShroudCostume 000E1A25` etc.) are not needed under this gate.
+- *To verify in-game:* that `GetStage` returns the highest/most recent stage (not reset when the quest advances or completes), that stage 390 is set on refusal and 400 on acceptance, and that the recipe stays visible after the quest finishes.
 
 ## Instructions item
 
@@ -76,4 +79,4 @@ A holotape (or similar) explaining the conversion. It cannot be placed in the wo
 
 ## Open items
 
-- Instructions item (holotape) mechanism; recipe category keyword; materials and perk gates; confirm the gate stage (proposed 400); the damage/template tracing.
+- Instructions item (holotape) mechanism; recipe category keyword; materials and perk gates; gate behaviour (`GetStage >= 390`) tested in-game; the damage/template tracing.
