@@ -119,6 +119,23 @@ Run it from MO2, click OK on the module list (it still appears) and the "Not imp
 
 Add it to MO2 (a GUI step; don't edit `ModOrganizer.ini` while MO2 is running): gear icon (Edit executables) → **+ → Add from file…** → `~/Games/mo2-lint/tools/xEdit-4.1.5f/FO4Edit64.exe`. Title `FO4Edit`. Run it from MO2 so it sees the virtual `Data` folder. Output files land in MO2's `overwrite` folder.
 
+## Building a plugin with xEdit scripts (the Claude workflow)
+
+Claude can build plugin records by writing an xEdit Pascal script; you click Run in MO2 and paste back the message pane (a screenshot works). Each round takes a minute or two. Prototype first, fix from the error text, commit when it proves out. The project's own scripts live in its repo (e.g. `fo4-regalia-of-mystery/build/xedit/BuildBlade.pas`); generic tools live here in `scripts/xedit/`.
+
+Lessons (2026-11-23, xEdit 4.1.5f under Proton 11.0):
+- **The binary is the authority, not the source.** The `TES5Edit` clone in `~/Repos/upstream` is the newer, unreleased `dev-4.1.6`; 4.1.5f lacks some functions it has. `AddNewFileName(name, light, medium)` is source-only: the binary says `Undeclared Identifier`. In 4.1.5f, `AddNewFile` takes no arguments and shows a "Filename without extension" box (type the name; it creates a `.esp`). An EJvInterpreterError in the message pane names the line and the problem ("Type mismatch", "Undeclared Identifier"); read that line first.
+- **A new file has no masters.** Copying a record "as new" does not add masters, so references to vanilla records save against a master that does not exist (they show as `<Error: Could not be resolved>` and FormIDs come out with a stray `01`). Call `AddMasterIfMissing(file, 'Fallout4.esm')` right after creating the file. *Confirmed 2026-11-23: with the master added, every reference resolved and the saved plugin header carried the `MAST`.*
+- **The plugin is only written if you accept xEdit's save prompt** when you close the window after "You can close this application now." If you close without saving, nothing is written. Don't re-run if the file is already there: the filename box then says "a file of that name already exists" (check `Data/` first; the file can appear a moment after you accept).
+- **Check the saved file, not just the message pane.** A small Python read of the plugin header (`MAST` records) showed the missing master at once.
+- **The new plugin is written into the game's real `Data` folder**, not MO2's `overwrite` (xEdit uses the `S:` drive path, which MO2's virtual folder doesn't intercept). Move it into an MO2 mod folder afterwards; delete a stale copy from `Data` before re-running a build script.
+- **The ESL flag is a later step.** The prototype is a plain `.esp`.
+- **Log every step** in the script and write a log file to a home path; one failing step then shows where it stopped.
+
+## Editing MO2 settings by file
+
+MO2 rewrites `ModOrganizer.ini` when it exits, so edit it only with MO2 **closed** (back it up first). Executables are the numbered entries under `[customExecutables]`; bump `size=` when adding one. Typing into MO2's Edit Executables fields is error-prone (autocorrect once put a stray `v` in front of `-autoload`, and a mistyped `FO4Edit.exe` gave "not found"), so for long Arguments lines let Claude write the entry, then reopen MO2.
+
 ## Unmanaged mods
 
 MO2 lists plugins in the game's `Data` folder that aren't in a mod folder as "Unmanaged". On this Deck that's about 85 plugins:
