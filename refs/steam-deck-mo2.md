@@ -131,6 +131,7 @@ Lessons (2026-11-23, xEdit 4.1.5f under Proton 11.0):
 - **The new plugin is written into the game's real `Data` folder**, not MO2's `overwrite` (xEdit uses the `S:` drive path, which MO2's virtual folder doesn't intercept). Move it into an MO2 mod folder afterwards; delete a stale copy from `Data` before re-running a build script.
 - **The ESL flag is a later step.** The prototype is a plain `.esp`.
 - **Log every step** in the script and write a log file to a home path; one failing step then shows where it stopped.
+- **An assistant can't see xEdit, MO2 or the game running.** `pgrep` from the VS Code Flatpak shell doesn't see processes inside Proton, so "nothing found" is not evidence that they're closed (2026-11-23: a plugin was judged "not saved" when xEdit was still open and saved a moment later). Ask the person whether they've closed everything, and check files by timestamp after they say so.
 
 ## Editing MO2 settings by file
 
