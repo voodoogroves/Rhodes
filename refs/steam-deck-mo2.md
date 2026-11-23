@@ -128,7 +128,7 @@ Not from mo2-lint. Recorded so a rebuild knows what was there.
 | Shortcut | Location | Status |
 |---|---|---|
 | MO2 - Cyberpunk 2077 | inside Cyberpunk's prefix: `compatdata/1091500/pfx/drive_c/Modding/MO2` | Live. Manual setup. |
-| Mod Organizer 2-6194-2-5-2-1722760304.exe | standalone prefix `compatdata/3858780923/pfx/drive_c/Modding/MO2` | Probably stale. Not yet inspected or removed. |
+| ~~Mod Organizer 2-6194-2-5-2-1722760304.exe~~ | standalone prefix `compatdata/3858780923` | **Removed 2026-11-23.** It held no mods, profiles, downloads or ini (never configured), only a crash dump. Removing the shortcut in Steam also took the prefix. |
 
 A rebuilt Deck doesn't need to copy this approach. Use mo2-lint for new games.
 
@@ -142,5 +142,4 @@ A rebuilt Deck doesn't need to copy this approach. Use mo2-lint for new games.
 - Confirm FO4Edit loads the plugin list and shows records (it opens; list not yet checked). Remove `PROTON_LOG=1` from the launch options.
 - Make the clean test profile (see "Unmanaged mods").
 - Test a Nexus download to see which instance receives it.
-- Inspect and remove the stale MO2 shortcut and prefix (confirm with Chris first).
 - Decide whether to migrate Cyberpunk to mo2-lint.
