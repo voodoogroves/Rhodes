@@ -49,11 +49,12 @@ Each stage must be useful and installable on its own.
 - **v1 is the Blade of Bastet.**
 - Male characters can wear the dress (the Fallout wiki shows men in the vanilla dresses on the same rig), so no separate male outfit is planned; confirm in-game.
 - The look is the **Mistress** of Mysteries (there is no male counterpart in the lore). Eye of Ra is a neck-clasped piece with green fabric, the green being the costume's colour accent; revisit only if a better neck piece turns up when we check assets.
+- **Discovery gate: the Silver Shroud costume** (item or quest stage), because it needs no vanilla edits. Players who skip that quest won't see the recipes; accepted.
 - Phantom Device is cut. Staging is v1 = one item, v2 = Veil plus one more.
 
-## Open questions (we need to agree on these)
+## Open questions
 
-1. **Discovery gate.** Proposal: keep the Silver Shroud costume. A masked pulp vigilante is the nearest FO4 match to a mysterious order, and gating recipes on an existing item or quest needs no vanilla edits. Placing a new item in the world would require editing a vanilla cell or leveled list, which breaks the no-overrides rule. Cost: players who skip that quest never see the recipes. Agree?
+None for now.
 
 ## Out of scope (for now)
 
