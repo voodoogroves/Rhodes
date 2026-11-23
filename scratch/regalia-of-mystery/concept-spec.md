@@ -2,7 +2,7 @@
 
 *Location: Rhodes `scratch/regalia-of-mystery/` while we plan; published to `fo4-regalia-of-mystery` once firm.*
 
-*Status: DRAFT for agreement. Intent only. No FormIDs, condition numbers, record types or numbers; those belong in `plan-spec.md`. Source material: `gemini-brainstorming.md`.*
+*Status: agreed (draft). Intent only. No FormIDs, condition numbers, record types or numbers; those belong in `spec-regalia.md` (set-wide) and `spec-blade-of-bastet.md` (per item). Source material: `gemini-brainstorming.md`.*
 
 ## What this is
 
@@ -41,7 +41,7 @@ Each stage must be useful and installable on its own.
 2. **Light and simple to install.** A single light plugin, no scripts, no archives.
 3. **Doesn't touch vanilla.** No changes to existing records; coexists with major gameplay overhauls.
 4. **Works on Steam Deck** through Mod Organizer 2 and xEdit.
-5. **Baseline is Anniversary Edition plus all DLC.** Using DLC or Creation Club assets is fine, but each use is called out in the plan-spec (it makes that DLC a hard requirement).
+5. **Baseline is Anniversary Edition plus all DLC.** Using DLC or Creation Club assets is fine, but each use is called out in `spec-regalia.md` (it makes that DLC a hard requirement).
 
 ## Decided
 
@@ -59,7 +59,7 @@ Each stage must be useful and installable on its own.
 - **Base:** the player converts a Chinese Officer Sword they already have (plus materials). It inherits the sword's vanilla stats: damage, speed and mods.
 - **The one change:** built-in armor penetration of **30%** (the vanilla legendary "Penetrating" level; target's armor ignored). Decided.
 - Keeps the sword's workbench mods and the open legendary slot.
-- **Instructions:** a short in-game explanation of how the conversion works (a holotape or similar), available once the recipes are discovered. How it reaches the player without editing vanilla records is to be settled in the plan-spec.
+- **Instructions:** a short in-game explanation of how the conversion works (a holotape or similar), available once the recipes are discovered. How it reaches the player without editing vanilla records is settled in `spec-regalia.md`.
 - The converted weapon is renamed Blade of Bastet.
 - **With Eye of Ra worn (0.2 or later): ignores ALL armor (100%).** This matches the Fallout 76 original, which also goes to full armor-ignore. Accepted as fine because the base weapon is a low-tier melee sword. The Blade is not meant to outclass guaranteed legendaries such as Throatslicer, a Furious power fist or a Staggering Ripper; theme comes first (see Intent).
 
@@ -73,7 +73,7 @@ Each stage must be useful and installable on its own.
 
 ## Open questions
 
-None for now. To verify in the plan-spec: that a worn item with no mesh behaves well on the neck slot.
+None for now. To verify in the specs: that a worn item with no mesh behaves well on the neck slot.
 
 ## Out of scope (for now)
 
@@ -81,4 +81,4 @@ Phantom Device (cut), visible Eye of Ra jewelry (after 1.0 planning), custom art
 
 ## Next
 
-Agree this file, then write `plan-spec.md` (mechanics, records, recipes), verified against the xEdit definitions in Alexandria.
+This file is agreed. Mechanics live in `spec-regalia.md` and one `spec-<item>.md` per item (`spec-blade-of-bastet.md` first), verified against the xEdit definitions in Alexandria.
