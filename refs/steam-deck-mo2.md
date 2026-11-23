@@ -103,7 +103,7 @@ cd ~/Games/mo2-lint/tools/xEdit-4.1.5f && cp xFOEdit64.exe FO4Edit64.exe
 - xEdit creates `FO4Edit Cache` and `FO4Edit Backups` folders inside the game's `Data` folder. Normal.
 - To debug a crash, set the game's launch options to `PROTON_LOG=1 %command%`; the log lands at `~/steam-377160.log` and is overwritten each launch. Remove it afterwards (it is large and slows things).
 
-**Running xEdit scripts without clicking (verified 2026-11-23).** xEdit can apply a script on startup from MO2's executable Arguments. The reusable tool is `scripts/xedit/Lookup.pas` in this repo: edit `~/Games/mo2-lint/tools/our-scripts/requests.txt` (`id`, `edid`, `list`, `file` lines; see the script header), set the `FO4EDIT` executable's Arguments to:
+**Running xEdit scripts without clicking (verified 2026-11-23).** xEdit can apply a script on startup from MO2's executable Arguments. The reusable tool is `scripts/xedit/Lookup.pas` in this repo: edit `~/Games/mo2-lint/tools/our-scripts/requests.txt` (`id`, `edid`, `list`, `file` and `npcstats` lines; see the script header), set the `FO4EDIT` executable's Arguments to:
 
 ```
 -autoload -autoexit -script:"Z:\home\deck\Repos\Rhodes\scripts\xedit\Lookup.pas" -R:"Z:\home\deck\Games\mo2-lint\tools\our-scripts\xe.log" Fallout4.esm
@@ -136,6 +136,13 @@ Lessons (2026-11-23, xEdit 4.1.5f under Proton 11.0):
 ## Editing MO2 settings by file
 
 MO2 rewrites `ModOrganizer.ini` when it exits, so edit it only with MO2 **closed** (back it up first). Executables are the numbered entries under `[customExecutables]`; bump `size=` when adding one. Typing into MO2's Edit Executables fields is error-prone (autocorrect once put a stray `v` in front of `-autoload`, and a mistyped `FO4Edit.exe` gave "not found"), so for long Arguments lines let Claude write the entry, then reopen MO2.
+
+## Testing in game on the Deck
+
+- **A clean Test profile plus a prepared save** (level 20, the perks needed, a few of the item under test) makes every test start from the same state. Local saves are on, so saves stay in the profile.
+- **Console:** needs a keyboard (Bluetooth works); the tilde key opens it. The cheat terminal holotape is easier on a controller for god mode and spawning. Console text is small and `getav` readouts were unreliable here, so prefer a measure that needs no reading, such as counting swings to kill, or attach a screenshot to chat for the assistant to read.
+- **Record stats do not always match spawned actors** (templates, level scaling). Check against the game, not just the xEdit record.
+- For a before/after test of an effect, use a throwaway "TEST" plugin variant (different plugin name, editor IDs and item name) so the real plugin stays untouched; untick it afterwards.
 
 ## Unmanaged mods
 
