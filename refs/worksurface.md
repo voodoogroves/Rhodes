@@ -27,11 +27,11 @@ Ideas start as `scratch/<idea>/` in Rhodes, one folder or file per idea. It is n
 - Working branch is named for the repo's function: `dev` in Rhodes, `draft` in Alexandria.
 - Keep the working branch fast-forwarded to `main` between pieces of work.
 - This is a shared habit, not enforced by GitHub. Nothing blocks a push to `main`, so check the branch before committing.
-- Project repos: branch convention not yet stated; ask.
+- Project repos: typed working branches (`bug/`, `feature/`, etc.).
 
 ## How assistants reach the repos
 
-- Chat (claude.ai, mobile): through the Claude GitHub App, not a personal access token. Empty private repos are created on GitHub and added to the app; the assistant attaches and pushes.
+- Chat (claude.ai, mobile): through the Claude GitHub App, not a personal access token. Empty repos (public, no private information) are created on GitHub and added to the app; the assistant attaches and pushes.
 - Steam Deck: Claude Code via the VS Code extension. Install VS Code (Flatpak) and the extension from the Microsoft marketplace. Avoid Open VSX: a compromise of the Claude Code extension there (v2.1.313) was reported on 2026-10-30. The report is unverified.
 
 ## Steam Deck
