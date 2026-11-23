@@ -46,7 +46,7 @@ Then in Steam: Fallout 4 **Properties → Compatibility → force a specific too
 ### MO2 first run
 
 - **Nexus categories:** choose Nexus categories (cosmetic; changeable in Settings → Categories).
-- **nxm links:** yes. Only one program owns `nxm://` at a time, and this Deck has two MO2s. If a download lands in the wrong instance, this is why. Routing across instances is untested.
+- **nxm links:** yes. Only one program owns `nxm://` at a time, so if you ever run more than one MO2 on the Deck, the most recent registration wins. The "Mod Manager Download" button is untested here.
 - **Unmanaged entries** in the mod list are normal: base game, DLC, Creation Club, and anything installed from the in-game menu live in the game's `Data` folder. See "Unmanaged mods".
 
 ### Verify F4SE
@@ -142,7 +142,7 @@ cp -r Default Test
 - Official DLC and Creation Club plugins aren't listed in `plugins.txt` (the game enables CC through `Fallout4.ccc`), so they stay on.
 - Kept enabled: `cheatterminal.esp` (needs only `Fallout4.esm`) for god mode, spawning items and moving around during tests.
 - `LocalSaves=true` keeps test saves out of the normal profile. In MO2 pick **Test** from the profile dropdown; answer No if asked to transfer saves.
-- Game launch with this profile: works (2026-11-23). The prologue autosaves landed in `profiles/Test/saves`, so local saves are working. Not yet confirmed: that the cheat terminal holotape works, and that the third-party mods really are absent in game.
+- Game launch with this profile: works (2026-11-23). The prologue autosaves landed in `profiles/Test/saves`, so local saves are working. Confirmed in game: the cheat terminal holotape is there and the third-party mods are gone.
 
 ## Fallout 4 caveats *(upstream)*
 
@@ -150,17 +150,6 @@ cp -r Default Test
 - Missing some audio: add `WINEDLLOVERRIDES="winmm,version=n,b" %command%` to the game's launch options. If it persists, try Proton GE.
 - ENB 0.393 and older may need `EnablePostPassShader` disabled.
 - F4SE breaks whenever Steam updates Fallout 4 ahead of a new F4SE build. Fix: install the newer F4SE (uninstall and reinstall the instance, or see upstream `update`).
-
-## Existing hand-built setups on this Deck *(observed 2026-11-23)*
-
-Not from mo2-lint. Recorded so a rebuild knows what was there.
-
-| Shortcut | Location | Status |
-|---|---|---|
-| MO2 - Cyberpunk 2077 | inside Cyberpunk's prefix: `compatdata/1091500/pfx/drive_c/Modding/MO2` | Live. Manual setup. |
-| ~~Mod Organizer 2-6194-2-5-2-1722760304.exe~~ | standalone prefix `compatdata/3858780923` | **Removed 2026-11-23.** It held no mods, profiles, downloads or ini (never configured), only a crash dump. Removing the shortcut in Steam also took the prefix. |
-
-A rebuilt Deck doesn't need to copy this approach. Use mo2-lint for new games.
 
 ## Troubleshooting
 
@@ -170,6 +159,4 @@ A rebuilt Deck doesn't need to copy this approach. Use mo2-lint for new games.
 ## Open
 
 - Split the FO4Edit entry in two (normal and lookup), see above.
-- In game on the Test profile: confirm the cheat terminal holotape works and the third-party mods are gone.
-- Test a Nexus download to see which instance receives it.
-- Decide whether to migrate Cyberpunk to mo2-lint.
+- Test a Nexus "Mod Manager Download" and confirm it lands in this instance.
