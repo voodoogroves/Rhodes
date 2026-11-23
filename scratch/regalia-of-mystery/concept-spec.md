@@ -1,8 +1,8 @@
 # Concept spec: Order of Mysteries Regalia & Arsenal
 
-*Location: Rhodes `scratch/regalia-of-mystery/` while we plan; published to `fo4-regalia-of-mystery` once firm.*
+*Location: Rhodes `scratch/regalia-of-mystery/` while we plan. Published to `fo4-regalia-of-mystery` only when true: the repo holds no speculation. The Gemini brainstorm is archived in Alexandria `historical/regalia/`.*
 
-*Status: agreed (draft). Intent only. No FormIDs, condition numbers, record types or numbers; those belong in `spec-regalia.md` (set-wide) and `spec-blade-of-bastet.md` (per item). Source material: `gemini-brainstorming.md`.*
+*Status: agreed (draft). Intent only. No FormIDs, condition numbers, record types or numbers; those belong in `spec-regalia.md` (set-wide) and `spec-blade-of-bastet.md` (per item). Source material: the Gemini brainstorm (archived in Alexandria `historical/regalia/gemini-brainstorming.md`).*
 
 ## What this is
 
