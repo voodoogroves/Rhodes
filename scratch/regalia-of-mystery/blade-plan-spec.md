@@ -27,6 +27,19 @@ Convert a Chinese Officer Sword the player already owns into the Blade of Bastet
 
 Base damage and speed are inherited unchanged. *Not yet read:* the sword's damage lives in a record or template I did not trace; compare in xEdit before final.
 
+## The sword's vanilla mods (Verified from the game's OMOD records)
+
+The sword has two attach points (`ap_melee_MeleeMod` and `ap_Legendary`) and four blade states:
+
+| Mod | In-game name | Effect | Cost (perk gate) |
+|---|---|---|---|
+| `mod_melee_ChineseOfficerSword_Null` | No Upgrade | the base sword; changes nothing | free |
+| `..._Serrated` | Serrated Blade | +75% damage; targets bleed (`EnchWeapModBleed`) | Steel 7, Oil 3, Fiberglass 4, Adhesive 3 (Blacksmith 2) |
+| `..._Shock` | Electrified Blade | +5 electrical damage (`EnchWeapModShock`) | Rubber 3, Circuitry 3, Aluminum 8, Adhesive 4 (Blacksmith 2, Science 1) |
+| `..._ShockAndSerrated` | Electrified Serrated Blade | both of the above | 26 components (Blacksmith 3, Science 1) |
+
+No other mod slots exist besides the legendary slot. The copy should keep these so players can still stack bleed and shock on the Blade. *To verify:* that the copy's default mod list points at the vanilla "No Upgrade" mod and that all four attach. The base damage number is not in these mods (the standard state changes nothing); it comes from the weapon record or its template and is still untraced.
+
 ## Armor penetration (the one change)
 
 **How vanilla does it (Verified):**
@@ -55,10 +68,11 @@ Why this over copying the OMOD: the vanilla legendary OMOD occupies `ap_Legendar
 | Chinese Officer Sword (`00147BE4`) | 1 | the conversion base (vanilla recipes already use items as ingredients: the Baseball grenade uses a `Baseball`, the Bottlecap mine a `LunchBoxKids01`) |
 | Steel (`c_Steel`) | 4 | the blade work |
 | Silver (`c_Silver`) | 3 | the ceremonial theme |
+| Gold (`c_Gold`) | 2 | scarcer on purpose: it should not be too easy |
 | Circuitry (`c_Circuitry`) | 2 | the fine mechanism |
 | Adhesive (`c_Adhesive`) | 3 | common, matches other melee recipes |
 
-About 12 components plus the sword, in line with vanilla sword mods (the Shock mod costs 18 components; Shock+Serrated 26). No fiber optics, gold or nuclear material, which are scarcer.
+About 14 components plus the sword, in line with vanilla sword mods (the Shock mod costs 18 components; Shock+Serrated 26). Gold is the deliberate friction. No fiber optics or nuclear material.
 
 **Perk gate: Blacksmith rank 2 only** (`Blacksmith02`, via the `HasPerk` condition, function index `448`). The sword's own Serrated and Shock mods use the same rank (Verified), and the story gate already limits who sees it, so a second perk gate (Science) would be ceremony.
 
