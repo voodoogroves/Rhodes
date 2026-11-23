@@ -28,9 +28,10 @@ A Fallout 4 mod that brings the Fallout 76 **Order of Mysteries** set into the C
 
 ## Staging
 
-- **v1:** one item, end to end, to prove the pipeline.
-- **v2:** the Veil plus one more item.
-- Later versions add the rest.
+- **0.1:** one item, end to end, to prove the pipeline.
+- **0.2:** the Veil plus one more item.
+- Later 0.x versions add the rest.
+- **1.0 is the release**, and the point where it may be shared (for example on Nexus Mods). Everything before 1.0 is for ourselves.
 
 Each stage must be useful and installable on its own.
 
@@ -46,11 +47,12 @@ Each stage must be useful and installable on its own.
 
 - Each piece is decent standalone; Eye of Ra amplifies the others (replaces former Q1).
 - Power level: viable, not competitive with top legendaries; theme is the priority (replaces former Q4).
-- **v1 is the Blade of Bastet.**
+- **0.1 is the Blade of Bastet.**
 - Male characters can wear the dress (the Fallout wiki shows men in the vanilla dresses on the same rig), so no separate male outfit is planned; confirm in-game.
 - The look is the **Mistress** of Mysteries (there is no male counterpart in the lore). Eye of Ra is a neck-clasped piece with green fabric, the green being the costume's colour accent; revisit only if a better neck piece turns up when we check assets.
 - **Discovery gate: the Silver Shroud costume** (item or quest stage), because it needs no vanilla edits. Players who skip that quest won't see the recipes; accepted.
-- Phantom Device is cut. Staging is v1 = one item, v2 = Veil plus one more.
+- **Eye of Ra before 1.0 is non-visible**: a worn item on the neck slot that only carries the catalyst effect, shown as the Silver Locket in the inventory (like a ring, but on the neck). Visible jewelry (cape or other) is considered after that, not before.
+- Phantom Device is cut. Staging: 0.1 = one item, 0.2 = Veil plus one more, 1.0 = release.
 
 ## References (not decisions)
 
@@ -62,11 +64,11 @@ Each stage must be useful and installable on its own.
 
 ## Open questions
 
-1. **Eye of Ra form.** Either a visible green cape (a free slot, with the swap and UV caveats above), or a **non-visible** worn item that only carries the catalyst effect, shown as the Silver Locket in the inventory, like a ring but on the neck slot. The invisible option avoids the cape's texture and slot problems; the cost is that you never see it on the character.
+None for now. To verify in the plan-spec: that a worn item with no mesh behaves well on the neck slot.
 
 ## Out of scope (for now)
 
-Phantom Device (cut), custom art, new quests or voice, FO76 upgrade tiers, scripted effects, compatibility patches for specific overhauls.
+Phantom Device (cut), visible Eye of Ra jewelry (after 1.0 planning), custom art, new quests or voice, FO76 upgrade tiers, scripted effects, compatibility patches for specific overhauls.
 
 ## Next
 
