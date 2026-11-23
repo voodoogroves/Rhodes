@@ -8,6 +8,8 @@
     id   <hex FormID>     dump one record, e.g.  id 00147BE4
     edid <SIG> <EditorID> dump one record by EditorID, e.g.  edid PERK Blacksmith02
     list <SIG>            one line per record in that group: FormID, EditorID, name
+    npcstats              one line per NPC_ that has a Health or DamageResist property:
+                          FormID | EditorID | name | HP | DR | energy resist | level
 
   Run it from MO2 (Edit executables > FO4Edit) with these Arguments:
     -autoload -autoexit -script:"Z:\home\deck\Repos\Rhodes\scripts\xedit\Lookup.pas" -R:"Z:\home\deck\Games\mo2-lint\tools\our-scripts\xe.log" Fallout4.esm
@@ -37,9 +39,9 @@ end;
 function Initialize: integer;
 var
   req, out: TStringList;
-  i, j, p: integer;
-  line, cmd, rest, sig, key: string;
-  f, g, r: IInterface;
+  i, j, k, p: integer;
+  line, cmd, rest, sig, key, av, hp, dr, er: string;
+  f, g, r, pr, pp: IInterface;
 begin
   Result := 0;
   req := TStringList.Create;
@@ -80,6 +82,28 @@ begin
             for j := 0 to ElementCount(g) - 1 do begin
               r := ElementByIndex(g, j);
               out.Add(IntToHex(FormID(r), 8) + '  ' + Name(r));
+            end;
+        end else if cmd = 'npcstats' then begin
+          g := GroupBySignature(f, 'NPC_');
+          if not Assigned(g) then out.Add('NO GROUP NPC_')
+          else
+            for j := 0 to ElementCount(g) - 1 do begin
+              r := ElementByIndex(g, j);
+              hp := '';
+              dr := '';
+              er := '';
+              pr := ElementByPath(r, 'PRPS');
+              if Assigned(pr) then
+                for k := 0 to ElementCount(pr) - 1 do begin
+                  pp := ElementByIndex(pr, k);
+                  av := GetElementEditValues(pp, 'Actor Value');
+                  if Pos('Health ', av) = 1 then hp := GetElementEditValues(pp, 'Value');
+                  if Pos('DamageResist ', av) = 1 then dr := GetElementEditValues(pp, 'Value');
+                  if Pos('EnergyResist ', av) = 1 then er := GetElementEditValues(pp, 'Value');
+                end;
+              if (hp <> '') or (dr <> '') then
+                out.Add(IntToHex(FormID(r), 8) + ' | ' + EditorID(r) + ' | ' + GetElementEditValues(r, 'FULL') +
+                  ' | HP ' + hp + ' | DR ' + dr + ' | ER ' + er + ' | L ' + GetElementEditValues(r, 'ACBS\Level'));
             end;
         end else
           out.Add('UNKNOWN COMMAND');
