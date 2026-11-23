@@ -40,19 +40,20 @@ Each stage must be useful and installable on its own.
 2. **Light and simple to install.** A single light plugin, no scripts, no archives.
 3. **Doesn't touch vanilla.** No changes to existing records; coexists with major gameplay overhauls.
 4. **Works on Steam Deck** through Mod Organizer 2 and xEdit.
+5. **Baseline is Anniversary Edition plus all DLC.** Using DLC or Creation Club assets is fine, but each use is called out in the plan-spec (it makes that DLC a hard requirement).
 
 ## Decided
 
 - Each piece is decent standalone; Eye of Ra amplifies the others (replaces former Q1).
 - Power level: viable, not competitive with top legendaries; theme is the priority (replaces former Q4).
+- **v1 is the Blade of Bastet.**
+- The look is the **Mistress** of Mysteries (there is no male counterpart in the lore). Eye of Ra is a neck-clasped piece with green fabric, the green being the costume's colour accent; revisit only if a better neck piece turns up when we check assets.
 - Phantom Device is cut. Staging is v1 = one item, v2 = Veil plus one more.
 
 ## Open questions (we need to agree on these)
 
-1. **Which item is v1?** (Suggestion: Blade of Bastet, the simplest to build end to end.)
-2. **Discovery gate.** Is the Silver Shroud costume the right trigger? Too early, too late, or a nuisance for players who skip that quest?
-3. **Eye of Ra visual.** The brainstorm uses a cape mesh for an "amulet". Is that what we want to see on the character?
-4. **Female and male looks.** Same outfit both ways, or an accepted different look per gender?
+1. **Discovery gate.** Proposal: keep the Silver Shroud costume. A masked pulp vigilante is the nearest FO4 match to a mysterious order, and gating recipes on an existing item or quest needs no vanilla edits. Placing a new item in the world would require editing a vanilla cell or leveled list, which breaks the no-overrides rule. Cost: players who skip that quest never see the recipes. Agree?
+2. **Male characters.** Garb is the Mistress look. A male character still has to see something, not an invisible body. Proposal: a plain tuxedo fallback, treated as a fallback and not a design focus. Agree?
 
 ## Out of scope (for now)
 
