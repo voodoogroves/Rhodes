@@ -6,6 +6,8 @@
 
 **Open:** read component and perk FormIDs in xEdit; trace the sword's base damage; in-game tests (listed in the specs); item specs for Eye of Ra, Veil, Garb, Voice of Set. The concept retires when every item has a spec.
 
-**Next:** set up a separate MO2 for Fallout 4 on the Deck (installer cloned at `~/Repos/upstream/modorganizer2-linux-installer`), add FO4Edit as a tool, then build 0.1.
+**Done 2026-11-23:** separate MO2 for Fallout 4 built with MO2-LINT; F4SE 0.7.9 loads and the game reaches the main menu; FO4Edit 4.1.5f (32-bit) loads Fallout4.esm and the DLC. Steps and gotchas are in `refs/steam-deck-mo2.md`.
 
-**Check next session:** does `~/Repos/CLAUDE.md` (a symlink into Rhodes) load when Claude starts from `~/Repos`?
+**Next:** the xEdit lookups under Open (component and perk FormIDs, sword base damage), then build 0.1. Make a clean MO2 test profile first (untick the unmanaged third-party plugins).
+
+**Checked:** `~/Repos/CLAUDE.md` (a symlink into Rhodes) does load when Claude starts from `~/Repos`.
