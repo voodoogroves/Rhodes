@@ -50,11 +50,13 @@ Why this over copying the OMOD: the vanilla legendary OMOD occupies `ap_Legendar
 
 **Recipe (`COBJ`):** consume `1x Chinese Officer Sword` plus materials; create `MoM_WEAP_BladeOfBastet`. The brainstorm proposed: 2 Silver, 2 Circuitry, 1 Fiber Optics, perk gates (Blacksmith 1, Science! 1). *Component FormIDs and the perk gates are not verified and the brainstorm's IDs contain known duplicates; re-derive all of them in xEdit.* **Workbench: to decide.** A weapon workbench only crafts mods in vanilla, so the Chemistry Station (utility category) is the likely home; the keyword names were not confirmed.
 
-**Discovery gate (Verified IDs, behaviour to verify):**
-- Quest `MS04` = `QUST 00027556`.
-- Costume `ARMO 000E1A25` `MS04_SilverShroudCostume`. Other Silver Shroud armors exist (`ClothesSilverShroud 0014E58B`, hat `0014E58E`, `MS04_SilverShroudArmor_15/25/35/45`); decide which one the player actually receives and whether to test any of them.
-- Condition: has the costume **or** quest stage reached. The brainstorm's stage `20` is **unverified**; read the quest's stages in xEdit.
-- Condition encoding (Verified): `GetItemCount` index 47, `GetStageDone` index 59, `>=` is Type `96`, `==` is Type `0`, the OR flag is `1` on the first of two OR'd conditions. Run On: Subject `0`.
+**Workbench: Chemistry Station (keyword `WorkbenchChemlab`).** Verified: in Fallout4.esm, the DLC and the installed Creation Club files, the 20 recipes that create a weapon item (mines and grenades) all use this station; the weapon and armor workbenches are built around mods, not new items. The recipe's category/filter keyword is *to verify*.
+
+**Discovery gate:**
+- Quest `MS04` = `QUST 00027556`. The brainstorm's stage `20` does not exist. Stages that do exist (from the quest's log text): `25` Kent's call, `100` Kent wants a costume from Hubris Comics, `200` found the costume, `390` refused to be the Shroud, `400` agreed to be the Shroud (wear the costume, patrol), `410`-`1360` the missions, `1400` Sinjin dealt with, `1425` the Silver Shroud story wrapped up.
+- Gate options: stage `200` (found the costume), stage `400` (took up the identity), `1425` (finished). **Proposed: stage `400`.** One condition, `GetStageDone(MS04, 400) == 1`: no item check (an item check cannot see stored gear), no OR.
+- Condition encoding (Verified): `GetStageDone` index `59`; `==` is Type `0`; Run On Subject `0`. The `MS04` quest is the vanilla Silver Shroud quest; the costume items (`MS04_SilverShroudCostume 000E1A25` etc.) are not needed under this gate.
+- *To verify:* that `GetStageDone` stays true after the stage is passed and the quest advances, and that stage 400 is set when the player agrees.
 
 ## Instructions item
 
@@ -74,4 +76,4 @@ A holotape (or similar) explaining the conversion. It cannot be placed in the wo
 
 ## Open items
 
-- Instructions item (holotape) mechanism; workbench and category; materials and perk gates; Silver Shroud stage number and which costume item; the damage/template tracing.
+- Instructions item (holotape) mechanism; recipe category keyword; materials and perk gates; confirm the gate stage (proposed 400); the damage/template tracing.
