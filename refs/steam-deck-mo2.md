@@ -1,0 +1,146 @@
+# Steam Deck: Mod Organizer 2 setup
+
+Runbook for rebuilding the modding setup on a new or reset Steam Deck. Lives in Rhodes because it applies across projects (`fo4-pax`, `fo4-regalia-of-mystery`).
+
+**Status (2026-11-23):** the Fallout 4 instance was built from this runbook and reached the main menu through F4SE. Everything under "Per game" is verified. Open items are at the bottom. Facts from upstream docs that haven't been run here are marked *(upstream)*.
+
+## The model
+
+One independent MO2 instance per game, built by **MO2-LINT** (`~/Repos/upstream/modorganizer2-linux-installer`, docs at docs.furglitch.com/modorganizer2-linux-installer). It installs MO2 into a normal folder, puts `mo2-redirector.exe` in the game folder, and registers a Steam compatibility tool for the game (`mo2_<appid>_redirector`, so `mo2_377160_redirector` for Fallout 4). You set the **game's own Steam entry** to that tool. Launching the game from Steam then opens MO2, and the game is started from MO2's top-right dropdown (F4SE, Fallout 4, ...). It appears in gaming mode like any Steam game.
+
+Never launch the game any other way (plain Steam without the tool, or Wine directly). That can break the prefix.
+
+## Prerequisites
+
+1. Desktop mode, and a real terminal (Konsole). The installer's menus need a TTY, so an assistant's shell can't run `install` (it aborts with "Input is not a terminal").
+2. **Proton 11.0** installed in Steam. It's the only version upstream supports.
+3. The game installed and **launched once to the main menu**, so Steam creates its prefix (`compatdata/<appid>/pfx`).
+4. At least one other game or shortcut left on the stock Proton, or Steam may remove it and break the MO2 tool.
+
+## Install the installer
+
+1. Download the `mo2-lint` release binary (v7.0.0+) from the GitHub releases page.
+2. `chmod +x mo2-lint`, then move it to `~/.local/bin/` (already on PATH).
+3. Config is created at `~/.config/mo2-lint/settings.toml`. Defaults put instances under `~/Games/mo2-lint/mo2-{game}-{launcher}`. State is `~/.config/mo2-lint/state.json`; logs are `~/.cache/mo2-lint/logs/`.
+4. v7.0.0 worked, though 7.0.5 was out. If something fails, update the binary first.
+
+## Per game
+
+```bash
+mo2-lint install --help                      # find the exact game id
+mo2-lint install fallout4 ~/Games/mo2-lint/mo2-fallout4-steam -L steam -s
+```
+
+`-s` installs the script extender (F4SE for Fallout 4). The prompts, in order:
+
+1. **"Have you set the compatibility tool?"** Answer **y**. The tool doesn't exist yet at this point; it appears only after the install. The prefix just needs to exist.
+2. **Script extender version.** F4SE must match the game's exact version. Read it first:
+   ```bash
+   python3 -I -c 'd=open("Fallout4.exe","rb").read();i=d.find("FileVersion".encode("utf-16le"));print(d[i:i+100].decode("utf-16le","ignore"))'
+   ```
+   (run from the game folder `~/.local/share/Steam/steamapps/common/Fallout 4`). On 2026-11-23 the game was 1.11.240.0, which is **F4SE 0.7.9**. Menu entries list the runtime they need.
+3. **Menus use arrow keys and Enter.** Typing a number does nothing visible and selects the highlighted entry. Check the highlight before pressing Enter.
+
+Then in Steam: Fallout 4 **Properties → Compatibility → force a specific tool → `mo2_377160_redirector`**. Launch the game from Steam; MO2 opens.
+
+### MO2 first run
+
+- **Nexus categories:** choose Nexus categories (cosmetic; changeable in Settings → Categories).
+- **nxm links:** yes. Only one program owns `nxm://` at a time, and this Deck has two MO2s. If a download lands in the wrong instance, this is why. Routing across instances is untested.
+- **Unmanaged entries** in the mod list are normal: base game, DLC, Creation Club, and anything installed from the in-game menu live in the game's `Data` folder. See "Unmanaged mods".
+
+### Verify F4SE
+
+Pick **F4SE** in MO2's dropdown and Run. Get to the main menu, then quit. Then check the logs:
+
+`~/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4/F4SE/`
+
+- `f4se.log` should show `F4SE runtime: initialize (version = 0.7.9 ...)` and end at `init complete` / `RegisterPapyrusFunctions_Hook`.
+- `f4se_loader.log` ends at `launching`. `WinVerifyTrust ... 80090008` lines are normal under Wine; ignore them.
+- The log is in the **prefix's Documents**, not MO2's `overwrite` folder.
+
+Verified 2026-11-23: F4SE 0.7.9 loaded and the game reached the main menu with about 85 plugins in the load order.
+
+### Recovery: wrong F4SE version (or any bad install)
+
+Don't re-run `install` over it (the first run had already completed; a second one hits a non-empty folder). Run:
+
+```bash
+mo2-lint uninstall -g fallout4
+```
+
+It removes the redirector, the Steam wrapper, the launch option, and every tracked F4SE file. Verified clean on 2026-11-23: no leftover `f4se_1_10_163.dll`. Then install again.
+
+## FO4Edit (xEdit)
+
+**Source:** the official `TES5Edit/TES5Edit` GitHub releases page (xEdit is one project; FO4Edit is its Fallout build). No Nexus account needed. Latest release on 2026-11-23 was **xEdit 4.1.5f** (2024-04-28).
+
+How it was fetched and installed (2026-11-23):
+
+```bash
+# list releases
+curl -s https://api.github.com/repos/TES5Edit/TES5Edit/releases?per_page=4
+# download into a scratch dir, then hash
+curl -sSL -o xEdit.4.1.5f.7z https://github.com/TES5Edit/TES5Edit/releases/download/xedit-4.1.5f/xEdit.4.1.5f.7z
+sha256sum xEdit.4.1.5f.7z
+# extract into a new empty folder (bsdtar reads .7z; no 7z needed)
+mkdir -p ~/Games/mo2-lint/tools/xEdit-4.1.5f
+bsdtar -xf xEdit.4.1.5f.7z -C ~/Games/mo2-lint/tools/xEdit-4.1.5f
+# FO4 build: copy the 64-bit Fallout exe under a name xEdit recognises
+cd ~/Games/mo2-lint/tools/xEdit-4.1.5f && cp xFOEdit64.exe FO4Edit64.exe
+```
+
+- Size 31,345,110 bytes (matches the GitHub release metadata); SHA-256 `54c014da621f83f06a64fd92ddb8e32ed3082d1c65f543dc1c4e432130dced08`. GitHub published no digest to compare against, so the hash is a record, not a verification.
+- The archive holds `xFOEdit64.exe`/`xFOEdit.exe` (Fallout), plus TES/SF/Dump builds, BSArch and `Edit Scripts/`. There is no file called FO4Edit in it.
+- **Game selection:** xEdit takes the game from a `-FO4` command-line switch or from an exe name containing `fo4` (read from `xEdit/xeInit.pas` on current master, not from the 4.1.5f binary). A copy named `FO4Edit64.exe` needs no arguments. Alternative: keep `xFOEdit64.exe` and pass `-FO4`.
+- Use the 64-bit exe (`FO4Edit64.exe`); the 32-bit build is the usual cause of out-of-memory errors on big load orders (general xEdit knowledge, not checked here).
+
+**Observed 2026-11-23 (Proton 11.0, MO2 2.5.2, xEdit 4.1.5f):**
+- **Use the 32-bit `FO4Edit.exe`.** `FO4Edit64.exe` showed the "64-bit is slower" prompt, then died on startup with `Runtime error 216` (an access violation inside the exe; the Proton log showed a chain of faults at `FO4Edit64.exe+0x1C8EC4`). Cause not found. The 32-bit copy (`cp xFOEdit.exe FO4Edit.exe`) starts fine.
+- **Click OK on the "Not implemented." box.** It appears right after "Loading active plugin list" and is non-fatal; xEdit carries on and opens. Expect a few splash screens (support/donation nags) too.
+- **Pick the right exe in MO2.** The first attempt used `xFOEdit64.exe` (no `fo4` in the name, no `-FO4` switch), so xEdit couldn't tell the game. Use `FO4Edit.exe`.
+- **Loading works.** The Module Selection list appears with every plugin ticked. For vanilla lookups, right-click → **Select None**, then tick only `Fallout4.esm` and the 6 `DLC*.esm`, and OK. Loading finished ("Background Loader: finished" in the message pane) with a stream of tip/donation screens to close along the way. Entries struck through in the list are in `Plugins.txt` but missing from `Data`; harmless.
+- xEdit creates `FO4Edit Cache` and `FO4Edit Backups` folders inside the game's `Data` folder. Normal.
+- To debug a crash, set the game's launch options to `PROTON_LOG=1 %command%`; the log lands at `~/steam-377160.log` and is overwritten each launch. Remove it afterwards (it is large and slows things).
+
+Add it to MO2 (a GUI step; don't edit `ModOrganizer.ini` while MO2 is running): gear icon (Edit executables) → **+ → Add from file…** → `~/Games/mo2-lint/tools/xEdit-4.1.5f/FO4Edit64.exe`. Title `FO4Edit`. Run it from MO2 so it sees the virtual `Data` folder. Output files land in MO2's `overwrite` folder.
+
+## Unmanaged mods
+
+MO2 lists plugins in the game's `Data` folder that aren't in a mod folder as "Unmanaged". On this Deck that's about 85 plugins:
+
+- About 18 official: base game, 6 DLC, 10 Creation Club `cc*.esl`. Normal.
+- The rest are third-party (Sim Settlements, Clothing Overhaul, SKK, Eli's mods, and so on), almost certainly from the in-game Mods menu. They load, but MO2 can't version or update them.
+
+For mod development, make a separate **test profile** in MO2 and untick the unmanaged third-party plugins, leaving vanilla, DLC and CC. This doesn't touch the game folder. Not yet done.
+
+## Fallout 4 caveats *(upstream)*
+
+- Some F4SE plugins misbehave under Proton. No F4SE plugins are installed yet.
+- Missing some audio: add `WINEDLLOVERRIDES="winmm,version=n,b" %command%` to the game's launch options. If it persists, try Proton GE.
+- ENB 0.393 and older may need `EnablePostPassShader` disabled.
+- F4SE breaks whenever Steam updates Fallout 4 ahead of a new F4SE build. Fix: install the newer F4SE (uninstall and reinstall the instance, or see upstream `update`).
+
+## Existing hand-built setups on this Deck *(observed 2026-11-23)*
+
+Not from mo2-lint. Recorded so a rebuild knows what was there.
+
+| Shortcut | Location | Status |
+|---|---|---|
+| MO2 - Cyberpunk 2077 | inside Cyberpunk's prefix: `compatdata/1091500/pfx/drive_c/Modding/MO2` | Live. Manual setup. |
+| Mod Organizer 2-6194-2-5-2-1722760304.exe | standalone prefix `compatdata/3858780923/pfx/drive_c/Modding/MO2` | Probably stale. Not yet inspected or removed. |
+
+A rebuilt Deck doesn't need to copy this approach. Use mo2-lint for new games.
+
+## Troubleshooting
+
+- Install aborts with "Could not resolve Steam Proton wrapper": the required Proton isn't installed (seen 2026-10-28, Proton Experimental). Install Proton 11.0 and retry.
+- Install aborts with "Input is not a terminal": run it in Konsole, not from an assistant.
+
+## Open
+
+- Confirm FO4Edit loads the plugin list and shows records (it opens; list not yet checked). Remove `PROTON_LOG=1` from the launch options.
+- Make the clean test profile (see "Unmanaged mods").
+- Test a Nexus download to see which instance receives it.
+- Inspect and remove the stale MO2 shortcut and prefix (confirm with Chris first).
+- Decide whether to migrate Cyberpunk to mo2-lint.
