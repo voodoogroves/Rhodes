@@ -113,6 +113,7 @@ Run it from MO2, click OK on the module list (it still appears) and the "Not imp
 
 - **Use home paths (`Z:\home\deck\...`) for everything.** xEdit runs inside Proton and cannot see `/tmp`; it will say "Could not open script" for a `/tmp` path. An assistant's shell in the VS Code Flatpak has a private `/tmp` too.
 - After editing Arguments, re-open the gear to confirm it saved; a stale old line cost a retry.
+- **Keep two executable entries:** `FO4EDIT` with empty Arguments for normal GUI use, and a second one (e.g. `FO4EDIT lookup`) with the script Arguments. If the script Arguments are left on the normal entry, opening FO4Edit runs the script and exits. (As of 2026-11-23 the single entry still has the script Arguments.)
 - **Do not launch xEdit by running `proton run` from a shell.** It fails (no display authorisation) and rewrites Proton runtime files in the game's prefix.
 - Reference ids are in Alexandria `memory/fo4-xedit-reference.md`.
 
@@ -141,7 +142,7 @@ cp -r Default Test
 - Official DLC and Creation Club plugins aren't listed in `plugins.txt` (the game enables CC through `Fallout4.ccc`), so they stay on.
 - Kept enabled: `cheatterminal.esp` (needs only `Fallout4.esm`) for god mode, spawning items and moving around during tests.
 - `LocalSaves=true` keeps test saves out of the normal profile. In MO2 pick **Test** from the profile dropdown; answer No if asked to transfer saves.
-- Game launch with this profile: not yet tested.
+- Game launch with this profile: works (2026-11-23). The prologue autosaves landed in `profiles/Test/saves`, so local saves are working. Not yet confirmed: that the cheat terminal holotape works, and that the third-party mods really are absent in game.
 
 ## Fallout 4 caveats *(upstream)*
 
@@ -168,7 +169,7 @@ A rebuilt Deck doesn't need to copy this approach. Use mo2-lint for new games.
 
 ## Open
 
-- Confirm FO4Edit loads the plugin list and shows records (it opens; list not yet checked). Remove `PROTON_LOG=1` from the launch options.
-- Launch the game from the Test profile and confirm the cheat terminal works and the third-party mods are gone.
+- Split the FO4Edit entry in two (normal and lookup), see above.
+- In game on the Test profile: confirm the cheat terminal holotape works and the third-party mods are gone.
 - Test a Nexus download to see which instance receives it.
 - Decide whether to migrate Cyberpunk to mo2-lint.
