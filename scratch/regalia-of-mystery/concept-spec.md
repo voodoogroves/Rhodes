@@ -47,12 +47,19 @@ Each stage must be useful and installable on its own.
 
 - Each piece is decent standalone; Eye of Ra amplifies the others (replaces former Q1).
 - Power level: viable, not competitive with top legendaries; theme is the priority (replaces former Q4).
-- **0.1 is the Blade of Bastet.**
+- **0.1 is the Blade of Bastet**, made by converting a Chinese Officer Sword the player already has, with vanilla stats inherited.
 - Male characters can wear the dress (the Fallout wiki shows men in the vanilla dresses on the same rig), so no separate male outfit is planned; confirm in-game.
 - The look is the **Mistress** of Mysteries (there is no male counterpart in the lore). The green accent was for a visible Eye of Ra; it returns only if visible jewelry is added after 1.0.
 - **Discovery gate: the Silver Shroud costume** (item or quest stage), because it needs no vanilla edits. Players who skip that quest won't see the recipes; accepted.
 - **Eye of Ra before 1.0 is non-visible**: a worn item on the neck slot that only carries the catalyst effect, shown as the Silver Locket in the inventory (like a ring, but on the neck). Visible jewelry (cape or other) is considered after that, not before.
 - Phantom Device is cut. Staging: 0.1 = one item, 0.2 = Veil plus one more, 1.0 = release.
+
+## 0.1: Blade of Bastet
+
+- **Base:** the player converts a Chinese Officer Sword they already have (plus materials). It inherits the sword's vanilla stats: damage, speed and mods.
+- **The one change:** a modest built-in armor penetration (a share of the target's armor is ignored). Strength not yet agreed; proposed 15% (the weakest vanilla anchor, Rifleman rank 1), leaving the vanilla 30% legendary "Penetrating" as the clearly stronger option.
+- Keeps the sword's workbench mods and the open legendary slot.
+- Later, with Eye of Ra: proposed amplification to 30%, the same as the vanilla legendary.
 
 ## References (not decisions)
 
