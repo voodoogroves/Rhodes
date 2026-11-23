@@ -12,7 +12,7 @@ The personal side draws on the Seven Wonders of the Ancient World. A name is pic
 |---|---|
 | **Rhodes** (this repo) | The harbor. Hub and base for the work surface. Common scripts and anything that applies across projects live here. Brainstorming lives here too, in `scratch/`. |
 | **Alexandria** | Knowledge and the archive. Curated, topical (not general) memory, generated output, and archived ideas, kept in separate subdirectories (`memory/`, `output/`, `historical/`) so generated or old material is never mistaken for a source of truth. |
-| **Project repos** | One repo per produced project. They dock to Rhodes and hold the work itself. They contain only what is true: no speculation. Current: `fo4-pax`, `fo4-regalia-of-mystery`. |
+| **Project repos** | One repo per produced project. They dock to Rhodes and hold the work itself. They hold specs and work that are ready to build from, kept true as we learn. Current: `fo4-pax`, `fo4-regalia-of-mystery`. |
 
 All repos are under the GitHub account `voodoogroves`.
 
@@ -22,9 +22,13 @@ Ideas start as `scratch/<idea>/` in Rhodes, one folder or file per idea. It is n
 
 ## How work flows
 
-- **Rhodes is the real work space.** Drafts, plans and speculation live here in `scratch/` until they are settled.
-- **Project repos only hold what is true.** A spec is published to its project repo once it is verified. If testing shows a spec is wrong, the spec is updated so it is true again.
-- **Alexandria is for keeping.** Ideas that are shelved or superseded are archived to `historical/` (and finished knowledge goes to `memory/`), so they can be found later. Scratch folders in Rhodes are archived there when retired, not just deleted.
+Organised by confidence:
+
+1. **Brainstorming and fleshing out a concept: Rhodes** (`scratch/`).
+2. **Ready to the point we might write code: the project repo.** The spec lives there, open items allowed. If we drift or learn something, update the spec in the project so it stays true.
+3. **Old or no longer relevant: Alexandria** (`historical/<project>/`; finished knowledge in `memory/`). We may purge from Alexandria later. Retired scratch is archived there, not just deleted.
+
+This keeps the work surface and the working projects clean.
 
 ## Branches
 
