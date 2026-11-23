@@ -8,7 +8,9 @@ Convert a Chinese Officer Sword the player already owns into the Blade of Bastet
 
 ## Plugin
 
-- One light plugin (`.esl`), no scripts, no archives, no vanilla record overrides. **Name: to decide** (the brainstorm used `OrderOfMysteries.esl`).
+- One light plugin (`.esl`), no scripts, no archives, no vanilla record overrides.
+- **Filename: `RegaliaOfMystery.esl`** (decided). It must not change once saves exist, so it covers the whole set, not just the Blade. The public title (e.g. on Nexus) can differ.
+- **EditorID prefix: `MoM_`** (decided), used on every new record.
 - **Master dependencies:** `Fallout4.esm` only for 0.1. No DLC asset is used.
 
 ## Base record
@@ -68,4 +70,4 @@ Why this over copying the OMOD: the vanilla legendary OMOD occupies `ap_Legendar
 
 ## Open items
 
-- Plugin name; workbench and category; materials and perk gates; Silver Shroud stage number and which costume item; the damage/template tracing.
+- Workbench and category; materials and perk gates; Silver Shroud stage number and which costume item; the damage/template tracing.
