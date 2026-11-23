@@ -56,6 +56,11 @@ Each stage must be useful and installable on its own.
 
 None for now.
 
+## References (not decisions)
+
+- **Cape body colour:** the Institute division-head uniform green (`Materials\Clothes\InstituteUniform\InstUniformMDH_green.BGSM` / `FDH`), a medium leaf green (about rgb 83,132,88 where green). Reference only. A material swap replaces the whole texture, and the cape's texture layout (UVs) differs from the uniform's, so the real result must be checked in-game before we commit to it.
+- **Cape and brooch:** the Maxson cape (`FCapeMaxon.nif` / `MCapeMaxon.nif`) uses one material and one texture holding the red cloth and the dark metal clasp plates together. A swap cannot change the clasp or symbol on its own.
+
 ## Out of scope (for now)
 
 Phantom Device (cut), custom art, new quests or voice, FO76 upgrade tiers, scripted effects, compatibility patches for specific overhauls.
