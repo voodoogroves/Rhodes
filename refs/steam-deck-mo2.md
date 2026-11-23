@@ -103,6 +103,19 @@ cd ~/Games/mo2-lint/tools/xEdit-4.1.5f && cp xFOEdit64.exe FO4Edit64.exe
 - xEdit creates `FO4Edit Cache` and `FO4Edit Backups` folders inside the game's `Data` folder. Normal.
 - To debug a crash, set the game's launch options to `PROTON_LOG=1 %command%`; the log lands at `~/steam-377160.log` and is overwritten each launch. Remove it afterwards (it is large and slows things).
 
+**Running xEdit scripts without clicking (verified 2026-11-23).** xEdit can apply a script on startup from MO2's executable Arguments. The reusable tool is `scripts/xedit/Lookup.pas` in this repo: edit `~/Games/mo2-lint/tools/our-scripts/requests.txt` (`id`, `edid`, `list`, `file` lines; see the script header), set the `FO4EDIT` executable's Arguments to:
+
+```
+-autoload -autoexit -script:"Z:\home\deck\Repos\Rhodes\scripts\xedit\Lookup.pas" -R:"Z:\home\deck\Games\mo2-lint\tools\our-scripts\xe.log" Fallout4.esm
+```
+
+Run it from MO2, click OK on the module list (it still appears) and the "Not implemented" box, and read `our-scripts/out.txt`. It takes seconds after loading.
+
+- **Use home paths (`Z:\home\deck\...`) for everything.** xEdit runs inside Proton and cannot see `/tmp`; it will say "Could not open script" for a `/tmp` path. An assistant's shell in the VS Code Flatpak has a private `/tmp` too.
+- After editing Arguments, re-open the gear to confirm it saved; a stale old line cost a retry.
+- **Do not launch xEdit by running `proton run` from a shell.** It fails (no display authorisation) and rewrites Proton runtime files in the game's prefix.
+- Reference ids are in Alexandria `memory/fo4-xedit-reference.md`.
+
 Add it to MO2 (a GUI step; don't edit `ModOrganizer.ini` while MO2 is running): gear icon (Edit executables) → **+ → Add from file…** → `~/Games/mo2-lint/tools/xEdit-4.1.5f/FO4Edit64.exe`. Title `FO4Edit`. Run it from MO2 so it sees the virtual `Data` folder. Output files land in MO2's `overwrite` folder.
 
 ## Unmanaged mods
