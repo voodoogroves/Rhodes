@@ -53,7 +53,7 @@ Each stage must be useful and installable on its own.
 ## Open questions (we need to agree on these)
 
 1. **Discovery gate.** Proposal: keep the Silver Shroud costume. A masked pulp vigilante is the nearest FO4 match to a mysterious order, and gating recipes on an existing item or quest needs no vanilla edits. Placing a new item in the world would require editing a vanilla cell or leveled list, which breaks the no-overrides rule. Cost: players who skip that quest never see the recipes. Agree?
-2. **Male characters.** Garb is the Mistress look. A male character still has to see something, not an invisible body. Proposal: a plain tuxedo fallback, treated as a fallback and not a design focus. Agree?
+2. **Male characters.** Nothing I know of stops a male character equipping the dress; what matters is which model the outfit supplies for male bodies. A dress skinned for the female body may clip or look wrong on a male one (untested). Proposal: try the dress on a male character in-game early; if it looks bad, supply a plain tuxedo fallback. Either way the Mistress look is the design. Agree?
 
 ## Out of scope (for now)
 
