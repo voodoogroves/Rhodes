@@ -80,7 +80,7 @@ About 14 components plus the sword, in line with vanilla sword mods (the Shock m
 
 **Workbench: Chemistry Station** (see below).
 
-**Workbench: Chemistry Station (keyword `WorkbenchChemlab`).** Verified: in Fallout4.esm, the DLC and the installed Creation Club files, the 20 recipes that create a weapon item (mines and grenades) all use this station; the weapon and armor workbenches are built around mods, not new items. The recipe's category/filter keyword is *to verify*.
+**Workbench: Chemistry Station (keyword `WorkbenchChemlab`).** Verified: in Fallout4.esm, the DLC and the installed Creation Club files, the 20 recipes that create a weapon item (mines and grenades) all use this station; the weapon and armor workbenches are built around mods, not new items. **Category keyword: `RecipeUtility`** (Verified). The Chemistry Station recipes use six categories: `RecipeDrug` (14), `RecipeHealing` (12), `RecipePoison` (9), `RecipeGrenade` (7), `RecipeMines` (5), `RecipeUtility` (2). Weapons there are only grenades and mines; no category fits a melee weapon, and Utility is the catch-all (its recipes are Cutting Fluid, Vegetable Starch and Reactor Coolant). A brand-new category keyword is not recommended: I could not confirm the menu would show it.
 
 **Discovery gate:**
 - Quest `MS04` = `QUST 00027556`. The brainstorm's stage `20` does not exist. Stages that do exist (from the quest's log text): `25` Kent's call, `100` Kent wants a costume from Hubris Comics, `200` found the costume, `390` refused to be the Shroud, `400` agreed to be the Shroud (wear the costume, patrol), `410`-`1360` the missions, `1400` Sinjin dealt with, `1425` the Silver Shroud story wrapped up.
@@ -93,7 +93,13 @@ About 14 components plus the sword, in line with vanilla sword mods (the Shock m
 
 ## Instructions item
 
-A holotape (or similar) explaining the conversion. It cannot be placed in the world or given by a script without editing vanilla records or using Papyrus, so the likely route is a craftable item shown with the recipes once discovered. *To verify:* the holotape/note record type that shows text without a script (probably a note that opens a terminal), and that it can be crafted at the same station.
+**What a holotape can be (Verified, xEdit definitions and the game's `NOTE` records):** a note has a type, either `Sound`, `Voice`, `Program` or `Terminal`. A text holotape is the **Terminal** type: its record points at a `TERM` (terminal) record that holds the text. Vanilla has such holotapes with no script (e.g. `InstM03OberlyHolotape`), including a Silver Shroud one (`MS04_CollectibleSilverShroudTVScript`). So a text holotape needs two new records (`NOTE` + `TERM`) and no Papyrus.
+
+**Getting it to the player without editing vanilla:** it cannot be placed in the world or given by a script, so it would have to be a craftable item shown with the recipes.
+
+**Proposed for 0.1:** put the instructions in the Blade's own description text (`DESC`), which should show in the crafting menu. That is the cheapest option: no extra records. Add the craftable Terminal holotape later if a longer explanation is wanted.
+
+*To verify:* that the item description shows in the Chemistry Station crafting menu; and (only for the later holotape) that a recipe can create a `NOTE` and that it opens its terminal from the inventory.
 
 ## Known errors in the Gemini brainstorm that this spec corrects
 
@@ -109,4 +115,4 @@ A holotape (or similar) explaining the conversion. It cannot be placed in the wo
 
 ## Open items
 
-- instructions item (holotape) mechanism; recipe category keyword; materials and perk gates; gate behaviour (`GetStage >= 390`) tested in-game; the damage/template tracing.
+- Component and perk FormIDs (read in xEdit); in-game tests listed above, including `GetStage >= 390` behaviour and the item description in the crafting menu; tracing the sword's base damage; whether the copy's default mod list reuses the vanilla "No Upgrade" mod.
