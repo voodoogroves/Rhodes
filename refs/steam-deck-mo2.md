@@ -142,6 +142,7 @@ MO2 rewrites `ModOrganizer.ini` when it exits, so edit it only with MO2 **closed
 - **A clean Test profile plus a prepared save** (level 20, the perks needed, a few of the item under test) makes every test start from the same state. Local saves are on, so saves stay in the profile.
 - **Console:** needs a keyboard (Bluetooth works); the tilde key opens it. The cheat terminal holotape is easier on a controller for god mode and spawning. Console text is small and `getav` readouts were unreliable here, so prefer a measure that needs no reading, such as counting swings to kill, or attach a screenshot to chat for the assistant to read.
 - **Record stats do not always match spawned actors** (templates, level scaling). Check against the game, not just the xEdit record.
+- **Set difficulty to Normal and keep it fixed when measuring damage.** Difficulty scales the damage you deal (the Very Hard Protectron runs made absolute inferences such as target HP unreliable; ratios between weapons stay valid). A damage-numbers mod (Floating Damage, an F4SE mod on Nexus) beats counting swings, but check its game-version support first.
 - For a before/after test of an effect, use a throwaway "TEST" plugin variant (different plugin name, editor IDs and item name) so the real plugin stays untouched; untick it afterwards.
 
 ## Unmanaged mods
