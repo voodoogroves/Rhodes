@@ -8,6 +8,9 @@
     id   <hex FormID>     dump one record, e.g.  id 00147BE4
     edid <SIG> <EditorID> dump one record by EditorID, e.g.  edid PERK Blacksmith02
     list <SIG>            one line per record in that group: FormID, EditorID, name
+    grepall <SIG> <text>  like grep, but searches every loaded file (tick DLCs in the module list first)
+    grep <SIG> <text>     full dump of every record in that group whose dump contains <text> (case-insensitive),
+                          e.g.  grep OMOD ArmorPenetration   (can be big for common text)
     npcstats              one line per NPC_ that has a Health or DamageResist property:
                           FormID | EditorID | name | HP | DR | energy resist | level
 
@@ -38,14 +41,15 @@ end;
 
 function Initialize: integer;
 var
-  req, out: TStringList;
-  i, j, k, p: integer;
+  req, out, tmp: TStringList;
+  i, j, k, p, fi: integer;
   line, cmd, rest, sig, key, av, hp, dr, er: string;
   f, g, r, pr, pp: IInterface;
 begin
   Result := 0;
   req := TStringList.Create;
   out := TStringList.Create;
+  tmp := TStringList.Create;
   try
     req.LoadFromFile(IO_DIR + 'requests.txt');
     f := FileByIndex(0);
@@ -83,6 +87,39 @@ begin
               r := ElementByIndex(g, j);
               out.Add(IntToHex(FormID(r), 8) + '  ' + Name(r));
             end;
+        end else if cmd = 'grep' then begin
+          p := Pos(' ', rest);
+          sig := Copy(rest, 1, p - 1);
+          key := LowerCase(Trim(Copy(rest, p + 1, 500)));
+          g := GroupBySignature(f, sig);
+          if not Assigned(g) then out.Add('NO GROUP ' + sig)
+          else
+            for j := 0 to ElementCount(g) - 1 do begin
+              r := ElementByIndex(g, j);
+              tmp.Clear;
+              Dump(r, '', tmp);
+              if Pos(key, LowerCase(tmp.Text)) > 0 then begin
+                out.Add('----- ' + IntToHex(FormID(r), 8) + '  ' + Name(r));
+                out.AddStrings(tmp);
+              end;
+            end;
+        end else if cmd = 'grepall' then begin
+          p := Pos(' ', rest);
+          sig := Copy(rest, 1, p - 1);
+          key := LowerCase(Trim(Copy(rest, p + 1, 500)));
+          for fi := 0 to FileCount - 1 do begin
+            g := GroupBySignature(FileByIndex(fi), sig);
+            if Assigned(g) then
+              for j := 0 to ElementCount(g) - 1 do begin
+                r := ElementByIndex(g, j);
+                tmp.Clear;
+                Dump(r, '', tmp);
+                if Pos(key, LowerCase(tmp.Text)) > 0 then begin
+                  out.Add('----- [' + GetFileName(FileByIndex(fi)) + '] ' + IntToHex(FormID(r), 8) + '  ' + Name(r));
+                  out.AddStrings(tmp);
+                end;
+              end;
+          end;
         end else if cmd = 'npcstats' then begin
           g := GroupBySignature(f, 'NPC_');
           if not Assigned(g) then out.Add('NO GROUP NPC_')
@@ -113,6 +150,7 @@ begin
   finally
     req.Free;
     out.Free;
+    tmp.Free;
   end;
 end;
 
