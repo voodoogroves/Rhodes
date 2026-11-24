@@ -148,6 +148,16 @@ MO2 rewrites `ModOrganizer.ini` when it exits, so edit it only with MO2 **closed
 - **Set difficulty to Normal and keep it fixed when measuring damage.** Difficulty scales the damage you deal (the Very Hard Protectron runs made absolute inferences such as target HP unreliable; ratios between weapons stay valid). A damage-numbers mod (Floating Damage, an F4SE mod on Nexus) beats counting swings, but check its game-version support first.
 - For a before/after test of an effect, use a throwaway "TEST" plugin variant (different plugin name, editor IDs and item name) so the real plugin stays untouched; untick it afterwards.
 
+## The round-by-round workflow (settled 2026-11-24)
+
+How a build or lookup round runs on the Deck, so each round costs the person as few steps as possible:
+
+1. **Claude writes the script or the request file, then asks for MO2 to be closed** only when an `ModOrganizer.ini` edit is needed. Claude backs the ini up (`ModOrganizer.ini.bak-<date><letter>`), changes the one line (`5\arguments=` is the BUILD entry, 7 is the lookup entry) with `sed`, and shows the diff.
+2. **Lookups:** Claude edits `our-scripts/requests.txt` (keep the old one in `old/`). The person runs the lookup entry, clicks OK on the module list (ticking whatever the request needs: DLC, `cc*.esl`) and the "Not implemented" box, and says "done". Claude checks `out.txt`'s timestamp against the request time, then reads it.
+3. **Builds:** the person runs the BUILD entry, types the plugin name, closes xEdit and accepts the save prompt. Run once per plugin name (the filename box refuses an existing one); a new test is a new name. Claude checks `build.log` and the saved `.esp` (timestamps, master, record names) before reading the log's values.
+4. **In game:** Claude gives console commands in fenced code blocks, one per paste target (the console accepts a paste and the editor shows a copy button). The person reports numbers or screenshots.
+5. **Commit as you go:** results into the project spec, a short checkpoint in Rhodes, general mechanics into Alexandria `memory/fo4-modding-mechanics.md`; PR and merge each, then fast-forward the working branch.
+
 ## Unmanaged mods
 
 MO2 lists plugins in the game's `Data` folder that aren't in a mod folder as "Unmanaged". On this Deck that's about 85 plugins:
