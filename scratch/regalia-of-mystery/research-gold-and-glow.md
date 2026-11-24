@@ -47,18 +47,30 @@ Two separate things; people conflate them.
 
 **Effect mesh (a halo or aura).** A separate shape with a BSEffectShaderProperty and a `.bgem` material, as plasma and fire weapons do. Reference mods to open in NifSkope: a Plasma Sword mod, a glowing power-fist mod, a Shishkebab glow thread. Not researched further; only if the sheen isn't enough.
 
+## What the sword's own files say (read from the vanilla archives, 2026-11-24)
+
+Extracted with `baunpack` (see `refs/fo4-archives.md`). These replace guesses.
+
+- **The plain blade** `meshes/weapons/chineseofficersword/blade.nif` (and `_1`, the first-person copy) uses one material: `Materials\Weapons\ChineseOfficerSword\ChineseOfficerSword01A.BGSM`. **That exact path is the swap's Original Material.** The serrated blade uses `...\Serrated.BGSM`; the shock variants add `Weapons\RocketHammer\Mod_Stunpack.BGSM` (the stun pack component, a normal material, not a glow).
+- **Not palette based.** No sword material lists a greyscale (palette) texture; each is just diffuse, normal and specular maps plus a cubemap plus the template `template/WeaponMetalTemplate_Wet.bgsm`. **The palette/index route is out for this sword.** Gold has to come from a new diffuse texture (as in the 44 Gold Magnum mod), or from a cubemap trick below.
+- **The hilt mesh** (`chineseofficersword01.nif`) uses *both* `...01A` and `...01B`. 01A and 01B are identical except the cubemap: 01A uses `mipblur_DefaultOutside1.dds` (neutral), 01B uses `Shared/Cubemaps/Bronze_e.dds` (bronze). Both use the same textures `ChineseOfficerSword01_d/n/s.dds` (the blade and hilt share one texture set). So a swap on 01A inside a blade-only mesh leaves the hilt alone.
+- **Cubemap idea (unverified, cheap).** A swap from 01A to 01B tints the blade's reflections bronze with no new textures; and vanilla has more warm cubemaps (`metalbrushedbronze01cube_e`, `mipblur_outsidebronze`) and a gold-ish one is plausible. Reflection tint is not a gold diffuse, so it may read as bronze steel, not gold. Worth one in-game test since 01B already exists.
+- **Vanilla gold materials exist** (e.g. `vault111/v111ducts02gold`, `props/gildedgrasshopper`, `cryogun/cryogunbrass`), but each uses its own textures laid out for another mesh, so swapping one onto the sword puts the wrong texture on the sword's UVs. They show what a gold material file looks like; they are not drop-in.
+- **No vanilla glow on this sword.** The shock blade is geometry plus normal materials, with no effect shader and no emissive on the strings I read. So there is no in-sword example to copy; glow stays the `.bgsm` emittance / `.bgem` overlay work described above.
+- **Our current Blade** uses the serrated blade model, so its blade material is `Serrated.BGSM`; if the build session moves to the plain blade (the mundane Blade idea), the target is `01A`.
+
 ## Suggested path for the build session
 
-1. Find the blade's `.bgsm` (name from NifSkope or the NIF) and check whether it has a Greyscale (palette) texture.
-2. Look for a vanilla gold via `Weapon_Material_Default` and its siblings (xEdit).
-3. Otherwise make a gold copy of the `.bgsm`, with emittance on and a modest gold multiplier.
+1. ~~Find the blade's `.bgsm`; check for a palette.~~ Done: `ChineseOfficerSword01A.BGSM`, not palette based.
+2. Test the cheap trick first: swap 01A to the existing 01B (bronze cubemap) via an MSWP, in game. Also look at `Weapon_Material_Default` and its siblings (xEdit) for an existing gold.
+3. For a real gold: paint a gold diffuse (`ChineseOfficerSword01_d.dds` is shared by blade and hilt; save our own copy), write a small `.bgsm` that points at it with the same template, and swap to that. Emittance on that `.bgsm` adds the glow. The `.bgsm` is ~450 bytes; the `.bgsm` question is how to write it (script, or the Material Editor under Proton).
 4. Create the MSWP; add it to our OMOD with `pwMaterialSwaps` **ADD**; verify in game.
 5. Consider the real light only after the sheen is judged.
 
 ## Open checks
 
-- Is the blade material palette based? What is its `.bgsm` file name?
-- Does a vanilla gold material exist (point 2)?
+- ~~Is the blade material palette based?~~ No (see above).
+- Does the 01A to 01B swap look gold enough in game?
 - Does the sword NIF already have an AddOnNode?
 - **Tooling on the Deck is unresolved.** The sources all assume a `.bgsm` editor. The one named is the Fallout 4 Material Editor by ousnius (a Windows tool; a Nexus mod) *(unverified; I haven't confirmed it runs under Proton or MO2 here)*. The Creation Kit also has a material editor of some kind *(unverified)*. `.bgsm` is a binary format, documented at https://www.fo4docs.org/File%20Formats/Assets/Textures%20and%20Materials/ , so a script could read or write it if no editor runs. If xEdit can reach everything except the `.bgsm` contents themselves (the MSWP, OMOD and records are all xEdit work), the editor is only needed for the material file.
 - Is the blade's gray range separate from the guard and grip (so a gold palette can recolor only the blade)? Read the sword's diffuse map.
