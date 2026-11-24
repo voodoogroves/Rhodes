@@ -163,7 +163,7 @@ How a build or lookup round runs on the Deck, so each round costs the person as 
 - Make a folder under `mods/` (e.g. `mods/Blade of Bastet Art/` with `Textures/` and `Materials/` inside, plus a tiny `meta.ini`), and add `+<mod name>` to the profile's `modlist.txt` (CRLF line endings) with MO2 **closed**. Back both files up first.
 - Loose files need, in the profile's `fallout4custom.ini` (profile ini files must be on: `LocalSettings=true` in `settings.ini`): `[Archive]`, `bInvalidateOlderFiles=1`, `sResourceDataDirsFinal=` (empty). Vanilla has `sResourceDataDirsFinal=STRINGS\`, which stops loose textures and materials loading. This worked in game on 2026-11-24.
 - Never put a generated file under a vanilla path; use your own folder name so nothing vanilla is overwritten.
-- Art derived from Bethesda's textures stays out of the (public) repos; commit the script that makes it.
+- Art derived from Bethesda's textures stays out of the (public) repos; commit the script that makes it. Every repo has a `.gitignore` for assets (Creation Kit licence: modding use only; a public repo allows broader use; see `decisions.md`, 2026-11-24).
 - **Sequence mistake to avoid (2026-11-24):** if Claude has to re-point the BUILD entry, it needs MO2 closed first; running the BUILD entry before the re-point runs the *previous* script (it produced a mislabeled duplicate plugin once). Claude says "do not run it until I tell you it is re-pointed".
 
 ## Unmanaged mods
