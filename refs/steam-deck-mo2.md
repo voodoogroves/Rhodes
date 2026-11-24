@@ -158,6 +158,14 @@ How a build or lookup round runs on the Deck, so each round costs the person as 
 4. **In game:** Claude gives console commands in fenced code blocks, one per paste target (the console accepts a paste and the editor shows a copy button). The person reports numbers or screenshots.
 5. **Commit as you go:** results into the project spec, a short checkpoint in Rhodes, general mechanics into Alexandria `memory/fo4-modding-mechanics.md`; PR and merge each, then fast-forward the working branch.
 
+## Adding loose files (textures, materials) as an MO2 mod (verified 2026-11-24)
+
+- Make a folder under `mods/` (e.g. `mods/Blade of Bastet Art/` with `Textures/` and `Materials/` inside, plus a tiny `meta.ini`), and add `+<mod name>` to the profile's `modlist.txt` (CRLF line endings) with MO2 **closed**. Back both files up first.
+- Loose files need, in the profile's `fallout4custom.ini` (profile ini files must be on: `LocalSettings=true` in `settings.ini`): `[Archive]`, `bInvalidateOlderFiles=1`, `sResourceDataDirsFinal=` (empty). Vanilla has `sResourceDataDirsFinal=STRINGS\`, which stops loose textures and materials loading. This worked in game on 2026-11-24.
+- Never put a generated file under a vanilla path; use your own folder name so nothing vanilla is overwritten.
+- Art derived from Bethesda's textures stays out of the (public) repos; commit the script that makes it.
+- **Sequence mistake to avoid (2026-11-24):** if Claude has to re-point the BUILD entry, it needs MO2 closed first; running the BUILD entry before the re-point runs the *previous* script (it produced a mislabeled duplicate plugin once). Claude says "do not run it until I tell you it is re-pointed".
+
 ## Unmanaged mods
 
 MO2 lists plugins in the game's `Data` folder that aren't in a mod folder as "Unmanaged". On this Deck that's about 85 plugins:
