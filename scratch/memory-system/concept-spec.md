@@ -1,6 +1,6 @@
 # Concept spec: tiered, topical memory with context prep (2026-11-25)
 
-Status: **concept, not built.** Drafted from a brainstorm with Chris. Open items are at the bottom; nothing here is logged in `decisions.md`.
+**Superseded by [`docs/memory-system.md`](../../docs/memory-system.md).** Status when written: **concept, not built.** Drafted from a brainstorm with Chris. Open items are at the bottom; nothing here is logged in `decisions.md`.
 
 ## Problem
 
