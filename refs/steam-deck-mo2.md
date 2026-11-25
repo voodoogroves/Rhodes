@@ -158,6 +158,11 @@ How a build or lookup round runs on the Deck, so each round costs the person as 
 4. **In game:** Claude gives console commands in fenced code blocks, one per paste target (the console accepts a paste and the editor shows a copy button). The person reports numbers or screenshots.
 5. **Commit as you go:** results into the project spec, a short checkpoint in Rhodes, general mechanics into Alexandria `memory/fo4-modding-mechanics.md`; PR and merge each, then fast-forward the working branch.
 
+**Learned 2026-11-25:**
+- **MO2 left open during an ini edit writes its old value back**, and the next BUILD silently runs the previous script. `pgrep`/`ps` cannot see MO2, so wait for the person to say it is closed, and have them check the xEdit line **Applying script "<name>"**.
+- Editing the **contents** of the script the BUILD entry already points at needs no ini change and no MO2 restart.
+- Creation Club content downloaded through MO2 lands in the instance's `overwrite` folder; xEdit loaded only the `cc*` files in the real `Data` folder. `scripts/esp/esp.py` reads any plugin directly.
+
 ## Adding loose files (textures, materials) as an MO2 mod (verified 2026-11-24)
 
 - Make a folder under `mods/` (e.g. `mods/Blade of Bastet Art/` with `Textures/` and `Materials/` inside, plus a tiny `meta.ini`), and add `+<mod name>` to the profile's `modlist.txt` (CRLF line endings) with MO2 **closed**. Back both files up first.
