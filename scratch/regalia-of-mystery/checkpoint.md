@@ -39,3 +39,5 @@
 **Then:** add the quest and perk gates (`GetStage(MS04) >= 390`, `Blacksmith02`), flag the plugin ESL, item specs for Eye of Ra, Veil, Garb, Voice of Set.
 
 **Checked:** `~/Repos/CLAUDE.md` (a symlink into Rhodes) does load when Claude starts from `~/Repos`.
+
+**Broken forms VERIFIED in game (2026-11-24, `RegaliaBroken2`, `build/xedit/BuildBroken2.pas`; needs Gold1, Garb2, Veil1):** Tattered Dress (faded chevrons and grime, from `make_dress.py --tattered`, underarmor slots, unscrappable), Broken Veil of Secrets (our ARMO copy of the Surgical Mask), repair recipes at the Chemistry Station: Garb = Cryptos + Armorer 3, Veil = Cryptos + Chemist 3. Ingredient counts are my guesses (Cloth 6/Adhesive 2/Silver 1 and Cloth 3/Adhesive 2/Silver 2). Next: Voice of Set design, then the real merged plugin; placement still parked.
