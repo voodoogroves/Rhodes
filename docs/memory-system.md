@@ -1,6 +1,6 @@
 # Build spec: tiered, topical memory with context prep
 
-State as of **2026-11-25**. Replaces `scratch/memory-system/concept-spec.md`.
+State as of **2026-11-25**. Replaces the concept spec (Alexandria `historical/memory-system/`).
 
 ## 1. Purpose
 
@@ -153,6 +153,4 @@ Vector search, auto-capture, cross-repo sync, a `/prep` skill, hooks, one skill 
 
 ## 12. Open
 
-- First mining pass, including the build session transcripts.
 - A `CLAUDE.md` header for `fo4-pax` when work starts there.
-- Other lookups: magazine anatomy, hazard and gas mechanism, disease system (`scratch/fo4-magazines.md`).

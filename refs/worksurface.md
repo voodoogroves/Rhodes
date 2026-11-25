@@ -52,6 +52,12 @@ This keeps the work surface and the working projects clean.
 
 Role: local Fallout 4 dev and testing, with Mod Organizer 2 (MO2). Setup is in progress. The owner may want help with MO2.
 
+## Working habits
+
+- One session builds a mod. Research sessions stay read-only and pass notes or a handoff to it.
+- Put all open questions in one place; do not split them between a document and chat.
+- `gh` is at `~/.local/bin/gh`, which is not on PATH in an assistant's shell.
+
 ## Projects
 
 - **fo4-pax**: personal Fallout 4 mod project.
