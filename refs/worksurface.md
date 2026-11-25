@@ -1,6 +1,6 @@
 # Work surface
 
-Orientation for any assistant starting cold, on any machine (chat, iPad, Mac, Steam Deck). Everything here was stated by the owner or is in `decisions.md`. Open questions are listed at the bottom, not guessed at.
+Orientation for any assistant starting cold, on any machine (chat, iPad, Mac, Steam Deck). Everything here was stated by the owner or is in `docs/decisions.md`. Open questions are listed at the bottom, not guessed at.
 
 ## Naming
 
@@ -30,6 +30,10 @@ Organised by confidence:
 
 This keeps the work surface and the working projects clean.
 
+## Repo layout
+
+`README.md` and `CLAUDE.md` at the root; specs, decisions, notes and working docs in `docs/`. Details: `docs/memory-system.md`.
+
 ## Branches
 
 - Never commit to `main`.
@@ -53,11 +57,11 @@ Role: local Fallout 4 dev and testing, with Mod Organizer 2 (MO2). Setup is in p
 - **fo4-pax**: personal Fallout 4 mod project.
 - **fo4-regalia-of-mystery**: another Fallout 4 idea.
 
-Where each project's plans and specs live (project repo vs Rhodes) is undecided.
+A project's specs live in its repo, in `docs/`.
 
 ## Open questions
 
-- Issues vs a Project board for tracking (undecided, see `decisions.md`).
+- Issues vs a Project board for tracking (undecided, see `docs/decisions.md`).
 - Ground rules: still being defined. Do not invent more.
 - Alexandria's exact structure beyond `memory/`, `output/` and `historical/`.
 - Branch convention in project repos.
