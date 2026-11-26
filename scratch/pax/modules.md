@@ -359,6 +359,27 @@ Proposed stats, unconfirmed:
 - Then: compile a trivial script, test a stat change from script, detection test for overclocks, Stagger Compensation end to end.
 - Still unchecked from the stat test: owned perks, health, save and reload, behaviour at 11.
 
+## Arm shield (idea, 2026-11-26; owner would like it with a big blocking shield, on the power armor left arm)
+
+### Model
+- `SupermutantArmor0_Arms` `001B3A01` (playable `00248FD3`), `Actors\Supermutant\CharacterAssets\SMArmor0_Arms.nif`; base game. The wanted part is the big plate from the mutant's right arm.
+- Both arms are one skinned shape (super mutant arm, hand and finger bones); material `Materials\actors\Supermutant\SupermutantArmor1.BGSM`. Ground model `SMArmor0_ArmsGO.nif` is unskinned; geometry not examined.
+- Work: read geometry, isolate the plate, make rigid, move to left forearm (rotate or mirror), fit, render previews. Commit the script only, never the model. No meshing tool is set up.
+- Creation Club candidates by name, not chosen: `ballisticshield.nif`, `heavyincineratorshield.nif`.
+
+### Fitting every set
+- Intended: one shield following the left forearm bone, offset measured per arm model (about five base game shapes; DLC, Creation Club and mod armor each need a look). Untested.
+
+### Slots and race (records read, nothing tested in game)
+- `PowerArmorRace` `0001D31E` has its own skeleton (`actors\PowerArmor\CharacterAssets\skeleton.nif`).
+- T-60 left arm: `AA_Power_Arm_Left`, body slot 42, primary race Human with `PowerArmorRace` additional, model `ArmorPALeftArm.nif`; visible arm from OMOD `PA_T60_LArm` (`PA_T60_LArm.nif`). Frame: slots 33, 34, 35, 60.
+- Preferred, no vanilla edits: our own wearable in a free body slot, same race pattern. Free slots not yet checked.
+- Fallback: own attach point `ap_PAX_Shield`. Child slots (misc, lining, paint) come from each set's base arm mod (`PA_T45_ArmLeft`, `PA_T51_LArm`, `PA_X01_LArm`, `PA_Raider_LArm`, `PA_T60_LArm`), so those need overriding, preferably by an xEdit patch script over the winning records, as an optional plugin. Owner has not decided.
+
+### Held tests (in game)
+- `player.getisrace PowerArmorRace` inside and outside the suit (expected 1 and 0).
+- Can an extra item be worn and seen in power armor, and does it stay through exit and re-entry?
+
 ## Open questions
 
 - Spending a real perk point: how does a new perk get offered? Adding to the vanilla perk chart may not be possible without changing the interface; a holotape or terminal would need script.
