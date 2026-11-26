@@ -364,7 +364,7 @@ Proposed stats, unconfirmed:
 ### Model
 - `SupermutantArmor0_Arms` `001B3A01` (playable `00248FD3`), `Actors\Supermutant\CharacterAssets\SMArmor0_Arms.nif`; base game. The wanted part is the big plate from the mutant's right arm.
 - Both arms are one skinned shape (super mutant arm, hand and finger bones); material `Materials\actors\Supermutant\SupermutantArmor1.BGSM`. Ground model `SMArmor0_ArmsGO.nif` is unskinned; geometry not examined.
-- Work: read geometry, isolate the plate, make rigid, move to left forearm (rotate or mirror), fit, render previews. Commit the script only, never the model. No meshing tool is set up.
+- Work: read geometry, isolate the plate, make rigid, move to left forearm (rotate or mirror), fit, render previews. Commit the script only, never the model. No meshing tool is set up (a reader and previewer exists, below).
 - Creation Club candidates by name, not chosen: `ballisticshield.nif`, `heavyincineratorshield.nif`.
 
 ### Fitting every set
@@ -375,6 +375,30 @@ Proposed stats, unconfirmed:
 - T-60 left arm: `AA_Power_Arm_Left`, body slot 42, primary race Human with `PowerArmorRace` additional, model `ArmorPALeftArm.nif`; visible arm from OMOD `PA_T60_LArm` (`PA_T60_LArm.nif`). Frame: slots 33, 34, 35, 60.
 - Preferred, no vanilla edits: our own wearable in a free body slot, same race pattern. Free slots not yet checked.
 - Fallback: own attach point `ap_PAX_Shield`. Child slots (misc, lining, paint) come from each set's base arm mod (`PA_T45_ArmLeft`, `PA_T51_LArm`, `PA_X01_LArm`, `PA_Raider_LArm`, `PA_T60_LArm`), so those need overriding, preferably by an xEdit patch script over the winning records, as an optional plugin. Owner has not decided.
+
+### Left arm connect points (read from the base game models, 2026-11-26)
+| Model (`actors\PowerArmor\CharacterAssets\Mods\`) | Parent points on root | Position |
+|---|---|---|
+| `PA_Raider_LArm.nif`, `PA_T45_LArm.nif`, `PA_X1_LArm.nif` | `p-Misc`, `p-Paint`, `p-Lining` | (-14.11, -7.33, 123.44) |
+| `PA_T51_LArm.nif` | same three | (-14.11, -7.33, 122.94) |
+| `PA_T60_LArm.nif` | same three | (-14.07, -7.33, 123.44) |
+
+- Each of the five attaches with child point `C-LArmMod` to `P-LArmMod` on the base `ArmorPALeftArm.nif`. All have the bones `LArm_ForeArm1`, `LArm_ForeArm_Armor`, `LArm_UpperArm`, `LArm_UpperArm_Armor`, `L_Pauldron`.
+- No shield or forearm accessory point on any of them; none read on the power armor skeleton either. No vanilla arm misc mod has a model. Headlamps are an example of a rigid add-on model on its own point (`c-Headlamp`).
+- Route A (looks best, untested): skin the shield fully to `LArm_ForeArm1` and let it use an existing point. No vanilla model edits; one shield may suit all sets. Unproven: that a shared point accepts an extra part; fit against each arm's bulk.
+- Route B: rigid shield on a new PAX point, edited into each set's arm model. More work and mod conflicts.
+
+### Preview reader (2026-11-26)
+- `scripts/nif/nifpreview.py` (`info`, `render`): lists loose parts, bones and connect points; draws six flat-shaded views. Previews stay outside every repo.
+- `SMArmor0_Arms.nif` splits into two parts: the right arm (456 triangles, mostly `RArm_ForeArm3_skin`) and the left (292). The big right-hand piece is plate and glove joined by position; splitting at texture seams separates them cleanly. Bare shield: `render --seams --parts 1,5,6` (289 triangles). Its inner face looks open in the middle, where the glove covered it.
+- The T-60 left arm's forearm shell is weighted to `LArm_ForeArm1` and `LArm_ForeArm_Armor`. Its stored coordinates differ from the super mutant's, so placing the plate takes the bone transforms (`placeshield.py`, below).
+- Full-size fit on T-60, standing pose (`scripts/nif/placeshield.py`, 2026-11-26): the plate is mirrored and carried from the super mutant's left forearm bone to the power armor's (bone lengths 29.8 and 27.0), keeping its offset. It sits on the outer forearm and clears torso and leg. The arm shell pokes through the middle, so it needs to move outward. Its upper end passes the elbow, close under the pauldron; bent elbow and aiming poses are not checked.
+- Adjusted (`--slide 6 --out auto`, push 7.8): no sampled point of the arm's forearm shell pokes through; the plate runs from 2.4 above the elbow to 43.4 toward the fingers (hand joint 27.0). A straight push leaves the plate standing off the arm; owner: pushed out too far.
+- Closer fit (`--slide 6 --tilt -16 --roll 5 --out auto`, push 2.6): nothing sampled shows through the outer face; the arm sits partly inside the plate's thickness. Runs 2.4 above the elbow to 41.8. Owner: sinking into the arm is fine as long as nothing protrudes through the shield.
+- Bent elbow (`--bend`, elbow only, shoulder still): at roll 5 the shield's top cuts into the upper arm and shoulder pad (15 of 289 plate triangles at 45 degrees, 42 at 90, 80 at 120). Sliding and scaling barely help; swinging round the arm does. `--slide 6 --tilt -16 --roll -40` (push 3.2): none cut in at 0 or 90, about 7 at 120. It turns the face toward the back when the arm hangs. `--roll -30` (push 2.3): clean at 90, about 24 at 120. Owner: hanging too low, too near the hand.
+- Moved toward the elbow (`--slide 0 --tilt -12 --roll -40`, push 5.0): runs 8.5 above the elbow to 36.4; none cut in at 0 or 90, about 9 at 120. Halfway option `--slide 3 --tilt -16 --roll -40` (push 4.3, 8 at 120). The arm is thicker near the elbow, so moving up needs more push.
+- Owner: height looks ok. More elbow-end tilt at the same push (5.0, slide 0, roll -40): at -12 nothing sampled shows through the front hanging or at 90, the arm only sinks into the back (at 120 the upper arm shows through by up to 1.1); at -16 the forearm comes through by up to 1.2, at -20 by 2.8, at -24 by 5.6.
+- **Chosen (owner, 2026-11-26):** T-60 placement `--slide 0 --tilt -12 --roll -40 --out 5.0` at full size, "close enough". Checked by sampled points with the elbow only bent; other sets, animations and in-game fit are open. Run: `python3 -I scripts/nif/placeshield.py <meshes> <outdir> --slide 0 --tilt -12 --roll -40 --out 5.0`.
 
 ### Held tests (in game)
 - `player.getisrace PowerArmorRace` inside and outside the suit (expected 1 and 0).
