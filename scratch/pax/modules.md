@@ -373,7 +373,7 @@ Proposed stats, unconfirmed:
 ### Slots and race (records read, nothing tested in game)
 - `PowerArmorRace` `0001D31E` has its own skeleton (`actors\PowerArmor\CharacterAssets\skeleton.nif`).
 - T-60 left arm: `AA_Power_Arm_Left`, body slot 42, primary race Human with `PowerArmorRace` additional, model `ArmorPALeftArm.nif`; visible arm from OMOD `PA_T60_LArm` (`PA_T60_LArm.nif`). Frame: slots 33, 34, 35, 60.
-- Preferred, no vanilla edits: our own wearable in a free body slot, same race pattern. Free slots not yet checked.
+- Preferred, no vanilla edits: our own wearable in a free body slot, same race pattern. Free slots checked 2026-11-26 (below).
 - Fallback: own attach point `ap_PAX_Shield`. Child slots (misc, lining, paint) come from each set's base arm mod (`PA_T45_ArmLeft`, `PA_T51_LArm`, `PA_X01_LArm`, `PA_Raider_LArm`, `PA_T60_LArm`), so those need overriding, preferably by an xEdit patch script over the winning records, as an optional plugin. Owner has not decided.
 
 ### Left arm connect points (read from the base game models, 2026-11-26)
@@ -403,6 +403,12 @@ Proposed stats, unconfirmed:
 ### Held tests (in game)
 - `player.getisrace PowerArmorRace` inside and outside the suit (expected 1 and 0).
 - Can an extra item be worn and seen in power armor, and does it stay through exit and re-entry?
+
+### Test 1: separate wearable (built 2026-11-26, not yet run)
+- Slots (plugins found in Data and the MO2 mods folder): power armor pieces use 30-39, 41-50, 52 and 60. No armor of any race uses 53, 56 or 57; the test uses 56 and 57.
+- `scratch/pax/test1/build_test1.py` writes `PAXTest1.esp` in `~/Downloads/PAX-Test1.zip`: "PAX Test A (mutant arms)" in slot 56, "PAX Test B (X-01 left arm)" in slot 57; race Human plus `PowerArmorRace`.
+- Steps: install with MO2 (Test profile, spare save). Console `help "PAX Test" 4 ARMO`, `player.additem <id> 1`, `player.equipitem <id>`. Check each outside the suit first (shows the plugin works), then in the suit: visible in third person, stays through exit and re-entry, and through save and reload. Note whether equipping works from the Pip-Boy.
+- Caveat: the super mutant model has body segments that the game may hide under worn armor; item B avoids that.
 
 ## Open questions
 
