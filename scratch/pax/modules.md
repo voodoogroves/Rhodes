@@ -309,6 +309,56 @@ Trained; needs Motion-Assist Servos installed (torso, keyword `dn_HasMisc_Str`; 
 - Owner: Hydraulic Bracers on **both arms** required; Moving Target dropped (it is a suit overclock). Ranks: +15 / +30 block, 1 perk point each, no other perk requirement.
 - Detection must confirm both arms; checking for one keyword may not distinguish two pieces (untested).
 
+## Perk point test result (2026-11-25)
+
+- Owner tested in game: adding **-1** perk points does not work.
+- Cheat Terminal as installed (author gir489, 1442 scripts checked): six `AddPerkPoints` calls (+1, 5, 10, 20, 50, 100), none negative, no read of a balance; no perk point actor value found in `Fallout4.esm` or the plugin. A Gemini claim that it reads and subtracts points is false for this version.
+- So a holotape cannot charge a point by script that way. Next: test whether a new playable perk appears in the level-up chart (game handles spending).
+
+## Perk chart and other mods (2026-11-25)
+
+- Owner does not like paying with a SPECIAL point.
+- *Traits and More Perks* (Cirosan, Beta 4, read from the download): craft an injector, use it, script runs `AddPerk`; traits via holotape; no perk point calls seen. Its readme says the standard perk chart "precludes adding new perks". The perk record checked is not Playable.
+- Vanilla `levelupmenu.swf` holds per-perk art classes named `PerkClip<formid>` and a grid view; a new perk has no clip there. How the grid is filled (game or menu) is not established.
+- Adding a section means shipping a changed `levelupmenu.swf` (derived from a game file: never commit it) and likely clashes with other menu mods. LevelUpMenuEx (F4SE) is an existing replacement chart.
+
+## LevelUpMenuEx (PRKF) read from the download, 2026-11-25 (not installed or tested)
+
+- Files: `F4SE/Plugins/PRKF.dll`, `Interface/LevelUpMenu.swf` (replaces the vanilla chart), `Scripts/PRKF/PRKF.pex` + source, MCM config, `Data/PRKF/*.ini`.
+- The DLL contains runtime `1.11.240`, matching the installed game and F4SE 0.7.9. Download name also says 1.11.240.
+- Papyrus: `PRKF:PRKF.GetPP()` returns perk points; `AddPP(int)` returns the result. Negative values untested. Also trait menu and tag skill functions.
+- Ini `[Main]`: `PerksList` (a form list of perks), `disableVanillaPerks`, `PPPerLevel`. Value format not confirmed. Menu text includes a "Non SPECIAL" group.
+- Gives two routes: perks listed in the replacement chart (game-handled spend, likely no script), or a holotape that reads and spends points.
+
+- **Owner, 2026-11-25: no F4SE.** Rules out LevelUpMenuEx as a dependency, the `UI.Invoke` / `SelectPerk` and `UI.Get` ideas, and `RegisterForControl`.
+- Owner asked whether a SPECIAL point taken as payment can be added back later (script can restore it; design open).
+
+## Perk cost mechanism (owner, 2026-11-25; replaces the perk point spend ideas above)
+
+- Taking a perk-cost augment lowers a **named** base SPECIAL by 1 per rank (story: time and study), then grants it. The player rebuys the stat with a perk point, immediately or later. No F4SE; needs a script. **Tested in game by the owner, 2026-11-25:** Endurance 4 lowered to 3 with `player.setav`, bought back in the chart, then raised to 10 (7 points). Still unchecked: owned perks, health, save and reload.
+- Floor: cannot pay with a stat at 1. Requirements are checked before paying.
+- Base Strength lost costs little in the suit (raised to 11), so avoid it as a price.
+
+Proposed stats, unconfirmed:
+
+| Augment | Stat per rank |
+|---|---|
+| Suit Intrusion | Endurance |
+| Suit Lockpick (v1, v2) | Perception |
+| Stagger Compensation | Agility |
+| Crushing Blows | Perception |
+| Roll with the Punches | Agility |
+| Servo Control | Charisma |
+| Actuator Overclock (ranks 1-4) | Endurance, Agility, Charisma, Luck |
+| Fire Suppression (on hold) | Luck |
+
+## Next session (owner request, 2026-11-25)
+
+- Owner wants to be told how to install the Creation Kit (seen on Steam) on the Deck alongside Mod Organizer 2, or whether to use a different compiler.
+- Facts so far: Steam app `1946160`; reports of running it under Proton were mixed and mostly old; Caprica is an alternative compiler that still needs the vanilla base script sources. The loose sources in the game folder looked like F4SE's set only. Back up `Data/Scripts` before installing.
+- Then: compile a trivial script, test a stat change from script, detection test for overclocks, Stagger Compensation end to end.
+- Still unchecked from the stat test: owned perks, health, save and reload, behaviour at 11.
+
 ## Open questions
 
 - Spending a real perk point: how does a new perk get offered? Adding to the vanilla perk chart may not be possible without changing the interface; a holotape or terminal would need script.
