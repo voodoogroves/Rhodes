@@ -244,6 +244,71 @@ Confirm: matching skeleton rank per rank (as shown), and whether Armorer 2 also 
 - Vanilla `mod_armor_LessStagger` `00245AFE` (Pneumatic): entry `Mod Incoming Stagger`, function **Add Value -1**. Reduction is in steps, not a percentage.
 - Explosion records offer stagger sizes (Small, Medium, Large seen in the wiki text). Whether a multiply works on this entry is unknown.
 
+## Idea source: non-power-armor mods (owner, 2026-11-25)
+
+- Rule: skip anything an existing power armor mod already does (so Sprint Efficiency is out); borrow ideas from ordinary armor mods and the like.
+- Owner: **no duplicating legendary effects**; perks or mundane armor effects only.
+- Mundane armor candidates with no base game power armor counterpart seen: Weighted (melee/unarmed ignore armor), Braced (less melee damage blocking), Stabilized (steadier scope), BioCommMesh (chems +50% duration), Strengthened (limb damage), Muffled / Sleek (stealth).
+- DLC, Creation Club and third-party mods not checked.
+
+## Augments in design: Crushing Blows and Guard Stance (owner likes both, 2026-11-25)
+
+Values read from `Fallout4.esm` (Combat armor arm linings; other families share the enchantments):
+
+- **Weighted** (`..._IgnoreArmor`): `Mod_IgnoreArmor_AV` +10 per arm piece. Perk `mod_armor_IgnoreArmorPerk` (`Mod Target Damage Resistance`, multiply 1 + AV x -0.01, conditioned on weapon type): 10% armor ignored per arm, 20% with both if the value adds.
+- **Braced** (`..._BetterBlocking`): `ArmorBlockPercent` +15 per arm piece; its enchantment also lists magnitude 25 on the same value. How they combine is not established.
+
+- **Stabilized** (`mod_armor_Combat_Lining_LimbArm_Stabilized`): `Mod_Stabilized_AV` +2 per arm; perk `mod_armor_StabilizedPerk` (`Mod Actor Scope Stability`, multiply 1 + AV x 0.01): 2% per arm by that formula.
+
+Owner rules (2026-11-25): braced, weighted and stabilized are the three under design. **One rank (one perk point) is worth about one arm's mod**, not both. Guard stance name: boxing term wanted ("Absorb Blows" floated).
+
+| Augment | Rank 1 | Rank 2 (proposed) |
+|---|---|---|
+| Crushing Blows | 10% armor ignored | 20% |
+| Guard stance (name open) | +15 block | +30 |
+| Servo Control (working name) | 2% scope stability | 4% |
+
+- Owner, 2026-11-25: Servo Control stays **faithful** to Stabilized: 2% / 4%.
+Owner, 2026-11-25, prerequisites: Roll with the Punches: Moving Target 1; Crushing Blows: Basher; Servo Control: Science! or another tech perk. Rank 2: Roll with the Punches needs Moving Target 2 (owner confirmed, level 24); Crushing Blows (Basher 2) and Servo Control (Science! 2) still to confirm.
+Owner, 2026-11-25: Servo Control (was Gyro Stabilizer) is **trained**. Crushing Blows and Roll with the Punches should be tied to perks other than Iron Fist, Big Leagues or Basher; owner is looking. Servo Control prerequisites open.
+
+## Fire Suppression Protocols (owner chose, 2026-11-25; costs a perk point; prerequisite open)
+
+- **ON HOLD (owner, 2026-11-25):** method known, ranks and prerequisite open. First set judged good; moving to the next set.
+
+- Owner: **trained**. Focus new work on trained augments, since they move with the person into any suit. No power armor function prevents being set on fire (owner), so this fills a gap.
+- Trained: perk point only.
+- **Method found (records read 2026-11-25, untested):** vanilla immunity perks do this with no script. `ImmuneToAcid` / `ImmuneToPoison`: `Mod Incoming Spell Magnitude` set 0 on a damage-type effect keyword, plus `Mod Incoming Weapon Damage` set 0. `VRWorkshopShared_ImmuneToDamagePerk` lists fire spells by ID (`FireHazard`, `FlameThrowerFireHazardSpell`, `ExplosionFireHazardSpell`, `FXEnchFireHit`, `FXEnchFireHitMolotov`, `FlamerFXEnchFireHit`, `EnchWeapMod_JunkJetFire`, `enchMod_LaserReceiver_Fire1/2`) and sets 0. `PowerArmorRadResistPerk` uses the same entry in the suit. `Mod Incoming Spell Duration` also exists.
+- Fire effects with keyword `DamageTypeFire` (`dtFireEnchFlameChance*`) can be matched by keyword; others (incendiary, flame visuals, some hazards) need listing by ID. DLC and Creation Club fire effects not scanned.
+
+- Asbestos lining (`mod_armor_RailroadSWAT_Lining_Torso_FlameResistance` checked): +15 on a resistance value and keyword `dn_HasLining_FlameResistance`.
+- In `Fallout4.esm` the only condition found on that keyword is in `FXFireHitVisuals` (condition function 682, keyword != 1). So "immune to being set on fire" may be mostly the burning visual; whether burn damage is affected is not established.
+- It checks a **worn** keyword, which a perk does not supply. Needs another method: find one before designing.
+
+## Actuator Overclock (owner, 2026-11-25; working name)
+
+**LOCKED:** raw Strength is the only gate, no level requirements (owner: plenty of mods already add Strength on top of the suit's 11).
+
+Trained; needs Motion-Assist Servos installed (torso, keyword `dn_HasMisc_Str`; detection untested). One perk point per rank; +1 Strength per rank, in power armor only.
+
+| Rank | Requires base (raw) Strength | Total bonus |
+|---|---|---|
+| 1 | 1 | +1 |
+| 2 | 4 | +2 |
+| 3 | 7 | +3 |
+| 4 | 11 | +4 |
+
+- `EnchPA_Abilities`: `PowerArmorStrengthEffect` adds 10..1 conditioned on `GetBaseValue(Strength)` = 1..10, so every suit wearer lands on 11 before other bonuses. Base 11 matches none and needs none.
+- To check: base 11 is reachable (bobblehead raising base value): `player.getbaseav strength`.
+
+- Owner, 2026-11-25: no Intelligence overclock (Strength is the one that makes sense: a character at 11 or 12 loses Strength entering the suit). Review the non-stat overclock ideas instead.
+
+## Roll with the Punches: now an overclock (owner, 2026-11-25; replaces its earlier trained design where they differ)
+
+- Needs Hydraulic Bracers installed (arms, keyword `dn_HasMisc_Unarmed`; detection untested). Up to 2 perk points; less damage when blocking.
+- Owner: Hydraulic Bracers on **both arms** required; Moving Target dropped (it is a suit overclock). Ranks: +15 / +30 block, 1 perk point each, no other perk requirement.
+- Detection must confirm both arms; checking for one keyword may not distinguish two pieces (untested).
+
 ## Open questions
 
 - Spending a real perk point: how does a new perk get offered? Adding to the vanilla perk chart may not be possible without changing the interface; a holotape or terminal would need script.
