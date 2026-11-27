@@ -32,7 +32,7 @@ State:
 - Unexplained glitch: claws stopped drawing and stacked in one slot; a game restart cleared it, not reproduced ("Claw tests, third pass").
 - Under discussion: claws built into a per-suit arm model ("Clawed arm and per-suit attachments").
 
-Next: the owner judges the whole-set picture (`raider_set.png`); then (assistant proposal) choose how the arms are delivered and prove one real model in game. The station swap failed (2026-11-27: no arm model slot offered). The upgrade was to apply to any Raider arm with Tessa's Fist keeping its ability, never taking a misc or lining slot (owner); a new crafted arm item would drop "any arm" and is not yet agreed. Claw ingredient: Kremvh's Tooth blade mod (strip tested in game). The shotgun rack takes the jetpack slot; its firing is untested.
+The scrap harness is delivered as crafted torso and leg pieces with the junk on them (owner; split and details in the notes). Next (assistant proposal): spike one crafted piece with our own model in game; confirm whether the arms follow the same pattern. The station swap failed (2026-11-27: no arm model slot offered). The upgrade was to apply to any Raider arm with Tessa's Fist keeping its ability, never taking a misc or lining slot (owner); a new crafted arm item would drop "any arm" and is not yet agreed. Claw ingredient: Kremvh's Tooth blade mod (strip tested in game). The shotgun rack takes the jetpack slot; its firing is untested.
 
 Open:
 1. Shields follow the claw research and cost rule (decided). Is there an offset or drawback?

@@ -8,11 +8,11 @@ at the folders below):
   actors/powerarmor/characterassets/{skeleton.nif, frame.nif, mods/pa_raider_*.nif}
   setdressing/signage/highwaysign01.nif, setdressing/dmndclutter/dmndstreetsign01.nif,
   vehicles/automotive/automotivehubcap01.nif, setdressing/playerhouse/playerhouse_potsfryingpan01.nif,
-  setdressing/teddybear/toyteddybeardirty01.nif
+  setdressing/teddybear/toyteddybeardirty01.nif, setdressing/flamingo/lawnflamingo02static.nif
 
 Writes harness_suit.png: a highway sign beaten to the chest, a street sign on the left thigh, a
 frying pan on the right thigh, a hubcap chained to the right calf and a teddy bear caged in
-fencing on the left calf. Model coordinates: X to the wearer's right, Y forward, Z up. Previews
+fencing on the left calf, and a lawn flamingo chained across the upper back above the fusion core. Model coordinates: X to the wearer's right, Y forward, Z up. Previews
 only: no game model is written. The pictures are
 derived from game files: keep them out of every repo.
 """
@@ -29,6 +29,11 @@ moved, box_tris, unit, cross = rack["moved"], rack["box_tris"], rack["unit"], ra
 # Preview colours (nifpreview part numbers).
 SIGN, PAN, CAP, BEAR, STREET, BAND, BOLT, CHAIN, SUIT = 1, 4, 3, 9, 7, 2, 5, 6, 10
 
+# The back's flamingo: size, middle across the back, slant (degrees, head up), colour; the box
+# over the fusion core that it and its chains keep out of (half width, top); chain runs as (x, z).
+BIRD, BIRD_X, SLANT, BIRD_COLOUR = 0.72, 6.0, 28.0, 8
+CORE_HALF, CORE_TOP = 11.0, 123.0
+CHAINS = (((-15.0, 142.0), (15.0, 125.0)), ((-13.0, 125.0), (12.0, 146.0)))
 # Each piece: colour, model, the model's own facing and up axes, then on the suit: a point inside
 # the body or leg (the piece is slid out from it to the surface), facing, up, largest size, how far
 # it sinks in, where the bolts go (fractions of half width and half height), strap heights
@@ -308,6 +313,56 @@ def wrap(piece, parts, surface):
     return out
 
 
+def flamingo(meshes, surface):
+    """A lawn flamingo slung across the upper back on a slant, head up past the wearer's right
+    shoulder, lashed on with chain. Nothing comes down over the fusion core."""
+    shape = model(meshes, "setdressing/flamingo/lawnflamingo02static")[0]
+    groups = nifpreview["loose_parts"](shape)
+    body = [t for g in groups if len(g) > 20 for t in g]          # the bird, without its stake
+    used = [shape["verts"][i] for t in body for i in t]
+    middle = [(min(v[k] for v in used) + max(v[k] for v in used)) / 2 for k in range(3)]
+    top = [v for v in used if v[2] > max(q[2] for q in used) - 4.0]
+    head = 1.0 if sum(v[1] for v in top) / len(top) > middle[1] else -1.0
+    c, n = math.cos(math.radians(SLANT)), math.sin(math.radians(SLANT))
+
+    def flat(v):                    # the bird's side view in the suit's X (toward the head) and Z
+        ahead, high = head * (v[1] - middle[1]) * BIRD, (v[2] - middle[2]) * BIRD
+        return (ahead * c - high * n, -head * (v[0] - middle[0]) * BIRD, ahead * n + high * c)
+    laid = [flat(v) for v in used]
+    # Raised until everything near the middle of the back is above the core.
+    lift = max(CORE_TOP - z for x, _, z in laid if abs(x + BIRD_X) < CORE_HALF)
+    under = [p[1] for p in surface if p[1] < -15.0
+             and any(abs(p[0] - x - BIRD_X) < 2.0 and abs(p[2] - z - lift) < 2.0 for x, _, z in laid[::6])]
+    # Rest the bird on the middle of what lies under it, not on whatever sticks out furthest.
+    under.sort()
+    depth = (under[len(under) // 2] if under else -31.0) - max(y for _, y, _ in laid) + 0.6
+
+    def world(v):
+        x, y, z = flat(v)
+        return (x + BIRD_X, y + depth, z + lift)
+    out = [(BIRD_COLOUR, moved(shape, body, world))]
+    points = [world(v) for v in used]
+    print("flamingo: x %.0f..%.0f z %.0f..%.0f; lowest near the core %.0f" % (
+        min(p[0] for p in points), max(p[0] for p in points), min(p[2] for p in points),
+        max(p[2] for p in points), min(p[2] for p in points if abs(p[0]) < CORE_HALF)))
+    for start, end in CHAINS:       # each run lies over whatever is outermost along its way
+        count = int(math.dist(start, end) / 2.3)
+        run = []
+        for i in range(count + 1):
+            x, z = (start[k] + (end[k] - start[k]) * i / count for k in (0, 1))
+            near = [p[1] for p in points + surface
+                    if p[1] < -12.0 and abs(p[0] - x) < 2.0 and abs(p[2] - z) < 2.0]
+            run.append((x, (min(near) if near else -28.0) - 0.4, z))
+        # No single link stands out on its own: each follows its neighbours.
+        ys = [sorted(q[1] for q in run[max(0, i - 2):i + 3]) for i in range(len(run))]
+        run = [(x, v[len(v) // 2], z) for (x, _, z), v in zip(run, ys)]
+        for i, (a, b) in enumerate(zip(run, run[1:])):
+            d = unit(tuple(b[k] - a[k] for k in range(3)))
+            mid = tuple((a[k] + b[k]) / 2 for k in range(3))
+            out += [(CHAIN, q) for q in link(mid, d, i % 2 == 0)]
+    return out
+
+
 def build(meshes, bones):
     """The suit's shapes and the harness's parts."""
     pa = os.path.join(meshes, "actors/powerarmor/characterassets")
@@ -330,6 +385,7 @@ def build(meshes, bones):
         junk += parts
         if piece[11]:
             junk += wrap(piece, [p for p in parts if p[0] == piece[0]], surface)
+    junk += flamingo(meshes, surface)
     return suit, junk
 
 
