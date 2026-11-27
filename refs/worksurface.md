@@ -42,6 +42,7 @@ This keeps the work surface and the working projects clean.
 - Keep the working branch fast-forwarded to `main` between pieces of work.
 - This is a shared habit, not enforced by GitHub. Nothing blocks a push to `main`, so check the branch before committing.
 - Project repos: typed working branches (`bug/`, `feature/`, etc.).
+- Across devices (Rhodes): `dev` is the one meeting point. Phone and tablet sessions branch from `dev` and open PRs into `dev`; only `dev` merges to `main`. Commit each change on one branch only. Start a session by reading the idea's `handoff.md` ([convention](../scratch/README.md)) and end it by rewriting it.
 
 ## How assistants reach the repos
 
