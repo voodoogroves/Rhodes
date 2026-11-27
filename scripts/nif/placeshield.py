@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Preview the super mutant right-arm plate on the power armor left forearm. Standard library only.
 
-  python3 -I placeshield.py MESHES OUTDIR [--scale 1.0] [--slide 0] [--out 0|auto] [--tilt 0] [--roll 0] [--bend 0]
+  python3 -I placeshield.py MESHES OUTDIR [--scale 1.0] [--slide 0] [--out 0|auto] [--tilt 0] [--roll 0] [--bend 0] [--write OUT.nif] [--mounts]
 
 MESHES is a folder holding these, extracted from "Fallout4 - Meshes.ba2" with baunpack:
   actors/supermutant/characterassets/{skeleton.nif, smarmor0_arms.nif}
@@ -16,12 +16,14 @@ plate's outer face, plus 0.3; the arm may sit inside the plate's thickness, unse
 end in); --roll swings it around the arm. --bend flexes the power armor elbow, bringing the
 hand forward; plate triangles that then cut into the upper arm, shoulder pad or body are
 counted and drawn yellow. Degrees; distances are model units. Writes arm.png (close up) and suit.png.
-A preview only: nothing is written as a game model.
+--write also saves the placed shield as a game model (see writeshield.py); never commit it.
+--mounts adds blocks joining the plate to the forearm (see mounts.py), drawn orange.
 """
 import argparse
 import math
 import os
 import runpy
+import struct
 
 nifpreview = runpy.run_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "nifpreview.py"))
 Nif, NODES = nifpreview["Nif"], nifpreview["NODES"]
@@ -200,6 +202,19 @@ def dominant(shape, i):
     return shape["bones"][max(shape["weights"][i], key=lambda w: w[1])[0]] if shape["weights"] else ""
 
 
+def vertex_uvs(nif):
+    """Texture coordinates of the first shape's vertices."""
+    i = next(i for i, b in enumerate(nif.blocks) if b[0].endswith("TriShape"))
+    _, _, p = nif.av_object(i)
+    nif.p = p + 28                                        # bounding sphere, three references
+    desc = nif._u("Q")
+    nif._u("I")
+    count = nif._u("H")
+    nif._u("I")
+    stride, at = (desc & 0xF) * 4, ((desc >> 8) & 0xF) * 4
+    return [struct.unpack_from("<2e", nif.d, nif.p + v * stride + at) for v in range(count)]
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("meshes")
@@ -211,6 +226,8 @@ def main():
     ap.add_argument("--roll", type=float, default=0.0)
     ap.add_argument("--bend", type=float, default=0.0)
     ap.add_argument("--no-render", action="store_true")
+    ap.add_argument("--write")
+    ap.add_argument("--mounts", action="store_true")
     args = ap.parse_args()
     sm = os.path.join(args.meshes, "actors/supermutant/characterassets")
     pa = os.path.join(args.meshes, "actors/powerarmor/characterassets")
@@ -224,6 +241,7 @@ def main():
     on_skeleton = {s["name"]: s for s in posed(os.path.join(sm, "smarmor0_arms.nif"), sm_bones)}
     drift = max(math.dist(a, b) for s in arms.shapes() for a, b in zip(s["verts"], on_skeleton[s["name"]]["verts"]))
     shield = on_skeleton[split[0][0]["name"]]
+    sm_verts = shield["verts"]
     triangles = [t for n in PLATE for t in split[n - 1][1]]
 
     lengths = [math.dist(to_model(b[BONE], (0, 0, 0)), to_model(b[HAND], (0, 0, 0)))
@@ -314,12 +332,68 @@ def main():
     print("bend %g: plate triangles cutting in, of %d: shoulder pad / upper arm %d, frame %d"
           % (args.bend, len(triangles), counts.get("arm piece", 0), counts.get("frame", 0)))
 
+    mounts = ((), ())
+    def into_forearm(w):
+        """A point on the posed super mutant model -> power armor forearm bone coordinates."""
+        p = to_bone(sm_bones[BONE], (-w[0], w[1], w[2]))
+        p = [centre[a] + args.scale * (p[a] - centre[a]) for a in range(3)]
+        p[0] += (lengths[1] - lengths[0]) / 2 + args.slide
+        h, u, v = flat(p)
+        dh, du = h - mid_h, u - mid_u
+        h, u = mid_h + dh * ct + du * st, mid_u - dh * st + du * ct
+        h, v = h * cr - v * sr + push, h * sr + v * cr
+        return (u, h * ny - v * nz, h * nz + v * ny)
+
+    if args.mounts:
+        source = Nif(os.path.join(sm, "smarmor0_arms.nif"))
+        uvs = vertex_uvs(source)
+        arm_local = [tuple(to_bone(pa_bones[BONE], s["verts"][i]) for i in t) for _, (s, tris) in arm
+                     for t in tris if all(dominant(s, i).startswith("LArm_ForeArm") for i in t)]
+        plate_local = [tuple(into_forearm(sm_verts[i]) for i in t) for t in triangles]
+        middle_now = [sum(p[a] for t in plate_local for p in t) for a in (1, 2)]
+        toward = [c / math.hypot(*middle_now) for c in middle_now]
+        builder = runpy.run_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "mounts.py"))
+        mounts = builder["build"](arm_local, plate_local, [tuple(uvs[i] for i in t) for t in triangles], toward)
+        print("mounts: %d triangles" % len(mounts[1]))
+        spots = []
+        for tri in mounts[1]:
+            a, b, c = (flat(mounts[0][i][0]) for i in tri)
+            spots += [tuple(a[n] + (b[n] - a[n]) * j / 4 + (c[n] - a[n]) * k / 4 for n in range(3))
+                      for j in range(5) for k in range(5 - j)]
+        front = poke(spots, [tuple(flat(q) for q in t) for t in plate_local])
+        print("mounts: %d of %d points under the plate stick out through the front (worst %.2f)"
+              % (front[0], front[1], front[2]))
+    mount_shape = {"verts": [to_model(pa_bones[BONE], v[0]) for v in mounts[0]], "tris": mounts[1],
+                   "weights": [], "bones": []}
+
+    if args.write:
+        def direction(i, d):
+            # The posed model differs from the stored one by a shift only, so directions match.
+            w = sm_verts[i]
+            a, b = into_forearm(w), into_forearm([w[k] + d[k] for k in range(3)])
+            size = math.dist(a, b)
+            return tuple((b[k] - a[k]) / size for k in range(3))
+
+        error = max(math.dist(to_model(pa_bones[BONE], into_forearm(sm_verts[i])), shield["verts"][i])
+                    for i in placed)
+        print("model check: largest difference from the preview %.4f" % error)
+        source = Nif(os.path.join(sm, "smarmor0_arms.nif"))
+        donor = Nif(os.path.join(pa, "mods/pa_t60_larm.nif"))
+        node = next(i for i, b in enumerate(donor.blocks) if b[0] in NODES and donor.av_object(i)[0] == BONE)
+        end = donor.av_object(node)[2]                    # just past the collision reference
+        writer = runpy.run_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "writeshield.py"))
+        block = next(i for i, b in enumerate(source.blocks) if b[0] == "BSSubIndexTriShape")
+        writer["write"](source, block, triangles, lambda i: into_forearm(sm_verts[i]), direction,
+                        donor.d[end - 56:end - 4], args.write, mounts)
+
     if args.no_render:
         return
     os.makedirs(args.outdir, exist_ok=True)
     plate = [(1, (shield, [t for t in triangles if t not in hit]))]
     if hit:
         plate.append((7, (shield, sorted(hit))))
+    if mounts[1]:
+        plate.append((4, (mount_shape, mounts[1])))
     nifpreview["render"](frame_arm + arm + plate, 600, os.path.join(args.outdir, "arm.png"))
     nifpreview["render"](frame + arm + plate, 600, os.path.join(args.outdir, "suit.png"))
     print("super mutant skinning check: largest vertex drift %.3f" % drift)

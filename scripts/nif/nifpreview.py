@@ -6,6 +6,7 @@
       --seams            also split parts at texture seams (separates joined pieces)
       --parts 1,3        draw only these parts (numbers from info)
       --size 600         pixels per view
+      --cull             draw only front faces, as the game does
 
 Reads BSTriShape and BSSubIndexTriShape (stream version 130). Skinned meshes are drawn
 as stored (bind pose); bones are reported, not applied. Reads only; never writes a model.
@@ -220,7 +221,7 @@ VIEWS = [("front", (0, -1, 0), (0, 0, 1)), ("model's left side", (1, 0, 0), (0, 
          ("front right, above", (-1, -1, -0.6), (0, 0, 1))]
 
 
-def render(parts, size, path):
+def render(parts, size, path, cull=False):
     big = size * 2                                        # draw at double size, then average
     width, height = big * 3, big * 2                      # three views across, two down
     pixels = bytearray([245]) * (width * height * 3)
@@ -242,7 +243,7 @@ def render(parts, size, path):
                     pts.append((ox + big / 2 + x * scale, oy + big / 2 - y * scale, z))
                 (x0, y0, z0), (x1, y1, z1), (x2, y2, z2) = pts
                 area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
-                if abs(area) < 1e-9:
+                if abs(area) < 1e-9 or (cull and area > 0):
                     continue
                 u = [pts[1][a] - pts[0][a] for a in range(3)]
                 w = [pts[2][a] - pts[0][a] for a in range(3)]
@@ -287,6 +288,7 @@ def main():
     ap.add_argument("out", nargs="?")
     ap.add_argument("--parts")
     ap.add_argument("--seams", action="store_true")
+    ap.add_argument("--cull", action="store_true")
     ap.add_argument("--size", type=int, default=600)
     args = ap.parse_args()
     nif = Nif(args.model)
@@ -303,7 +305,7 @@ def main():
         return
     if not args.out or not parts:
         sys.exit("render needs an output file and at least one part")
-    render(parts, args.size, args.out)
+    render(parts, args.size, args.out, args.cull)
     print(args.out, "| views, left to right then down:", "; ".join(v[0] for v in VIEWS))
 
 

@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Build the PAX attachment test plugin: two wearables that should show on power armor.
+"""Build the PAX attachment test plugin: wearables that should show on power armor.
+
+A and B are plain apparel; in game the suit refuses them ("you can not equip that in power
+armor"). C and D are the same models marked as power armor pieces (ArmorTypePower, with
+health). E is the shield itself (PA piece, slot 56): its model is not in the zip; build it with
+scripts/nif/placeshield.py --write and put it at Meshes\\PAX\\Test\\ShieldE.nif in the mod.
 
     python3 -B build_test1.py [OUT.zip]        default ~/Downloads/PAX-Test1.zip
 
@@ -13,10 +18,17 @@ from pathlib import Path
 
 FORM_VERSION = 131
 HUMAN_RACE, POWER_ARMOR_RACE = 0x00013746, 0x0001D31E
+ARMOR_TYPE_POWER = 0x0004D8A1                       # keyword
 GROUND = r"Actors\Supermutant\CharacterAssets\SMArmor0_ArmsGO.nif"
-ITEMS = [  # editor id, name, body slot, worn model
-    ("PAXTestA", "PAX Test A (mutant arms)", 56, r"Actors\Supermutant\CharacterAssets\SMArmor0_Arms.nif"),
-    ("PAXTestB", "PAX Test B (X-01 left arm)", 57, r"Actors\PowerArmor\CharacterAssets\Mods\PA_X1_LArm.nif"),
+MUTANT_ARMS = r"Actors\Supermutant\CharacterAssets\SMArmor0_Arms.nif"
+X01_ARM = r"Actors\PowerArmor\CharacterAssets\Mods\PA_X1_LArm.nif"
+SHIELD = r"PAX\Test\ShieldE.nif"
+ITEMS = [  # editor id, name, body slot, worn model, power armor piece; append only (form IDs)
+    ("PAXTestA", "PAX Test A (mutant arms)", 56, MUTANT_ARMS, False),
+    ("PAXTestB", "PAX Test B (X-01 left arm)", 57, X01_ARM, False),
+    ("PAXTestC", "PAX Test C (mutant arms, PA piece)", 56, MUTANT_ARMS, True),
+    ("PAXTestD", "PAX Test D (X-01 left arm, PA piece)", 57, X01_ARM, True),
+    ("PAXTestE", "PAX Test E (left arm shield)", 56, SHIELD, True),
 ]
 
 
@@ -43,13 +55,14 @@ def group(tag, records):
 
 def build():
     armor, addons = [], []
-    for n, (edid, name, slot, model) in enumerate(ITEMS):
+    for n, (edid, name, slot, model, piece) in enumerate(ITEMS):
         armo, arma = 0x01000800 + 2 * n, 0x01000801 + 2 * n   # 01: our own records (one master)
         slots = u32("BOD2", 1 << (slot - 30))
+        keywords = u32("KSIZ", 1) + u32("KWDA", ARMOR_TYPE_POWER) if piece else b""
         armor.append(record("ARMO", armo, b"".join([
             text("EDID", edid), sub("OBND", bytes(12)), text("FULL", name), text("MOD2", GROUND),
-            slots, u32("RNAM", HUMAN_RACE), text("DESC", ""), sub("INDX", bytes(2)), u32("MODL", arma),
-            sub("DATA", struct.pack("<IfI", 0, 0.0, 0)), sub("FNAM", bytes(8))])))
+            slots, u32("RNAM", HUMAN_RACE), keywords, text("DESC", ""), sub("INDX", bytes(2)), u32("MODL", arma),
+            sub("DATA", struct.pack("<IfI", 0, 0.0, 100 if piece else 0)), sub("FNAM", bytes(8))])))
         addons.append(record("ARMA", arma, b"".join([
             text("EDID", edid + "AA"), slots, u32("RNAM", HUMAN_RACE), sub("DNAM", bytes(12)),
             text("MOD2", model), text("MOD3", model), u32("MODL", POWER_ARMOR_RACE)])))

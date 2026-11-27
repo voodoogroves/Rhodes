@@ -409,6 +409,14 @@ Proposed stats, unconfirmed:
 - `scratch/pax/test1/build_test1.py` writes `PAXTest1.esp` in `~/Downloads/PAX-Test1.zip`: "PAX Test A (mutant arms)" in slot 56, "PAX Test B (X-01 left arm)" in slot 57; race Human plus `PowerArmorRace`.
 - Steps: install with MO2 (Test profile, spare save). Console `help "PAX Test" 4 ARMO`, `player.additem <id> 1`, `player.equipitem <id>`. Check each outside the suit first (shows the plugin works), then in the suit: visible in third person, stays through exit and re-entry, and through save and reload. Note whether equipping works from the Pip-Boy.
 - Caveat: the super mutant model has body segments that the game may hide under worn armor; item B avoids that.
+- Result (2026-11-26): the suit refused plain apparel ("you can not equip that in power armor"). Added C and D, the same models with keyword `ArmorTypePower` `0004D8A1` and health 100; installed in the MO2 mod "PAX Test 1".
+- **Attachment works (in game, owner screenshots, 2026-11-26):** C and D equip and show on the T-60. C is the unchanged super mutant model, so its big plate is on the right arm, as in the original; D is on the left arm. Route: our own wearable, no vanilla edits. Open: re-entry, save and reload, displaced parts, workbench.
+- On exit (in game, 2026-11-26): C and D stay with the frame, listed in its Power Armor menu beside the T-60 pieces, not moved to the player's inventory, but are not displayed on the empty suit. Cause unknown. Getting back in equips and shows them again.
+- Pip-Boy in the suit (in game): C and D show as equipped beside all five T-60 pieces; nothing displaced.
+- **Item E built (2026-11-26, not yet seen in game):** `placeshield.py ... --write` (`scripts/nif/writeshield.py`) cuts the super mutant model to the plate (192 vertices, 289 triangles), stores it in `LArm_ForeArm1` coordinates, weights it to that bone and reverses the mirrored faces. Installed as `Meshes\PAX\Test\ShieldE.nif` in the MO2 mod, slot 56. The model stays out of the repo.
+- **E in game (owner screenshot):** shows on the left arm at the previewed position. Owner: off a bit, nothing connects it to the arm (looks blank; wants metal that joins it), and it is see-through from the back.
+- Second version (`--mounts --write`, `scripts/nif/mounts.py`): two solid blocks (3 to 9 and 16 to 23 along the forearm) from arm to shield using the plate's texture, and back faces on the whole plate. Checked offline with back faces hidden (`nifpreview.py render --cull`); no sampled mount point shows through the front. 3600 vertices, 1650 triangles. Position unchanged.
+- In game (owner screenshots, aiming with a two-handed gun, 2026-11-26): looks solid; the shield rides the forearm across the front of the body.
 
 ## Open questions
 
