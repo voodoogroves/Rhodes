@@ -158,4 +158,4 @@ Vector search, auto-capture, cross-repo sync, a `/prep` skill, hooks, one skill 
 
 ## 12. Open
 
-- A `CLAUDE.md` header for `fo4-pax` when work starts there.
+Nothing open.
