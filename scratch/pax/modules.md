@@ -445,6 +445,35 @@ Proposed stats, unconfirmed:
 - It also overrides `PowerArmorRace` with no change we found beyond attack order and literal strings, and ships facial bone files; both look like editor leftovers. PAX should not override the race.
 - Needs Far Harbor.
 
+## Claw gauntlets (owner, 2026-11-26)
+
+Lightning-claw style: 2-3 blades on a chassis on the **right** forearm, fought with the punching animations.
+
+- **Chosen: way 1.** A worn attachment like the shield, always on, that raises punch and bash damage while equipped. Way 2 (a separate weapon swapped in, as in WaFists) is not chosen now; owner says it is known to work from that mod.
+- Shishkebab and electrified officer claws should carry their fire and shock (read by the assistant as damage and look; owner to correct).
+
+| Claw | Blades | Source model | Housing extras |
+|---|---|---|---|
+| Shishkebab | 2 | `weapons\shishkebab\shishkebab.nif` | Gas canister, pipes, nozzles, valve |
+| Officer (electric) | 2 | `weapons\chineseofficersword\serratedbladeshock.nif` | Battery and wires |
+| Assaultron | 3, staggered | `dlc01\weapons\assaultronblade\vibroblade.nif` (`DLCRobot - Main.ba2`) | Open |
+| Ritual | 3, staggered | `weapons\machete\sacrificalblade.nif` | Open |
+
+- Suggested, not agreed: one body slot for all claws; drawback of worse gun handling (fallback: the -1 Agility worn effect).
+- Open: damage amounts, drawback, unlock (needs the source weapon?), whether bash triggers on-hit effects.
+
+Models read (2026-11-26):
+- The shock officer blade already has a coil and wires (`SerratedBladeShock:1`) and a pack at the root (`SerratedBladeShock:2`).
+- In `Shishkebab_02:0`, loose part 18 is the blade, 1 the grip, 4 the trigger lever; the rest is tank, valve and pipes. Flames are separate effect shapes and particles with controllers; not examined for reuse.
+- Right forearm bone `RArm_ForeArm1`: X toward the hand (hand joint 27, fingertips about 41), Y across the knuckles (thumb positive), Z out of the back of the hand.
+- Preview script: `scripts/nif/placeclaw.py` (generated placeholder chassis; writes no game model).
+- First layouts (offline, T-60 only, not yet judged by the owner): blades angled 9 degrees down beyond the chassis; officer pack on the chassis with generated cables; shishkebab tank and pipes on top, its pipe ends sitting above the blades. Elbow bend, gun poses and other suits not checked.
+
+Records read from `Fallout4.esm` (2026-11-26):
+- `PowerArmorRace` unarmed weapon is `UnarmedPowerArmor` `000C2C32`, keyword `WeaponTypeUnarmed` `0005240E`.
+- Iron Fist: perk entry point 35 (read as Mod Attack Damage), multiply, weapon-tab `HasKeyword WeaponTypeUnarmed`; ranks x1.2, 1.4, 1.6, 1.8.
+- Basher: entry point 26 (inferred: bash damage), multiply x1.25, 1.5, 1.75, 2, no conditions.
+
 ## Open questions
 
 - Spending a real perk point: how does a new perk get offered? Adding to the vanilla perk chart may not be possible without changing the interface; a holotape or terminal would need script.

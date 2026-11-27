@@ -9,10 +9,10 @@ Updated: 2026-11-26, from Steam Deck (VS Code)
 - Round 2 proofs, no scripts, all passed in game: worn stat effects, suit-only perk (free sprint), suit-only lock prompt, crafting the shield from the super mutant gauntlet.
 - Test plugin: `scratch/pax/test1/build_test1.py`, installed on the Deck as MO2 mod "PAX Test 1". Latest change, a one-gauntlet preview and dropped model (`scripts/nif/trimparts.py`), looks good in game.
 - [`power-armor-durability.md`](power-armor-durability.md): Gemini note, partly checked; two setting or keyword names were wrong. Slower wear is now a SPECIAL-cost augment, floor about 25% (see `modules.md`); method untested.
-- Owner has an idea for a new power armor weapon, not yet described.
+- New: claw gauntlets on the right arm (`modules.md`, "Claw gauntlets"). Chosen: a worn attachment that raises punch and bash damage. First offline layouts of all four made with `scripts/nif/placeclaw.py` (previews on the Deck in `~/Downloads/PAX-claw-previews/`); awaiting the owner's view.
 
 ## Next
-On the Deck: a test perk to see whether `Mod Incoming Limb Damage` slows power armor wear (not yet built).
+On the Deck: after the owner judges the claw layouts, write one claw model and test it in game (mount, punch and bash damage, gun poses). Still queued: a test perk to see whether `Mod Incoming Limb Damage` slows power armor wear (not yet built).
 
 From phone or iPad: design only. Describe the weapon idea, or settle how attachments are unlocked (question 1).
 
@@ -22,7 +22,7 @@ From phone or iPad: design only. Describe the weapon idea, or settle how attachm
 3. Which SPECIAL stat each augment costs (proposed table in `modules.md`, unconfirmed).
 4. Prerequisites: Crushing Blows, Servo Control, Fire Suppression (on hold). Rank 2 requirements and the guard stance name.
 5. v1 scope.
-6. The new power armor weapon: what is it?
+6. Claws: layout changes, damage amounts, drawback, unlock, whether bash triggers fire or shock.
 7. Slower armor wear: which SPECIAL stat, how many ranks (suggested 75/50/25%), and what method?
 8. Creation Kit on the Deck, or another compiler (Caprica)?
 9. Needs the game or xEdit: does `WornHasKeyword` see a vanilla mod on a worn suit; shield across re-entry, save and reload; shield fit on other suits; stat trade effects on owned perks, health and reload; durability note items 2 and 4.
