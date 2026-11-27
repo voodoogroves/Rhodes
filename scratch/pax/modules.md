@@ -417,6 +417,7 @@ Proposed stats, unconfirmed:
 - **E in game (owner screenshot):** shows on the left arm at the previewed position. Owner: off a bit, nothing connects it to the arm (looks blank; wants metal that joins it), and it is see-through from the back.
 - Second version (`--mounts --write`, `scripts/nif/mounts.py`): two solid blocks (3 to 9 and 16 to 23 along the forearm) from arm to shield using the plate's texture, and back faces on the whole plate. Checked offline with back faces hidden (`nifpreview.py render --cull`); no sampled mount point shows through the front. 3600 vertices, 1650 triangles. Position unchanged.
 - In game (owner screenshots, aiming with a two-handed gun, 2026-11-26): looks solid; the shield rides the forearm across the front of the body.
+- Owner's feel (not measured): the elbow end still stands far off, and it may be turned too far to the outside of the arm. Accepted for now. Open idea (owner): how many attachments PAX should have, beside skills that cost SPECIAL.
 
 ## Open questions
 
