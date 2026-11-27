@@ -39,3 +39,6 @@ out*.txt
 build.log
 xe.log
 *.bak*
+
+# Python caches
+__pycache__/
