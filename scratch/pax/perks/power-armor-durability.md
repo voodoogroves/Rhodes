@@ -1,6 +1,6 @@
 # Power armor durability: ways to slow it (Gemini, unvalidated)
 
-> **Unverified, Gemini-generated.** Pasted 2026-11-26 from the owner's phone as a starting idea, not a source of truth. Gemini brainstorming has proven full of hallucinations (see `concept-spec.md`): treat every setting name, keyword, record field and engine effect below as unconfirmed until read in xEdit or the script sources, or tested in game.
+> **Unverified, Gemini-generated.** Pasted 2026-11-26 from the owner's phone as a starting idea, not a source of truth. Gemini brainstorming has proven full of hallucinations (see [`concept-spec.md`](../concept-spec.md)): treat every setting name, keyword, record field and engine effect below as unconfirmed until read in xEdit or the script sources, or tested in game.
 
 Question put to Gemini: if I wanted to slow power armor durability loss, would that be a script?
 
@@ -42,5 +42,5 @@ Its answer, in short: no script needed. Record edits are lighter than scripts, d
 
 ## Next
 - Player default read in game (owner, 2026-11-26): `fPowerArmorPCArmorDamageMultiplier` = **1.00**.
-- Owner ruling and the open method are in [`modules.md`](modules.md), "Slower armor wear".
+- Owner ruling and the open method are in [`notes.md`](notes.md), "Slower armor wear".
 - Thought for PAX (assistant, not decided): a global setting has no cost or drawback, so it is a tweak more than an upgrade; the two core entry points could carry an augment or attachment.
