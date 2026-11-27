@@ -3,6 +3,9 @@ Updated: 2026-11-27, from Steam Deck (VS Code)
 
 **Any other device (phone, iPad):** branch from `dev` and open the PR into `dev`.
 
+## Next session
+Work through the **Raider** suit in detail (owner). Start at [`attachments/notes.md`](attachments/notes.md), "Raider: first suit"; shared rules, balance and suit themes are in [`common.md`](common.md).
+
 Work on one area per session: read this file, [`common.md`](common.md), then that area's notes. Rewrite only that area's parts here. A final packaging session brings the areas together.
 
 | Area | Notes |
@@ -28,7 +31,7 @@ State:
 - Unexplained glitch: claws stopped drawing and stacked in one slot; a game restart cleared it, not reproduced ("Claw tests, third pass").
 - Under discussion: claws built into a per-suit arm model ("Clawed arm and per-suit attachments").
 
-Next: decide on the arm swap spike (proposed: Tessa's Fist, testing the station slot, item preservation and first person). Then crafting, on-hit effects, the laser pistol officer claw, housings. Away from the Deck: which suits get which claw, and the research cost.
+Next: Raider arm swap spike on Tessa's Fist (station slot, item preservation, first person). Then crafting, on-hit effects, the laser pistol officer claw, housings. Away from the Deck: which suits get which claw, and the research cost.
 
 Open:
 1. Shields follow the claw research and cost rule (decided). Is there an offset or drawback?

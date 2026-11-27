@@ -62,3 +62,7 @@ Open:
 - Assistant suggestion, not agreed: a core with no DLC plus one add-on each for Automatron, Far Harbor and Nuka-World. T-60 and X-01 without those would get only base game pieces.
 - For other suit-themed effects: which piece decides when suits are mixed (torso or helmet likely)?
 - The owner's last message on suit themes ended "In the base game"; the rest of that thought is not recorded.
+
+## Creation Club content and first suit (owner, 2026-11-27)
+- Creation Club requirements are not a concern: the owner believes the current Anniversary Edition includes them and many players have them (not checked).
+- First suit to work through in detail: **Raider**. Brief: [`attachments/notes.md`](attachments/notes.md), "Raider: first suit".
