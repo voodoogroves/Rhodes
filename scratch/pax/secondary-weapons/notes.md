@@ -15,3 +15,9 @@ Later sections replace earlier ones where they say so. Shared goal and rules: [`
 - The launcher should take the jetpack's slot. The two would likely conflict on models anyway.
 - Note: [`concept-spec.md`](../concept-spec.md) lists Jet Pack among the torso mods, so the launcher would probably also exclude the other mods in that slot *(inferred, unverified)*.
 - Related: "Shoulder weapons (hotkey)" above.
+
+## Launchers on X-01 and firing them (2026-11-27)
+
+- Owner: tie X-01 to sentry bot gear and allow the backpack launcher there: the base missile pack with Automatron, Nuka launchers from Nuka-World.
+- Read: sentry missile and shoulder launcher mods in `DLCRobot.esm`; sentry shoulder Nuka launcher mods in `DLCNukaWorld.esm`.
+- No F4SE rules out a custom hotkey. Assistant suggestion, untested: make the launcher a grenade type, so the grenade key fires it and the backpack is the visual; a throwing motion would probably show. The same trick could cover a Tesla lobber.
