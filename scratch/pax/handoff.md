@@ -14,6 +14,8 @@ Updated: 2026-11-27, from Steam Deck (VS Code)
 ## Next
 On the Deck: claw crash fixed and placement approved (`modules.md`, "Claw looks, second pass"). Next in game: punch and bash damage, perk removal on unequip and exit, first person, gun poses, recipe. Then on-hit effects, the laser pistol officer claw (mockup only), housings. Test mods Addictol, its crash logger and Address Library are installed in MO2; PAX does not depend on them. Still queued: a test perk to see whether `Mod Incoming Limb Damage` slows power armor wear (not yet built).
 
+A game exit on entering Sanctuary (2026-11-27) with no crash report was SteamOS's low-memory guard (`earlyoom` in the system journal: swap full, other apps open), before any claw was spawned. Restart the Deck and close the browser before testing.
+
 From phone or iPad: design only. Settle the claw research cost (SPECIAL stat, one research or per claw) and whether the shield follows the same rule (question 1).
 
 ## Open questions
