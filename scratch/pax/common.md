@@ -26,10 +26,12 @@ Draft sensor toggles and companion support are not in these.
 
 ## Rules so far (owner, 2026-11-25; costs updated 2026-11-27)
 
-- Every upgrade has a cost or a drawback: an opportunity cost, a perk or SPECIAL cost, or something like it.
-- Materials count as a cost only when they are hard to find or get. Steel is easy; super mutant gauntlets from a few locations, or several serrated electrified Chinese officer swords, are a hunt.
+- **The aim is balance** (owner, 2026-11-27). Every upgrade has a cost:
+  - If it **takes the place** of something the game already offers (a module slot, say), giving that up is cost enough.
+  - If it comes **on top** of what the game offers, it needs a SPECIAL or perk cost. The price is delayed progress: points spent here are levels not spent toward other perks.
+- Materials count as a cost only when they are rare or hard to find: the price is the time to find them, or using up a rare or single item. Steel is easy; super mutant gauntlets from a few locations, or several officer swords, are a hunt.
 - The perk cost is paid in SPECIAL: lower a named base stat by 1 per rank, which the player rebuys with a perk point (see [`perks/notes.md`](perks/notes.md), "Perk cost mechanism"). Replaces "must spend a real perk point": a script cannot subtract one. Without a real cost it is free power with a small build barrier.
-- Overclocks cost SPECIAL too. Shields follow the same research and cost rule as claws.
+- Overclocks sit on top of a vanilla mod, so they cost SPECIAL. Shields follow the same research and cost rule as claws.
 - Upgrades **stack** on top of vanilla mods.
 - Do not change existing records, so other power armor mods don't conflict.
 - Example: a perk that overclocks Motion-Assist Servos, +1 Strength per perk spent up to a maximum, only in power armor.

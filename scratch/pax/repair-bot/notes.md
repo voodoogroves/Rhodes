@@ -106,3 +106,39 @@ Read from files, **none run in game by the assistant**. Reference only: copy no 
 
 ## Next
 - A small test script: read a worn power armor piece's condition and repair it.
+
+## Obtaining BARB1E (owner, 2026-11-27)
+- **Decided: find and repair.** The player finds a broken eyebot and repairs it; it is not constructed.
+- Assistant suggestion: place the wreck near the Rust Devil with the Tesla T-60; activating it asks for a robot repair kit and a few components (such as circuitry), then BARB1E powers up and offers Join me. One placed, unique actor.
+- Placing it means a world cell override: check for conflicts (Alexandria `memory/fo4-mod/fo4-world-placement.md`).
+
+## Dialogue tree (2026-11-27; replaces the command table in "Commands")
+Assistant proposal, noted at the owner's request. No lines are final.
+
+```
+NOT ACTIVE (waiting where found or left)
+├─ Join me     -> affirmative bleep -> FOLLOWING
+├─ Trade       -> open inventory
+├─ Repair      -> see REPAIR
+└─ Nevermind   -> generic bleep
+
+FOLLOWING or STAYING
+├─ Stay / Follow (one slot, swaps)
+│     Stay     -> affirmative -> STAYING
+│     Follow   -> cheerful    -> FOLLOWING
+├─ Repair      -> see REPAIR
+├─ Trade       -> open inventory
+└─ Dismiss     -> somber -> NOT ACTIVE (goes home)
+
+REPAIR (1 kit per damaged piece)
+├─ Not in power armor, or nothing damaged -> negative
+├─ No kits                                -> alarmed
+├─ Too few kits: repair worst pieces first -> wary
+└─ Enough kits: repair all                 -> cheerful
+```
+
+- Repair while not active uses the fourth slot (home repair station); drop it if repairs should require bringing BARB1E along.
+- The armor repair test should cover repairing in and out of the suit; the result may change the "not in power armor" branch.
+
+## Player voice (owner, 2026-11-27)
+- Find existing player character voice files to use for the player's choices, later; there are plenty of stock ones. Both player voices (male and female) would need a line (*inferred*). Reference them without copying audio into the repo.

@@ -255,3 +255,8 @@ Records read (2026-11-27):
 - Electrified officer and Assaultron blade models have no effect shapes. `meshes\effects\shaderparticles\shockswordconstfxs.nif` exists; what attaches it was not found.
 - On-hit fire and shock are separate from the ambient look.
 - Open: ambient effects always on, or only with weapons drawn?
+
+## Super Mutant Heavy Gauntlet supply (records read, 2026-11-27)
+- Playable `00248FD3`: two placed references in `Fallout4.esm` (`00248FE6`, `00249009`). No leveled list, outfit, container (so no vendor) or recipe there refers to it, and no reference was found in the DLC or Creation Club plugins.
+- The gauntlets super mutants wear (`001B3A01`) are flagged non-playable.
+- Not checked: scripts, third-party mods, and whether the two placed items come back when their areas reset.

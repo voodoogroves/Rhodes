@@ -281,3 +281,6 @@ Proposed stats, unconfirmed:
 - Carried over from the locked design (assistant proposal): research with Robotics Expert 2, Armorer 2 and a SPECIAL point (stat unconfirmed); build with Military-Grade Circuit Board, Sensor Module and the Automatron robot unlock; prompt on a locked terminal, AP by lock tier, odds from current Intelligence.
 - Untested: our own misc mod showing at the station and adding the prompt perk.
 - Suit Lockpick is unchanged: a skill for any suit.
+
+## Suit Intrusion cost (owner, 2026-11-27; replaces the SPECIAL point above)
+- The helmet slot is cost enough: **no SPECIAL point**. The perk prerequisites and parts listed above were not changed.

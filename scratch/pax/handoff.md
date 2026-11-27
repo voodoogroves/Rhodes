@@ -48,7 +48,6 @@ Open:
 2. Prerequisites: Crushing Blows, Servo Control, Fire Suppression (on hold). Rank 2 requirements and the guard stance name.
 3. Slower armor wear: which SPECIAL stat, how many ranks (suggested 75/50/25%), and what method?
 4. In game: stat trade effects on owned perks, health and reload; durability note items 2 and 4.
-5. Suit Intrusion module: SPECIAL stat for its research.
 
 ## Overclocks
 State: design notes only, nothing tested.
@@ -61,8 +60,8 @@ Open: does `WornHasKeyword` see a vanilla mod on a worn suit, and can both brace
 State: idea only; the launcher takes the jetpack's slot (owner), themed to X-01 with sentry and Nuka launchers. Untested: firing it as a grenade type.
 
 ## Repair bot
-State: design notes only (BARB1E, a repair follower). A repair option is wanted, including out of combat through dialogue (owner, 2026-11-27); repair kit and perk ideas recorded. Command set chosen, now needs a Repair slot. Voice: Automatron bleep sets A, B or C. Follower and eyebot mods compared offline.
+State: design notes only (BARB1E, a repair follower). A repair option is wanted, including out of combat through dialogue (owner, 2026-11-27); repair kit and perk ideas recorded. Obtained by find and repair (owner). Dialogue tree with a Repair slot proposed. Player voice: reuse stock lines, to be picked later. Voice: Automatron bleep sets A, B or C. Follower and eyebot mods compared offline.
 
 Next: test whether a script can read and repair a worn power armor piece's condition.
 
-Open: can it repair in combat, threshold, kit restock rate and cap, bot or perk does the repair, dialogue layout, how it is obtained, which bleep set, whether it repairs while not active, whether the plain Automatron eyebot works as the body.
+Open: can it repair in combat, threshold, kit restock rate and cap, bot or perk does the repair, where the wreck goes and what the repair costs, whether Repair shows while not active, player voice lines, which bleep set, whether it repairs while not active, whether the plain Automatron eyebot works as the body.
