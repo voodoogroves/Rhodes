@@ -15,8 +15,6 @@ FO4 outfit fitting and kitbashing. The vanilla Vault 111 suit (female, third per
 | `fitbody.py` | `measure`, `push` (out of the body), `hug` (toward it) |
 | `sculpt.py` | adds definition at fixed places on a female outfit; defaults are the accepted version |
 
-All three are **not yet committed**.
-
 **Rebuild** (matched the accepted model byte for byte on 2026-11-27). Extract with `baunpack`, each archive into its own new empty folder outside the repo:
 
 - from `Fallout4 - Meshes.ba2`: `characterassets/femalebody.nif` (vanilla body, `V`) and `clothes/vault111suit/femalevault111suit.nif` (suit)
@@ -40,7 +38,6 @@ Package the defined suit as its own outfit (own mesh path, never the vanilla one
 
 ## Open questions
 
-- Commit the three scripts and this note to `dev`?
 - Spike at the zipper pull under the collar (from `--carry`): fix before or after the in-game look?
 - Same steps on the Institute uniform? Is that the "Institute jumpsuit" meant? An earlier hug-only trial exists in pictures.
 - Prudy zip in game: Test profile, enable Prudy, install the zip below it, `help "Prudy" 4 ARMO`.
