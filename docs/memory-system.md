@@ -66,6 +66,11 @@ Every repo, Rhodes included:
 | Root | `README.md` (what it is, what to read first) and `CLAUDE.md` |
 | `docs/` | Specs, `decisions.md`, `notes.md`, working docs. No file or subfolder is required |
 
+**Subprojects** (parts of one project):
+- Each part gets `docs/spec-<part>.md`, holding its state, open items and test results. A folder `docs/<part>/` only once a part needs about three or more files. No separate `plan/` folder.
+- The README indexes the parts (status, spec link), so a session opens only what it needs.
+- `docs/decisions.md` and `docs/notes.md` stay project-wide. No `CLAUDE.md` or memory folder per part, unless a code folder has different working rules.
+
 The README says what is in `docs/`. Folders with their own job (`scripts/`, `build/`, Rhodes `refs/` and `scratch/`) stay.
 
 ## 5. Context prep
