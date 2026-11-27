@@ -265,3 +265,22 @@ Proposed stats, unconfirmed:
 ## Open questions
 
 - Spending a real perk point: how does a new perk get offered? Adding to the vanilla perk chart may not be possible without changing the interface; a holotape or terminal would need script.
+
+## Lock augments by suit; script, punch and voice (2026-11-27; replaces earlier lock sections where they differ)
+
+- Owner: **Suit Lockpick** goes with any suit, and may require Automatron.
+- Owner: **Suit Intrusion** (hacker) only on the Automatron-related suits, T-60 or the sentry suit (X-01). See [`../common.md`](../common.md), "Suit themes".
+- Holotape (assistant suggestion): sections for training, suit programs, research and status; "holotape is what you know, workbench is what you build, the world is what you find".
+- Terminal menu items whose conditions fail are hidden, not greyed; changing anything takes a Papyrus fragment (offline CK wiki). A no-script route exists only for passives (a crafted book that grants a perk with a SPECIAL penalty), which behaves differently from lowering the base stat.
+- Punch and voice need script, no F4SE. Leads, untested: `PlayIdleAction` with `ActionRightAttack` `00013005` or `ActionMelee` `00004A59`; the vanilla `PowerArmorForwardPowerPunch` idle looks like a paired kill move; an existing player voice line (male and female, none picked), referenced without copying audio.
+
+## Suit Intrusion: now a helmet module (owner, 2026-11-27; replaces the locked 2026-11-25 augment design for Intrusion, and the T-60 / X-01 line above where they differ)
+
+- A module in the helmet's misc slot, installed at the power armor station. Versions exist only for T-60 and X-01 helmets, so the suit rule needs no detection.
+- The main cost is the opportunity cost: another helmet module cannot be fitted (Targeting HUD, Internal Database, VATS Matrix Overlay, Sensor Array, Recon Sensors, Rad Scrubbers). Owner: that is enough even if the parts are easy to find.
+- Carried over from the locked design (assistant proposal): research with Robotics Expert 2, Armorer 2 and a SPECIAL point (stat unconfirmed); build with Military-Grade Circuit Board, Sensor Module and the Automatron robot unlock; prompt on a locked terminal, AP by lock tier, odds from current Intelligence.
+- Untested: our own misc mod showing at the station and adding the prompt perk.
+- Suit Lockpick is unchanged: a skill for any suit.
+
+## Suit Intrusion cost (owner, 2026-11-27; replaces the SPECIAL point above)
+- The helmet slot is cost enough: **no SPECIAL point**. The perk prerequisites and parts listed above were not changed.

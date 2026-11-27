@@ -66,3 +66,11 @@ Trained; needs Motion-Assist Servos installed (torso, keyword `dn_HasMisc_Str`; 
 ## Open questions
 
 - Whether `WornHasKeyword` detects a vanilla mod on a worn suit (in game).
+
+## Cost and detection test (2026-11-27)
+
+- Owner: overclocks cost SPECIAL, like other upgrades (replaces "perk point" costs above). Shared rules: [`../common.md`](../common.md).
+- Proposed test, not yet built: a perk giving free sprint when `dn_HasMisc_Str` `0023842B` is worn, and different activate prompts for one and two `dn_HasMisc_Unarmed` `0023841A` arms.
+- Both arms take the same bracer mod, so a yes/no keyword check cannot count them. `WornApparelHasKeywordCount` is listed as a condition function in the offline wiki; untested.
+- Loose mods for the test: `00203742` (T-60 Motion-Assist Servos), `00203739` (T-60 Hydraulic Bracers).
+- Check: no mod, installed, one arm, two, removed, out of the suit, after save and reload.

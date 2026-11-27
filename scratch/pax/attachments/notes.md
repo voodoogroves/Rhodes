@@ -204,3 +204,59 @@ Records read from `Fallout4.esm` (2026-11-26):
 - Equipping each gives a nominal bonus, plus an additional one while blocking.
 - Each costs a SPECIAL point to learn to build, as a limiter. This bears on attachments question 1 in [`handoff.md`](../handoff.md) (does the shield follow the claw rule).
 - Open: which types, the bonuses, which SPECIAL stat.
+
+## Claw recipes by source weapon (2026-11-27; replaces earlier claw cost lines where they differ)
+
+- Owner: no "loose mod" ingredients. They are not found in game, so the player would have to build the mod and strip it, a tedious middle step. Ask for the base weapons and charge the materials instead.
+- Assistant suggestion: put the perk requirements on the research (holotape), with the SPECIAL cost, and have the recipe ask only for the research perk (the craft screen shows two perks).
+
+| | Officer claw | Assaultron claw |
+|---|---|---|
+| Research | Blacksmith 3, Science 1, SPECIAL point (stat open) | Blacksmith 2, Science 1, Automatron, SPECIAL point (assistant proposal) |
+| Weapons | 2 Chinese Officer Swords `00147BE4` | 3 Assaultron Blades (`DLCRobot.esm` `xx008B8E`) (owner: 3) |
+| Materials | Twice the electrified serrated mod: aluminum 16, adhesive 10, rubber 8, oil 8, fiberglass 6, circuitry 4 | Three times the electrified mod (assistant proposal): aluminum 24, adhesive 12, rubber 9, circuitry 9 |
+
+- Officer swords are renewable (records read): raider lists, legendary base list, one NPC, melee vendors.
+- Assaultron Blade supply (records read, scripts not checked): the melee Rust Devil's weapon list (blade or Mr. Handy buzz blade, equal entries), and that NPC found only in three random encounter quests; one in the boss chest of the Fort Hagen satellite array quest (alias `DLC01MQ04BossChest`). No vendor or other list found.
+- Suggested, not agreed: place one extra blade at a Rust Devil location, for two sure blades and one hunted.
+- To test: crafting from weapons does not crash; which copy is consumed when one is a favorite or equipped.
+
+## Tessa's Fist and the Tesla suit
+
+Suit themes are in [`../common.md`](../common.md), "Suit themes".
+
+Records read (2026-11-27):
+- Tessa's Fist: a Raider right arm (`LL_Armor_Power_Raider_ArmRight`) with Hydraulic Bracers `00203748` and the legendary "Almost Unbreakable" `001F1E0C`. The durability effect belongs to the legendary and is not specific to punching; the punch bonus is the bracers.
+- The Tesla T-60 set (left arm, right arm, torso) is in `DLCRobot.esm`, listed in `DLC01LL_Armor_Power_T60_Set_A_Tesla`, used by `DLC01_PowerArmorFurnitureTesla`.
+- `DLC01PowerArmorFurnitureTesla` is the suit of `DLC01LvlBotRaider_FemaleBoss`, the Rust Devil placed as that quest's boss. This matches the owner's T-60 Tesla boss.
+
+## Station arm swap, Tesla T-60 (2026-11-27)
+
+### Upgrading an item and keeping it (owner)
+- Wanted: a bladed Tessa's Fist, upgrading the item and preserving the base.
+- Assistant suggestion: our claw as a replacement arm model mod installed at the power armor station, so the item, its legendary and its misc mod stay (inferred, untested). The mod must offer the same child attach points (misc, lining, paint where present).
+- Read: arm model mods sit on `ap_PowerArmor_RArmMod`. `PA_T60_RArm` has a recipe (`co_PA_T60_RArm`); `PA_Raider_RArm` has none. Whether the station offers the slot is the biggest unknown.
+- Name: expected to stay "Tessa's Fist" (untested). Adding "Bladed" would likely need the vanilla naming rules edited.
+- Proposed first spike, not agreed: Tessa's Fist arm swap (station slot, item preservation, first person).
+- The Tesla T-60 right arm is itself an arm model mod, so a Tesla claw would be its own variant (inferred).
+
+### Tesla T-60 (owner, thinking aloud)
+- Tesla shield on the left arm instead of the plain shield; arcing electrified Assaultron blades on the right. The shield could block and reflect some damage as electricity.
+- If too hard: a Tesla array on the back (like the sentry bot missiles) and a grenade-like Tesla lobber.
+- Read: perk entry points `Mod Percent Blocked` and `Mod Reflect Damage Chance` exist (offline CK wiki). Electric reflected damage is open. Untested.
+- Conflicts to settle: reflect is a legendary effect (`mod_Legendary_Armor_ReflectDamage`) and the owner ruled out duplicating those; a shock back at attackers may be distinct. A back array on the torso misc slot would exclude Tesla Coils (inferred).
+
+### First person (read 2026-11-27)
+- Each base game arm has a second model, `..._1st.nif` (T-60 right: forearm only, bone `RArm_ForeArm1`). The arm mod record names only the third-person file; the game likely finds the other by suffix (inferred; `_1st` is in the exe).
+- A clawed arm would ship both. Worn test items set no first-person model in their armor addon, the likely reason they do not show (untested).
+
+### Ambient effects and animation (owner: wanted for the claws)
+- Shishkebab: not yet built. `shishkebab.nif` carries effect shapes, a particle system, a light, animation controllers and a behaviour file (`UniqueBehaviors\ShishkebabFX`); idle loop sound `WPNShishkebabIdleLPM` `00231FC5`. Whether the animation runs on armor is the main risk. Angled layout first.
+- Electrified officer and Assaultron blade models have no effect shapes. `meshes\effects\shaderparticles\shockswordconstfxs.nif` exists; what attaches it was not found.
+- On-hit fire and shock are separate from the ambient look.
+- Open: ambient effects always on, or only with weapons drawn?
+
+## Super Mutant Heavy Gauntlet supply (records read, 2026-11-27)
+- Playable `00248FD3`: two placed references in `Fallout4.esm` (`00248FE6`, `00249009`). No leveled list, outfit, container (so no vendor) or recipe there refers to it, and no reference was found in the DLC or Creation Club plugins.
+- The gauntlets super mutants wear (`001B3A01`) are flagged non-playable.
+- Not checked: scripts, third-party mods, and whether the two placed items come back when their areas reset.
