@@ -34,5 +34,5 @@ Add a line when an idea gets a folder or its first handoff.
 
 | Idea | Files | Handoff |
 |---|---|---|
-| `pax` | `concept-spec.md`, `modules.md` | none yet |
+| `pax` | `concept-spec.md`, `modules.md`, `power-armor-durability.md` (Gemini, unvalidated) | none yet |
 | `regalia-of-mystery` | `concept-spec.md`, `checkpoint.md` | `checkpoint.md` predates this convention |
