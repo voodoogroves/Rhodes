@@ -40,3 +40,6 @@ Records read (`Fallout4.esm`; field meanings decoded by the assistant, not seen 
 - Indoor variants (`0021635F`, `00216360`) also carry a lobbed shell with a frag grenade explosion.
 - Owner: if the launcher needs ammo and not a grenade, use grenade launcher ammo.
 - That ammo is Creation Club only (`ccsbjfo4003-grenade.esl`, installed on the Deck): 40mm frag `xx000F9E`, MIRV, Nuka, pulse, cryo, plasma, incendiary and others. The plugin has vendor and loot lists and no 40mm ammo recipe was seen. Using it makes that plugin a requirement.
+
+- Owner (2026-11-27): Creation Club as a requirement is acceptable; ammo cost to be decided later.
+- Assistant suggestion, not agreed: the sentry cluster shell for the basic shot; 40mm round types as pack tiers.

@@ -260,3 +260,24 @@ Records read (2026-11-27):
 - Playable `00248FD3`: two placed references in `Fallout4.esm` (`00248FE6`, `00249009`). No leveled list, outfit, container (so no vendor) or recipe there refers to it, and no reference was found in the DLC or Creation Club plugins.
 - The gauntlets super mutants wear (`001B3A01`) are flagged non-playable.
 - Not checked: scripts, third-party mods, and whether the two placed items come back when their areas reset.
+
+## Raider: first suit (owner chose, 2026-11-27)
+Theme: ritual (machete) blades with Tessa's Fist, upgrading the item and keeping it. Base game only.
+
+Where it stands:
+- Ritual Angled claw as a worn item: placement, look with straps, double punch and bash damage and gun poses passed in game; the blade crash is fixed. Crafting not tried. No first-person model.
+- Tessa's Fist: Raider right arm, Hydraulic Bracers, "Almost Unbreakable" (records above).
+- `PA_Raider_RArm` sits on `ap_PowerArmor_RArmMod`, has no recipe and no paint point seen. It has a first-person file, `pa_raider_rarm_1st.nif`.
+- Placement so far was worked out on the T-60; the Raider arm is not fitted.
+- Cost rule: an arm swap adds on top (the arm keeps its modules), so it needs a SPECIAL or perk cost, plus items.
+
+First steps (proposed):
+1. Spike: a copy of the Raider right arm as our own arm mod. Does the station offer it, and do the legendary, bracers and name survive?
+2. Merge the Angled blades into the third-person and first-person arm models; check both views.
+3. Move the damage perk and research gate onto the mod.
+
+To decide:
+- Ingredients: a recipe asking for a Machete takes any machete, so what is the hunt (rare item, or one we place)?
+- SPECIAL stat for research, damage amounts, any drawback.
+- Whether the left arm gets anything, and whether the claw is only for the right arm.
+- Whether other Raider pieces get options.
