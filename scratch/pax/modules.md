@@ -548,6 +548,20 @@ Records read from `Fallout4.esm` (2026-11-26):
 
 - Wanted: angled blades like the ritual Angled claw, because the Shishkebab blade arcs with a curve. Not yet mocked up.
 
+### Claw tests, third pass (owner, 2026-11-27)
+
+- Works in game: the damage perk is added with a claw on, punch and bash each do about double, and the perk goes on unequip and suit exit and returns on getting back in.
+- Recipe: lists at the chemistry station showing the PAX Claw Research requirement (screenshots). Crafting not tried (no machete).
+- Glitch: three claws (all slot 53) showed as equipped at once and none drew, also after exit and re-entry; the shield still drew. The installed records and models had not changed. A game restart cleared it. Possibly set off by switching to first person during punch tests (owner's guess); not reproduced afterwards. Cause unknown.
+- Swap test (claw model in slot 57, shield model in slot 53): both drew. Items sharing slot 53 replace each other; different slots stack. The swap items were then removed from the plugin.
+- Claws have no first-person model. Gun poses look good (owner).
+
+## Clawed arm and per-suit attachments (owner, 2026-11-27)
+
+- Owner idea: build the claw into a power armor arm ("Clawed T-60") in place of a worn item; equipping on and off is nice but may be the wrong approach.
+- Owner: attachments need not cover every suit; for example Raider gets one claw, T-60 and T-51 the Assaultron or officer blades.
+- Assistant suggestion, not agreed: a model mod on the normal right arm (our copy of the arm model with the blades merged in), installed at the power armor station. Spike one first (T-60, Angled) and judge first person. Untested: paint, first-person model, carrying the damage perk and research gate on the mod.
+
 ## Open questions
 
 - Spending a real perk point: how does a new perk get offered? Adding to the vanilla perk chart may not be possible without changing the interface; a holotape or terminal would need script.
