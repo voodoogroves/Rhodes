@@ -419,6 +419,32 @@ Proposed stats, unconfirmed:
 - In game (owner screenshots, aiming with a two-handed gun, 2026-11-26): looks solid; the shield rides the forearm across the front of the body.
 - Owner's feel (not measured): the elbow end still stands far off, and it may be turned too far to the outside of the arm. Accepted for now. Open idea (owner): how many attachments PAX should have, beside skills that cost SPECIAL.
 
+## Attachments: cost and unlock (owner, 2026-11-26)
+- Attachments cost **no perk point**. They require research or finding something that teaches how, for example the super mutant arm armor the shield comes from, or require that item itself.
+- Hand-placed `SupermutantArmor0_Arms_Playable` `00248FD3` in `Fallout4.esm` (read 2026-11-26): Boston Public Library interior (ref `00249009`) and Weston Water Treatment exterior (ref `00248FE6`). DLC, respawning and other sources not checked. Mutants wear `001B3A01` through `CreatureOutfit_Supermutant_Arms` `001B3A22`; whether that one can be looted is unchecked.
+- Unlock method open: consume the piece as an ingredient (no script; crafting from a wearable crashed the game once in Regalia, cause unproven), or learn it on finding (needs a script, or a book or perk gate).
+- Owner (2026-11-26, leaning, not settled): attachments may also need a SPECIAL cost, with an offset or drawback.
+- Placeholder (owner, 2026-11-26): see whether paint schemes can apply to the new visible items.
+
+## Other suits and round 2 (2026-11-26)
+- The T-60 placement and its mounts used on the T-45, T-51, X-01 and Raider left arms (offline): at the same settings the forearm shell shows through the front on none, and no plate triangle cuts into the upper arm or shoulder pad hanging or bent 90. The T-60 mounts reach every arm; worst stand-off 2.2 (T-51, elbow block). So one model looks usable for all five. Not seen in game.
+- In game with the mounted shield (2026-11-26, owner, screenshot): "blocking looks great".
+- Round 2 in the test plugin (installed in MO2 2026-11-26; results below): "PAX Shield (proof)" with armor 50, energy 30 and -1 Agility while worn (`abReduceAgility`); perk `PAXSprintProof` `xx000811` (no sprint AP cost, only in power armor); perk `PAXLockProof` `xx000812` (prompt "PAX: Force Lock" on locked objects in power armor, does nothing); chemistry station recipe making the shield from `00248FD3` and one steel.
+- Round 2 results (in game, owner, 2026-11-26): the worn effects apply and reverse on removal. "PAX: Force Lock" shows with the perk in power armor, does nothing, and is not offered outside the suit. The recipe lists at the chemistry station, but the preview shape looks wrong (probably our zero bounds and missing preview transform; fixed in the script, not yet seen). Crafting from the gauntlet made the shield without a crash. Sprint perk works: no AP drain in power armor, normal drain outside (an earlier "no drain anywhere" was god mode). All four round 2 tests pass.
+- Craft preview and dropped item (in game, owner, 2026-11-26): copying the vanilla gauntlet's bounds and preview transform (`PTRN` `0022FD4B`) fixed the stretched preview; both then showed the two super mutant arm pieces. Owner: drop the other gauntlet. The shield items now use a trimmed copy (`scripts/nif/trimparts.py --keep 1`, collision unchanged); not yet seen in game.
+- In game (owner, 2026-11-26): the one-gauntlet dropped model looks good, and so does the chemistry station preview.
+
+## Slower armor wear (augment, costs SPECIAL; owner, 2026-11-26)
+- On the "costs a SPECIAL" list. A multi-point investment that slows power armor wear; never off (Danse-style immunity is too strong). Floor: about 25% of normal wear at the highest.
+- Assistant suggestion, not agreed: three ranks at 75%, 50% and 25% wear. SPECIAL stat open.
+- Read in game: `fPowerArmorPCArmorDamageMultiplier` is 1.00 (NPC setting 3.0, see [`power-armor-durability.md`](power-armor-durability.md)). That setting is global, so it cannot follow a perk rank without a script.
+- Method open. Untested lead (inferred): the perk entry point `Mod Incoming Limb Damage`, conditioned on wearing power armor, if piece wear follows limb damage (the exe has `fPowerArmorLimbDamage...` settings).
+
+## Fist weapons in power armor (read from "WaFists DLC", Nexus 25358, 2026-11-26)
+- Its fist weapons are new `WEAP` records whose `DNAM` animation type is 1 (one-handed sword) instead of 0 (hand to hand). The Deathclaw Gauntlet copy differs from vanilla in only that byte; unarmed keywords are kept. *(inferred: this is what lets the suit equip them; untested by us)*
+- It also overrides `PowerArmorRace` with no change we found beyond attack order and literal strings, and ships facial bone files; both look like editor leftovers. PAX should not override the race.
+- Needs Far Harbor.
+
 ## Open questions
 
 - Spending a real perk point: how does a new perk get offered? Adding to the vanilla perk chart may not be possible without changing the interface; a holotape or terminal would need script.

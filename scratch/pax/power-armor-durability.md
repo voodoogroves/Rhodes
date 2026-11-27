@@ -31,5 +31,16 @@ Its answer, in short: no script needed. Record edits are lighter than scripts, d
 | 3 | A perk entry point can scale armor damage for power armor | Unchecked | Look at perk entry points in the Creation Kit |
 | 4 | Item 1 with GMSTs affects only the stated damage path, not the frame's own health | Unchecked | In game |
 
+## Checked 2026-11-26 (Deck: `Fallout4.esm` and DLC records, `Fallout4.exe` strings, offline Creation Kit wiki)
+
+| # | Result |
+|---|---|
+| 1 | Half right. `fPowerArmorNPCArmorDamageMultiplier` `001C9E3A` is in `Fallout4.esm` with value **3.0** (not 1.0). The player setting is `fPowerArmorPCArmorDamageMultiplier` (name found in the exe; no record in `Fallout4.esm`; default not read). `fPowerArmorArmorDamageMultiplier` was not found |
+| 2 | Name slightly off: `PowerArmorPreventArmorDamageKeyword` `001EDF43`, a default object. In `Fallout4.esm` it is referenced by `BoSPaladinDanse` `00027683` and quest `BoSKickOut` `0016FF04`. Effect on the player, and a way to add it without a script, unknown |
+| 3 | No entry point for incoming armor damage in the wiki's perk entry point list. It has `Mod Incoming Battery Damage` (core drain from damage in power armor) and `Mod Ammo Health Mult` (core capacity) |
+| 4 | Not checked |
+
 ## Next
-Read-only check in xEdit of open items 1 to 3 before anything is built. Fits the PAX concept (`concept-spec.md`); if it holds up, it becomes a module in `modules.md`.
+- Player default read in game (owner, 2026-11-26): `fPowerArmorPCArmorDamageMultiplier` = **1.00**.
+- Owner ruling and the open method are in [`modules.md`](modules.md), "Slower armor wear".
+- Thought for PAX (assistant, not decided): a global setting has no cost or drawback, so it is a tweak more than an upgrade; the two core entry points could carry an augment or attachment.

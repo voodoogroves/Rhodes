@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Preview the super mutant right-arm plate on the power armor left forearm. Standard library only.
 
-  python3 -I placeshield.py MESHES OUTDIR [--scale 1.0] [--slide 0] [--out 0|auto] [--tilt 0] [--roll 0] [--bend 0] [--write OUT.nif] [--mounts]
+  python3 -I placeshield.py MESHES OUTDIR [--scale 1.0] [--slide 0] [--out 0|auto] [--tilt 0] [--roll 0] [--bend 0] [--write OUT.nif] [--mounts] [--arm pa_t60_larm.nif]
 
 MESHES is a folder holding these, extracted from "Fallout4 - Meshes.ba2" with baunpack:
   actors/supermutant/characterassets/{skeleton.nif, smarmor0_arms.nif}
@@ -228,6 +228,7 @@ def main():
     ap.add_argument("--no-render", action="store_true")
     ap.add_argument("--write")
     ap.add_argument("--mounts", action="store_true")
+    ap.add_argument("--arm", default="pa_t60_larm.nif", help="left arm model in the PA mods folder")
     args = ap.parse_args()
     sm = os.path.join(args.meshes, "actors/supermutant/characterassets")
     pa = os.path.join(args.meshes, "actors/powerarmor/characterassets")
@@ -256,7 +257,7 @@ def main():
         p[0] += (lengths[1] - lengths[0]) / 2 + args.slide  # X runs along the forearm
         local[i] = p
 
-    arm = [(2, (s, s["tris"])) for s in posed(os.path.join(pa, "mods/pa_t60_larm.nif"), pa_bones)]
+    arm = [(2, (s, s["tris"])) for s in posed(os.path.join(pa, "mods", args.arm), pa_bones)]
     # "Outward" is from the forearm bone's axis to the middle of the plate.
     middle = [sum(p[a] for p in local.values()) / len(local) for a in (1, 2)]
     ny, nz = (c / math.hypot(*middle) for c in middle)
