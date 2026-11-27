@@ -4,7 +4,7 @@ Updated: 2026-11-27, from Steam Deck (VS Code)
 **Any other device (phone, iPad):** branch from `dev` and open the PR into `dev`.
 
 ## Next session
-Work through the **Raider** suit in detail (owner). Start at [`attachments/notes.md`](attachments/notes.md), "Raider: first suit"; shared rules, balance and suit themes are in [`common.md`](common.md).
+Continue the **Raider** set (owner). Start at [`attachments/notes.md`](attachments/notes.md), "Raider set as it stands"; shared rules, balance and suit themes are in [`common.md`](common.md). Mockup scripts: `scripts/nif/placeram.py` (both arms) and `scripts/nif/placerack.py` (shotgun rack); pictures are on the Deck in `~/Downloads/PAX-claw-previews/raider/`.
 
 Work on one area per session: read this file, [`common.md`](common.md), then that area's notes. Rewrite only that area's parts here. A final packaging session brings the areas together.
 
@@ -26,12 +26,13 @@ Shared: [`concept-spec.md`](concept-spec.md) is the unverified starting draft. `
 
 ## Attachments
 State:
+- Raider set (2026-11-27): claw, brick ram, shotgun rack (offline mockups the owner likes) and a scrap harness (idea). The shield goes to T-45 (owner). Arm swap spike in "PAX Test 1": not offered at the station.
 - Left arm shield: shows and "blocking looks great" on the T-60 (in game, owner). Position accepted for now. One model looks usable on all five suits (offline only). The one-gauntlet preview and dropped model (`scripts/nif/trimparts.py`) looks good in game.
 - Claws on the right arm: worn attachment raising punch and bash damage. Ritual Angled, officer and Assaultron are in "PAX Test 1". Passed in game (2026-11-27): equip, placement, double punch and bash damage, perk removal on unequip and suit exit, gun poses. Recipe gate seen, crafting not tried. No on-hit effects, no first-person model. Ritual In and Out are an older layout. Laser pistol officer claw is a mockup; Shishkebab is a preview only. Cost decided: items plus research bought with a SPECIAL point; some craftable once. Officer and Assaultron claw recipes noted. Ambient effects wanted. Tesla shield and arcing blades idea for T-60. Suit themes are in `common.md`.
 - Unexplained glitch: claws stopped drawing and stacked in one slot; a game restart cleared it, not reproduced ("Claw tests, third pass").
 - Under discussion: claws built into a per-suit arm model ("Clawed arm and per-suit attachments").
 
-Next: Raider arm swap spike on Tessa's Fist (station slot, item preservation, first person). Then crafting, on-hit effects, the laser pistol officer claw, housings. Away from the Deck: which suits get which claw, and the research cost.
+Next (assistant proposal): draw claw, brick and rack on one suit; then choose how the arms are delivered and prove one real model in game. The station swap failed (2026-11-27: no arm model slot offered). The upgrade was to apply to any Raider arm with Tessa's Fist keeping its ability, never taking a misc or lining slot (owner); a new crafted arm item would drop "any arm" and is not yet agreed. Claw ingredient: Kremvh's Tooth blade mod (strip tested in game). The shotgun rack takes the jetpack slot; its firing is untested.
 
 Open:
 1. Shields follow the claw research and cost rule (decided). Is there an offset or drawback?

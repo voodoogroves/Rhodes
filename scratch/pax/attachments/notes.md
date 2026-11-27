@@ -281,3 +281,104 @@ To decide:
 - SPECIAL stat for research, damage amounts, any drawback.
 - Whether the left arm gets anything, and whether the claw is only for the right arm.
 - Whether other Raider pieces get options.
+
+### Raider arm slot and Overboss (records read 2026-11-27)
+- The arm model slot `ap_PowerArmor_RArmMod` `00055F8E` has no display name and is not in the station's slot order list `do_ModMenuSlotKeywordList` `0005F814`; misc, paint and lining are named and listed. Whether the station offers it anyway is untested (the 2021 CK wiki describes the list as ordering the slots).
+- On that slot, base game, DLC and Creation Club right arm model mods: only `PA_T60_RArm` has a recipe. `PA_Raider_RArm` `00137B7F` has no name, recipe or target keywords. The recipe `co_DLC01_Armor_Power_T60_Tesla_ArmRight` makes `0100C57A`, not the arm mod `0100C575` (inferred: the whole armor piece).
+- `ma_PA_Raider_RArm` `00184180` is on the Raider right arm `00140C53` and the Overboss right arm (`DLCNukaWorld.esm` `xx00DC28`).
+- **Overboss:** every limb, torso and helmet is its own armor piece with higher stats (right arm health 130 against 75) and its own Overboss model mod (`DLC04_PA_Overboss_RArm` `xx00B8EA` and the like), on the same attach points. Its keywords on the right arm match the Raider arm's, so Raider arm mods apply to it. A claw arm model mod would replace the Overboss look unless we make a second one merged into `Overboss_Rarm.nif`.
+
+### Upgrade scope (owner, 2026-11-27)
+- The claw is an upgrade to **any Raider power armor arm**, Tessa's Fist included; on Tessa's Fist the base ability stays.
+- Open: does it cover Overboss arms (assistant: leave them out, per the suit theme table); right arm only, or both.
+
+### Arm swap spike (built and installed 2026-11-27, not yet tested)
+- In `PAXTest1.esp`: arm mods "PAX Spike Arm (T-60 look)" `xx000850` and "PAX Raider Arm" `xx000852` (restores the Raider model), each with a one-steel recipe, offered by `ma_PA_Raider_RArm`. Their record data is the vanilla Raider arm mod's, so only the model differs. No new models.
+- To answer: does the station show the slot; do the legendary, Hydraulic Bracers, name and lining survive; does swapping back work; save and reload.
+- If the slot does not show (assistant order): name the slot by overriding the keyword (breaks the no-change rule); swap by script (needs a compiler); keep the worn claw.
+- Previous plugin kept as `~/Downloads/PAXTest1.esp.before-arm-swap`.
+
+
+### Rules for arm upgrades (owner, 2026-11-27)
+- Arm upgrades never take a limb's misc or lining slot. They stack on vanilla mods, with a SPECIAL cost and a rare component.
+- Taking the jetpack's slot is acceptable.
+- The Raider claw is built as the arm's model, which the station does not normally offer (spike above).
+
+### Raider claw recipe: Kremvh's Tooth (owner, 2026-11-27; replaces the open ingredient question)
+- A SPECIAL cost for the recipe (stat open) and one unique item consumed on construction: Kremvh's Tooth.
+- Records read: the Tooth is a base `Machete` `00033FE0` with `mod_melee_Machete_Sacrificial` `001CF2A0`, so a recipe cannot ask for the Tooth itself. The mod has a loose item, `miscmod_mod_melee_Machete_Sacrificial` `0022576E` (a plain `MISC`), and no recipe in the base game or DLC makes the mod.
+- Proposed, not yet agreed: the recipe asks for that loose item. The player takes it off the Tooth at the weapon workbench by fitting the standard blade (`co_mod_melee_Machete_Standard` `0018785F`, no components or conditions). Untested in game.
+- Supply: leveled list `DN033_LL_Machete_Sacrificial` `0022576D` is used by two placed references: `00225B5E` in Dunwich Borers (`DunwichBorers01`) and `00198DC9` in an unnamed interior cell `00198DA2` at position zero (inferred: not reachable). No other use found in records; scripts not checked.
+
+### Arm swap spike result (in game, owner, 2026-11-27)
+- A Raider right arm and "Tessa's Fist" offered only the lining and misc slots at the power armor station (screenshot). Neither PAX arm mod was offered. T-60 check and save/reload not applicable.
+- The cause is taken to be the unnamed, unlisted attach point (inferred). The build had no control showing that a mod of our own record format appears at the station.
+- Kremvh's Tooth: the console leveled list `0022576D` gave the Tooth, and fitting another blade at the weapon workbench left the mod in inventory. **The recipe ingredient works as proposed** (crafting from it not yet tried).
+
+### Tessa's Fist (correction; replaces "Hydraulic Bracers" as read earlier)
+- `player.additem 00248487 1` gave an arm named "Tessa's Fist" with **No Misc Mod** (screenshot).
+- Records: its mods come from form list `CustomItemMods_DN109_TessasFist` `00248488`, read by `CustomItemQuest` `0022576B`, so a console copy does not get them (inferred). The list holds `001F1E0C` (Almost Unbreakable) and `00203748`, which is the **T-60** Hydraulic Bracers (`PA_T60_Arm_Misc_Unarmed`), not the Raider ones (`0020374A`). Whether the T-60 mod takes on the Raider arm in a real playthrough is not checked.
+
+## Raider weapons: two arms (owner, 2026-11-27)
+- Two weapons, no shield: Raiders are not defense. The super mutant shield is a T-45 option.
+- Right arm: the Tooth blade claw (Kremvh's Tooth, Dunwich Borers).
+- Left forearm: a brick bound with rebar, power-fist-like but mounted on the forearm, not a held weapon.
+- Source models found (read and previewed offline): `weapons\powerfist\rebarfist.nif`, the add-on of `mod_melee_Powerfist_SpikesLarge` `001849E1` (brick, three bars, chain), which matches the idea; `weapons\sledgehammer\mod_sledgehammer_cinderblock.nif` (`mod_melee_Sledgehammer_ExtraHeavyHead` `00185CFB`: block with two riveted bands). Previews in `~/Downloads/PAX-claw-previews/brick/`.
+- Open: left arm recipe and unique ingredient, one research or two, effects (punch effects probably apply to both fists), new crafted item or script upgrade.
+
+### Brick ram mockups (offline, 2026-11-27)
+- `scripts/nif/placeram.py` mocks it up on the Raider left arm. `rebarfist.nif` is the in-game **Puncturing** Power Fist mod, where the bars are spikes pointing forward; our mockup turns them back along the arm.
+- Owner, on the first three layouts: the one with the brick mounted toward the wrist was closest. Wanted: brick lined up with the start of the fingers, no curve in the bracing, and a piece of the Power Fist (its cuff) as one mount. The cuff may sink into the arm and rise above it as a partial curve.
+- Second version (`~/Downloads/PAX-claw-previews/raider/wrist_v2_arm.png`, not yet judged): brick spans 31 to 39 along the forearm, three straight bars rising to the cuff arc at 12, one placeholder strap at 22. Not checked: bent elbow, gun poses, textures, whether our writer can handle these shapes.
+- Owner changes after the second version, all applied in `placeram.py` (offline, not yet judged): brick tilted to lie along the bars; cuff raised so the outer bars meet it; cuff filled down into the arm with a wider foot, so no air gap; whole mount rolled 13 degrees round the arm to match the knuckle line. The foot is placeholder geometry and the strap is still a placeholder. Earlier pictures kept beside the new one as `wrist_v2_arm_before_tilt.png` and `wrist_v2_arm_before_foot.png` (the latter is the tilted version).
+- Third round (owner, 2026-11-27): ring slightly smaller; keep the strap, bent or strapped down, with the ordinary raider chest armor as a style reference; brick moved back to just past the arm armor if the bars still reach it. Applied: ring scale 1.25 (was 1.4); brick back face at 27.6 along the forearm (arm armor ends about 27), leaning only 0.07; bars overlap the brick by about 0.5; a generated tight strap with a buckle at 21. Reference looked at: `armor\raidermodarmor\{litetorso,medtorso}.nif` (material `Materials\Armor\RaiderModArmor\Armor.BGSM`); no piece borrowed yet. Previous picture: `wrist_v3_arm_before.png`.
+- Fourth round (owner, 2026-11-27): the rebar should reach **out** from the front of the brick, as on the Puncturing Power Fist (as well as the bars back to the mount); the brick looked too high and tilted up. Applied: the three vanilla bars added in front at their own lengths (longest tip about 53 along the forearm, fingertips about 41); bars and brick lean 0.22, which brings the brick down onto the wrist. Previous picture: `wrist_v4_arm_before.png`. Owner: the forward rebar looks good.
+- Fifth round (owner): the chain should actually wrap the brick; the ring flatter, with less of a peak. The vanilla chain also loops round the fist's front plate, so each link is now moved along the arm to lie on the brick; ring height 0.65 of its width. Applied, not yet judged.
+- Sixth round (owner: "this is looking really solid"): clip the forward bars back. Raider gear should have some asymmetry and roughness: outers shorter than the middle, kept half twisted. Applied (`SPIKES` in `placeram.py`): lengths past the brick 6.5, 9.0 (middle) and 4.8 (were about 12, 18 and 9), vanilla kinks squeezed in, each bent and swung differently. Previous picture: `wrist_v6_arm_before.png`. Not yet judged.
+- Seventh round (owner): the strap should join on each side with a bolt at each end, taking ideas from Gage's armor (Nuka-World). Reference read: `meshes\dlc04\clothes\gage\armorgo.nif` (`materials\DLC04\Clothes\Gage\GageHeavyArmor01.BGSM`): flat bent metal bars held by large hex bolts. Applied: the band runs over the bars to the same depth on both sides, with a plate and hex bolt at each end; buckle kept. Reference only; PAX stays base game, so no Nuka-World asset is used.
+- Full suit with both weapons drawn offline (`suit_wrist_v2.png`), not yet judged. Not checked: bent elbow, gun poses, textures, first person.
+
+## Raider: lore note and effects (owner, 2026-11-27)
+
+### Lore note
+- A note introducing the Raider upgrades, placed near **Outpost Zimonja**, where Boomer is (owner: one of the first enemies met in power armor). It talks about upgrading raider armor and points to a power fist, or to what Tessa did at Quincy, and the like.
+- Records read: `NPC_` `DN168_LvlRaiderBoss` `000AE154` is named Boomer; location `RelayTowerZimonjaLocation` `00055402` is Outpost Zimonja. His armor and the spot for the note are not checked.
+
+### Effects
+- Right (claw): **bleed and poison**.
+- Left (brick): **armor penetration and more melee damage**.
+- Not overpowered; themed to raider armor and to the weapons consumed.
+- Records read: Kremvh's Tooth's mod `001CF2A0` already carries `EnchWeapModBleed` `0009733E` and `ench_mod_LegendaryWeapon_DamagePoison` `00085700`. The Puncturing mod `001849E1` adds keyword `ap_melee_ArmorPenetrate` `00097342` and raises damage; it is a craftable mod (`co_mod_melee_Powerfist_SpikesLarge`).
+- Open: amounts; punch effects probably apply to both fists (no way is known to tie an effect to one arm), so the pair adds up on every punch; left arm ingredient (a Power Fist implied, not confirmed). Nothing built or tested.
+- Claw mount, owner: agreed it looked unfinished next to the ram; "spice up" the mount with bolts or wire mesh / fencing. Applied in `placeram.py` (offline, not yet judged; `writeclaw.py` and the in-game claw are unchanged): generated chain-link wire over the housing, one bolted band at the elbow end, hex bolts on the flanks, one blade 2.2 further forward.
+- Owner: the claw should roll like the ram to line up with the fingers. Applied: 13 degrees, from the right knuckle bones. Pictures `claw_v2_arm.png` (before the roll: `claw_v2_arm_before_roll.png`) and `suit_wrist_v2.png`.
+- Owner (2026-11-27): both arm mockups look good. Effects landing on every punch is accepted; keep them small for that reason.
+
+## Raider torso / legs (thinking aloud, owner, 2026-11-27; nothing decided)
+- A launcher, or something else for the torso or legs. Recalled: a robot mod that gives melee **attackers** a stack of bleed.
+- Records read: the Automatron spiked and serrated plates say "Melee targets bleed" and work through `DLC01Bot_CommonArmorPerk` `0100128C`, entry point 51 (Apply Combat Hit Spell), so it is the **wearer's** hits that bleed the target (inferred from the entry point). What does hurt attackers: Reactive Plates (`PA_Raider_Torso_Misc_Reactive` `001D0323`, reflects 50% melee damage) and the Punishing legendary. Far Harbor's freeze and burn attackers legendaries cast a spell from a script (`DLC03:dlc03_Legendary_OnMeleeEffect`). A no-script way to bleed attackers was not found; the 2021 CK wiki has a garbled line suggesting one entry point reaches attackers, not checked.
+- Owner (2026-11-27): loves the **junk launcher**; also wants an option for **increased durability** by strapping on extra junk. Details open (see also `../secondary-weapons/notes.md` and "Slower armor wear" in `../perks/notes.md`).
+- Owner (2026-11-27): the **scrap harness** goes on legs and torso and costs a SPECIAL point plus materials; looks: signs and junk clamped on.
+- Owner: for the launcher, an area burst that is not a grenade, with attacks to reference; otherwise lots of sawed-off shotguns.
+- Records read (`Fallout4.esm`; spread and count decoded by the assistant, not seen in game): explosions can spawn projectiles. `TrapfragGrenadeExplosion3` `001C037B` throws 15 of `TrapFragGrenadeProjectile2` over 120 degrees; `SentryShoulderClusterExplosionChild` `00216362` 5 over 30; `HeavyProjectileExplosion` `001B88DA` spawns shrapnel (`MedShrapnelProjectileChild`). Sawed-off barrel: `mod_DoubleBarrelShotgun_BarrelShotgun_VeryShort` `00149CA5`.
+- Owner (2026-11-27): the scrap harness could increase both durability and protection. Next: mock up the shotgun rack.
+- Shotgun rack, first mockup (offline, not yet judged): `scripts/nif/placerack.py`; pictures `~/Downloads/PAX-claw-previews/raider/rack_back.png` and `rack_suit.png`. Five sawed-offs (`weapons\shotgun\` receiver, short barrel and short stock) fanned over the shoulders at uneven angles, three on the left and two on the right, two bolted bands, two rebar uprights, a wire fence patch. Not checked: pauldron and arm movement, textures, clipping with the helmet cage, whether the writer can handle these shapes.
+- Rack, owner changes (2026-11-27): face the guns forward; one of each barrel (handmade triple, handmade double, base double sawed-off, combat shotgun), one by each side of the head and one low on each side; too arm-mounted on hips and shoulders, so on the torso and head; shorter barrels are fine. Applied in `placerack.py`: head pair at about 154 high, chest pair at about 111, barrels at 0.55 of the short length (combat 0.7), fitted bolted clamps, rebar struts. The handmade shotguns come from `ccFRSFO4001-HandmadeShotgun` (Creation Club), which becomes a requirement; this replaces "base game only" for the Raider set. Offline, not yet judged; skinned to which bone is undecided (the head pair would not turn with the head if on the torso).
+- Rack, next change (owner): lower pair slid back, mounted at the belt; upper pair down by the neck, poking out of the helmet mesh. Applied: upper guns at 139 high, muzzles out through the cage; lower at about 100, beside the waist. Previous pictures `rack_front_v3.png`, `rack_suit_v3_chest.png`. Not yet judged; arm clipping not checked.
+- Rack, next change (owner): slide the guns back; the neck barrels can be longer and rest along the collar; drop the back straps, add a few on the sides. Applied: collar pair slid back with full short barrels (combat 0.85); belt pair slid back about 10; back bands, uprights and fence patch removed; a bolted strap along each side at belt and collar height. Previous pictures `rack_front_v4.png`, `rack_suit_v4_neck.png`. Not yet judged.
+- Owner (2026-11-27), on the fifth rack layout: it captures an amusing raider concept. Committed as it stands.
+
+## Raider set as it stands (2026-11-27; summary, replaces the open items in "Raider: first suit")
+
+| Piece | Does | Cost (owner) | State |
+|---|---|---|---|
+| Claw, right arm (Kremvh's Tooth blade) | Bleed, poison | SPECIAL + the blade | Worn test claw passed in game; dressed mockup offline |
+| Brick ram, left arm | Armor penetration, melee damage | SPECIAL; a Power Fist implied, not confirmed | Offline mockup, owner: looks good |
+| Shotgun rack, jetpack slot | Area volley | Takes the slot; no extra cost is the assistant's reading of the balance rule | Offline mockup, owner likes it |
+| Scrap harness, torso and legs | Durability and protection | SPECIAL + materials | Idea only |
+
+- Punch effects land on every punch (accepted); keep them small.
+- Lore note near Outpost Zimonja.
+- The rack needs Creation Club `ccFRSFO4001-HandmadeShotgun`.
+- Open: how the arms are delivered (station swap failed; script swap, new crafted arm item, or worn piece; the owner has not chosen after the new-item proposal), how the rack fires (grenade type untested, spray direction unknown), real models (writer handles only simple one-bone shapes so far), body slots for several worn pieces, textures, bent elbow, gun poses, arm clipping, first person, the SPECIAL stat, a compiler.
+

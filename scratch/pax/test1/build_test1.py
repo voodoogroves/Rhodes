@@ -25,6 +25,13 @@ Round 3, ritual claw gauntlet (right arm, slot 53), no scripts:
   Chemistry station recipe: Claw In from a machete and one steel, gated on the perk
   PAXClawResearch (add it by console; the real research and SPECIAL cost need a script).
 
+Round 4, Raider right arm swap spike, no scripts and no new models:
+  Two arm model mods of our own on the vanilla arm model attach point, offered only on items with
+  ma_PA_Raider_RArm (the plain Raider right arm and the Overboss one carry it):
+  "PAX Spike Arm (T-60 look)" points at the vanilla T-60 right arm so a swap is obvious, and
+  "PAX Raider Arm" points back at the vanilla Raider model. Each has a one-steel recipe. The
+  question is whether the power armor station offers the slot and what the swap keeps.
+
 Writes PAXTest1.esp (light; master Fallout4.esm) in a zip that MO2 can install. It holds only
 records that point at base game models; the add-perk magic effect's data is copied from
 Fallout4.esm at build time. The zip is build output: do not commit it.
@@ -203,6 +210,36 @@ def claws():
             "PERK": [damage, research]}
 
 
+RAIDER_ARM_MOD, T60_ARM_MOD = 0x00137B7F, 0x00055F93  # OMOD PA_Raider_RArm, PA_T60_RArm
+RAIDER_RIGHT_ARM = 0x00184180                       # keyword ma_PA_Raider_RArm
+ARM_ATTACH_POINT = 0x00055F8E                       # ap_PowerArmor_RArmMod
+ARM_SWAPS = [  # editor id, name, vanilla mod whose model it uses; append only (form IDs from 0x850)
+    ("PAXSpikeArm", "PAX Spike Arm (T-60 look)", T60_ARM_MOD),
+    ("PAXRaiderArm", "PAX Raider Arm", RAIDER_ARM_MOD),
+]
+
+
+def arm_swaps():
+    """Arm model mods and their recipes. DATA is the vanilla Raider arm mod's, unchanged, so the
+    attach point, child slots and added keywords match; only the model differs."""
+    vanilla = {formid: dict(fields) for _, formid, fields in esp.records(str(GAME), {"OMOD"})
+               if formid in (RAIDER_ARM_MOD, T60_ARM_MOD)}
+    data = vanilla[RAIDER_ARM_MOD]["DATA"]
+    if struct.unpack_from("<I", data, 16)[0] != ARM_ATTACH_POINT:
+        raise SystemExit("FAIL: the vanilla Raider arm mod is not on the expected attach point")
+    mods, recipes = [], []
+    for n, (edid, name, source) in enumerate(ARM_SWAPS):
+        omod, cobj = 0x01000850 + 2 * n, 0x01000851 + 2 * n
+        mods.append(record("OMOD", omod, b"".join([
+            text("EDID", edid), text("FULL", name), text("DESC", "Arm swap test."),
+            sub("MODL", vanilla[source]["MODL"]), sub("DATA", data),
+            u32("MNAM", RAIDER_RIGHT_ARM)])))
+        recipes.append(record("COBJ", cobj, b"".join([
+            text("EDID", edid + "Recipe"), sub("FVPA", struct.pack("<2I", STEEL, 1)),
+            text("DESC", ""), u32("CNAM", omod), u32("INTV", 1)])))
+    return mods, recipes
+
+
 def build():
     armor, addons = [], []
     for n, (edid, name, slot, model, piece) in enumerate(ITEMS):
@@ -220,8 +257,10 @@ def build():
             text("MOD2", model), text("MOD3", model), u32("MODL", POWER_ARMOR_RACE)])))
     drawback, perks, recipe = extras()
     claw = claws()
+    swaps, swap_recipes = arm_swaps()
     groups = [("MGEF", claw["MGEF"]), ("ENCH", [drawback] + claw["ENCH"]), ("ARMO", armor + claw["ARMO"]),
-              ("ARMA", addons + claw["ARMA"]), ("COBJ", [recipe] + claw["COBJ"]), ("PERK", perks + claw["PERK"])]
+              ("ARMA", addons + claw["ARMA"]), ("COBJ", [recipe] + claw["COBJ"] + swap_recipes),
+              ("PERK", perks + claw["PERK"]), ("OMOD", swaps)]
     count = sum(len(r) for _, r in groups) + len(groups)        # records and groups
     header = record("TES4", 0, b"".join([
         sub("HEDR", struct.pack("<fiI", 1.0, count, 0x860)), text("CNAM", "PAX test"),
