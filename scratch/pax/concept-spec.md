@@ -24,7 +24,7 @@ Concerns not marked *checked* come from general FO4 knowledge, untested. Section
 - Every upgrade has a cost or a trade-off: it costs something, or has a drawback that makes the player ask "why would I use it".
 - Upgrades stack on top of vanilla mods; existing records are left alone so other power armor mods don't conflict.
 - Example: a perk overclocking Motion-Assist Servos, +1 Strength per perk spent up to a maximum, only in power armor.
-- Working table of modules: `modules.md`.
+- Working notes: `common.md` and the `notes.md` in each area folder (see `handoff.md`).
 - Gate progression to make it interesting: robot-themed upgrades behind knowing the robot recipe (Automatron); others behind quests or recovering an object; simple overclocks and expertise behind perks.
 
 ### Gating without our own script
