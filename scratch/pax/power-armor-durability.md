@@ -41,5 +41,6 @@ Its answer, in short: no script needed. Record edits are lighter than scripts, d
 | 4 | Not checked |
 
 ## Next
-- In game, read the player default: `getgs fPowerArmorPCArmorDamageMultiplier`.
+- Player default read in game (owner, 2026-11-26): `fPowerArmorPCArmorDamageMultiplier` = **1.00**.
+- Owner ruling and the open method are in [`modules.md`](modules.md), "Slower armor wear".
 - Thought for PAX (assistant, not decided): a global setting has no cost or drawback, so it is a tweak more than an upgrade; the two core entry points could carry an augment or attachment.

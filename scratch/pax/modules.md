@@ -432,6 +432,13 @@ Proposed stats, unconfirmed:
 - Round 2 in the test plugin (installed in MO2 2026-11-26; results below): "PAX Shield (proof)" with armor 50, energy 30 and -1 Agility while worn (`abReduceAgility`); perk `PAXSprintProof` `xx000811` (no sprint AP cost, only in power armor); perk `PAXLockProof` `xx000812` (prompt "PAX: Force Lock" on locked objects in power armor, does nothing); chemistry station recipe making the shield from `00248FD3` and one steel.
 - Round 2 results (in game, owner, 2026-11-26): the worn effects apply and reverse on removal. "PAX: Force Lock" shows with the perk in power armor, does nothing, and is not offered outside the suit. The recipe lists at the chemistry station, but the preview shape looks wrong (probably our zero bounds and missing preview transform; fixed in the script, not yet seen). Crafting from the gauntlet made the shield without a crash. Sprint perk works: no AP drain in power armor, normal drain outside (an earlier "no drain anywhere" was god mode). All four round 2 tests pass.
 - Craft preview and dropped item (in game, owner, 2026-11-26): copying the vanilla gauntlet's bounds and preview transform (`PTRN` `0022FD4B`) fixed the stretched preview; both then showed the two super mutant arm pieces. Owner: drop the other gauntlet. The shield items now use a trimmed copy (`scripts/nif/trimparts.py --keep 1`, collision unchanged); not yet seen in game.
+- In game (owner, 2026-11-26): the one-gauntlet dropped model looks good, and so does the chemistry station preview.
+
+## Slower armor wear (augment, costs SPECIAL; owner, 2026-11-26)
+- On the "costs a SPECIAL" list. A multi-point investment that slows power armor wear; never off (Danse-style immunity is too strong). Floor: about 25% of normal wear at the highest.
+- Assistant suggestion, not agreed: three ranks at 75%, 50% and 25% wear. SPECIAL stat open.
+- Read in game: `fPowerArmorPCArmorDamageMultiplier` is 1.00 (NPC setting 3.0, see [`power-armor-durability.md`](power-armor-durability.md)). That setting is global, so it cannot follow a perk rank without a script.
+- Method open. Untested lead (inferred): the perk entry point `Mod Incoming Limb Damage`, conditioned on wearing power armor, if piece wear follows limb damage (the exe has `fPowerArmorLimbDamage...` settings).
 
 ## Fist weapons in power armor (read from "WaFists DLC", Nexus 25358, 2026-11-26)
 - Its fist weapons are new `WEAP` records whose `DNAM` animation type is 1 (one-handed sword) instead of 0 (hand to hand). The Deathclaw Gauntlet copy differs from vanilla in only that byte; unarmed keywords are kept. *(inferred: this is what lets the suit equip them; untested by us)*
