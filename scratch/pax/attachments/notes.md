@@ -375,10 +375,19 @@ To decide:
 | Claw, right arm (Kremvh's Tooth blade) | Bleed, poison | SPECIAL + the blade | Worn test claw passed in game; dressed mockup offline |
 | Brick ram, left arm | Armor penetration, melee damage | SPECIAL; a Power Fist implied, not confirmed | Offline mockup, owner: looks good |
 | Shotgun rack, jetpack slot | Area volley | Takes the slot; no extra cost is the assistant's reading of the balance rule | Offline mockup, owner likes it |
-| Scrap harness, torso and legs | Durability and protection | SPECIAL + materials | Idea only |
+| Scrap harness, torso and legs | Durability and protection | SPECIAL + materials | Offline mockup |
 
 - Punch effects land on every punch (accepted); keep them small.
 - Lore note near Outpost Zimonja.
 - The rack needs Creation Club `ccFRSFO4001-HandmadeShotgun`.
 - Open: how the arms are delivered (station swap failed; script swap, new crafted arm item, or worn piece; the owner has not chosen after the new-item proposal), how the rack fires (grenade type untested, spray direction unknown), real models (writer handles only simple one-bone shapes so far), body slots for several worn pieces, textures, bent elbow, gun poses, arm clipping, first person, the SPECIAL stat, a compiler.
 
+
+## Scrap harness junk (owner, 2026-11-27)
+- Picks: **hubcap, frying pan, signs**, and a stuffed animal such as a **teddy bear** to help absorb shocks.
+- The **manhole cover** is saved for a second shield later.
+- First harness mockup (offline, not yet judged): `scripts/nif/placeharness.py`, picture `~/Downloads/PAX-claw-previews/raider/harness_suit.png`. Highway sign on the chest, Diamond City street sign across the left thigh, frying pan at the waist, hubcap on the right knee, dirty teddy bear strapped to the left knee. Models: `setdressing\signage\highwaysign01`, `setdressing\dmndclutter\dmndstreetsign01` (boards only), `vehicles\automotive\automotivehubcap01`, `setdressing\playerhouse\playerhouse_potsfryingpan01`, `setdressing\teddybear\toyteddybeardirty01`. Known faults: the suit shows through a notch in the chest sign; the pan stands a little off the waist. Not checked: leg movement, textures.
+- Harness, second version (owner changes): leg items off the knees and angled outward, one on each calf and one on a thigh; frying pan off the waist; chest sign bent to the chest; one item wrapped in chain and one in fencing instead of metal straps. Applied: hubcap chained to the right calf, teddy bear (a little bigger) caged in fencing on the left calf, pan on the right thigh, street sign stays on the left thigh, chest sign conformed to the surface under it. Faults: the middle of the street sign sinks into the thigh. Previous picture `harness_suit_v1.png`. Not yet judged.
+- Harness, third version (owner: do the touch-ups, and put the leg items at different places round the leg). Applied: right thigh pan on the outer side, right calf hubcap toward the front, left thigh sign toward the front, left calf bear on the outer side; street sign stood off so all of it shows; fencing top edge ragged, upper wire band removed. Faults: the street sign now stands off with a visible gap at its ends. Previous picture `harness_suit_v2.png`. Not yet judged.
+- Harness, fourth version (owner: close the sign gap, bending is fine): the street sign is now beaten to the thigh like the chest sign. In the whole-set picture its lower end looks crumpled.
+- Whole set on one suit: `scripts/nif/placeset.py`, picture `raider_set.png` (offline, not yet judged). Not checked: movement and clipping between pieces and arms, textures, first person.

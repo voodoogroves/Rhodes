@@ -329,6 +329,19 @@ def ram(meshes, points):
     return parts
 
 
+def worn_claw(meshes, right_points):
+    """The dressed claw's parts in right forearm coordinates."""
+    # The claw is laid out with the right hand's knuckles level, then rolled round the arm to match.
+    c, n = math.cos(math.radians(-ROLL)), math.sin(math.radians(-ROLL))
+    level = [(x, y * c + z * n, z * c - y * n) for x, y, z in right_points]
+    claw, _ = claws["build"]("ritual", meshes, level)
+    bend = claws["pitched"](9.0)
+    claw = claw[:1] + [(k, moved(q, q["tris"], bend)) for k, q in claw[1:]]
+    claw = [(k, moved(q, q["tris"], lambda p: (p[0], p[1] * c - p[2] * n, p[1] * n + p[2] * c)))
+            for k, q in dress(claw, level)]
+    return claw
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("meshes")
@@ -351,14 +364,7 @@ def main():
     print("arm drawn", flush=True)
 
     right, right_points = arm(meshes, bones, "R")
-    # The claw is laid out with the right hand's knuckles level, then rolled round the arm to match.
-    c, n = math.cos(math.radians(-ROLL)), math.sin(math.radians(-ROLL))
-    level = [(x, y * c + z * n, z * c - y * n) for x, y, z in right_points]
-    claw, _ = claws["build"]("ritual", meshes, level)
-    bend = claws["pitched"](9.0)
-    claw = claw[:1] + [(k, moved(q, q["tris"], bend)) for k, q in claw[1:]]
-    claw = [(k, moved(q, q["tris"], lambda p: (p[0], p[1] * c - p[2] * n, p[1] * n + p[2] * c)))
-            for k, q in dress(claw, level)]
+    claw = worn_claw(meshes, right_points)
     render([(SUIT, (q, q["tris"])) for q in right] + [(c, (q, q["tris"])) for c, q in claw], 600,
            os.path.join(args.outdir, "claw_v2_arm.png"))
     print("claw drawn", flush=True)

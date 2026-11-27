@@ -178,18 +178,9 @@ def rebar(meshes, a, b, which):
     return [(BAR, moved(shape, group, fn))]
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("meshes")
-    ap.add_argument("outdir")
-    ap.add_argument("--full", action="store_true")
-    args = ap.parse_args()
-    meshes = args.meshes
-    if os.path.isdir(os.path.join(meshes, "meshes")):
-        meshes = os.path.join(meshes, "meshes")
+def build(meshes, bones):
+    """The rack's parts on the suit."""
     pa = os.path.join(meshes, "actors/powerarmor/characterassets")
-    bones = place["skeleton"](os.path.join(pa, "skeleton.nif"))
-
     body = []
     for model in ("frame.nif", "mods/pa_raider_body.nif"):
         for q in place["posed"](os.path.join(pa, model), bones):
@@ -212,6 +203,22 @@ def main():
         for lift in (-2.5, 2.5):
             rack += rebar(meshes, (side * 7.0, held[1] - 7.0, held[2] + lift),
                           (held[0] - side * 3.5, held[1], held[2] + lift), n % 3)
+    return rack
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("meshes")
+    ap.add_argument("outdir")
+    ap.add_argument("--full", action="store_true")
+    args = ap.parse_args()
+    meshes = args.meshes
+    if os.path.isdir(os.path.join(meshes, "meshes")):
+        meshes = os.path.join(meshes, "meshes")
+    pa = os.path.join(meshes, "actors/powerarmor/characterassets")
+    bones = place["skeleton"](os.path.join(pa, "skeleton.nif"))
+
+    rack = build(meshes, bones)
 
     os.makedirs(args.outdir, exist_ok=True)
     sets = [("rack_front.png", ("body", "helmet", "larm", "rarm"))]
