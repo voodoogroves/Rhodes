@@ -445,6 +445,109 @@ Proposed stats, unconfirmed:
 - It also overrides `PowerArmorRace` with no change we found beyond attack order and literal strings, and ships facial bone files; both look like editor leftovers. PAX should not override the race.
 - Needs Far Harbor.
 
+## Claw gauntlets (owner, 2026-11-26)
+
+Lightning-claw style: 2-3 blades on a chassis on the **right** forearm, fought with the punching animations.
+
+- **Chosen: way 1.** A worn attachment like the shield, always on, that raises punch and bash damage while equipped. Way 2 (a separate weapon swapped in, as in WaFists) is not chosen now; owner says it is known to work from that mod.
+- Shishkebab and electrified officer claws should carry their fire and shock (read by the assistant as damage and look; owner to correct).
+
+| Claw | Blades | Source model | Housing extras |
+|---|---|---|---|
+| Shishkebab | 2 | `weapons\shishkebab\shishkebab.nif` | Gas canister, pipes, nozzles, valve |
+| Officer (electric) | 2 | `weapons\chineseofficersword\serratedbladeshock.nif` | Battery and wires |
+| Assaultron | 3, staggered | `dlc01\weapons\assaultronblade\vibroblade.nif` (`DLCRobot - Main.ba2`) | Open |
+| Ritual | 3, staggered | `weapons\machete\sacrificalblade.nif` | Open |
+
+- Suggested, not agreed: one body slot for all claws; drawback of worse gun handling (fallback: the -1 Agility worn effect).
+- Open: damage amounts, drawback, unlock (needs the source weapon?), whether bash triggers on-hit effects.
+
+Models read (2026-11-26):
+- The shock officer blade already has a coil and wires (`SerratedBladeShock:1`) and a pack at the root (`SerratedBladeShock:2`).
+- In `Shishkebab_02:0`, loose part 18 is the blade, 1 the grip, 4 the trigger lever; the rest is tank, valve and pipes. Flames are separate effect shapes and particles with controllers; not examined for reuse.
+- Right forearm bone `RArm_ForeArm1`: X toward the hand (hand joint 27, fingertips about 41), Y across the knuckles (thumb positive), Z out of the back of the hand.
+- Preview script: `scripts/nif/placeclaw.py` (generated placeholder chassis; writes no game model).
+- First layouts (offline, T-60 only, not yet judged by the owner): blades angled 9 degrees down beyond the chassis; officer pack on the chassis with generated cables; shishkebab tank and pipes on top, its pipe ends sitting above the blades. Elbow bend, gun poses and other suits not checked.
+
+Records read from `Fallout4.esm` (2026-11-26):
+- `PowerArmorRace` unarmed weapon is `UnarmedPowerArmor` `000C2C32`, keyword `WeaponTypeUnarmed` `0005240E`.
+- Iron Fist: perk entry point 35 (read as Mod Attack Damage), multiply, weapon-tab `HasKeyword WeaponTypeUnarmed`; ranks x1.2, 1.4, 1.6, 1.8.
+- Basher: entry point 26 (inferred: bash damage), multiply x1.25, 1.5, 1.75, 2, no conditions.
+
+### Claw cost and unlock (owner, 2026-11-26)
+
+- Both: crafting **needs items** (consuming a one-off source weapon takes it out of the game), **and** the recipe is gated behind research and training paid for with a SPECIAL point (the proxy perk cost). Invest the point, then get the recipe.
+- Some claws can be crafted only once.
+- Open: which SPECIAL stat, one research per claw or one for all, whether this replaces "no perk point, find or use the item" for the shield too. The SPECIAL spend needs a script.
+
+Records read from `Fallout4.esm` (2026-11-26):
+- Kremvh's Tooth appears to be a base `Machete` `00033FE0` with mod `mod_melee_Machete_Sacrificial` `001CF2A0`, from leveled list `DN033_LL_Machete_Sacrificial` (two placed references use that list). A recipe asking for a Machete takes any machete; a one-off ingredient needs our own plain item.
+- Shishkebab looks **not** unique: `LL_Shishkebab` is also in `LL_Weapon_Melee_All_Unique` and the legendary melee base list. Quest `DN121` uses it. In-game supply not checked.
+
+### Ritual claw test build (2026-11-26, installed, not yet seen in game)
+
+- Owner: two blades, flat face turned (edge inward, outward or angled) instead of edge down. Three variants built: `--roll -90` (In), `90` (Out), `45` (Angled, angled outward).
+- `scripts/nif/writeclaw.py` writes the model (blades with `MacheteBladeSacrificial.BGSM`, housing with `T60Arm01.BGSM`).
+- In `PAXTest1.esp`: "PAX Claw In / Out / Angled", slot 53; worn perk doubles unarmed and bash damage (test value); chemistry station recipe for Claw In from a machete and one steel, gated on perk `PAXClawResearch`.
+- Previous plugin kept on the Deck as `~/Downloads/PAXTest1.esp.before-claws`.
+- Owner, 2026-11-26: **Angled** looks best in the mockups (not yet seen in game).
+- On-hit effects need no script (read): Iron Fist adds disarm with perk entry point 51 (read as Apply Combat Hit Spell), a chance condition and a weapon-tab unarmed condition. Not yet tried on the claw.
+- Owner, 2026-11-26: the Assaultron blade's electrified version does the same shock as the officer claw (no stagger); they may differ in requirements and styling. Officer blades lie flat (rolled 90), Assaultron blades stay edge down. Two blades each.
+- Installed, not yet seen in game: "PAX Claw Officer" and "PAX Claw Assaultron" (`writeclaw.py --claw officer` / `assaultron_shock`). Same test damage perk; **no shock effect yet**.
+
+### Claw crash (2026-11-26, open)
+
+- In game (owner): equipping "PAX Claw Angled" crashed the game. No crash dump found. The model passes structural checks; cause unknown.
+- Owner: only Angled crashed, and it was the first claw tried; read as the others equipping fine. So possibly a first-equip problem and not that model (unproven). Retry Angled first.
+- Later (owner): Assaultron also crashes. All five installed claw models share the same block layout and pass the same structural checks, including the ones not reported to crash. `crashDumps` is empty.
+- Installed to separate causes: "PAX Diag Model" (Angled model, no perk) and "PAX Diag Perk" (shield model, claw perk), both slot 53.
+
+### Claws in game (owner, 2026-11-26)
+
+- "PAX Diag Model" (the Angled model) equips and shows on the right forearm with textures (screenshot). "PAX Diag Perk" equips; it shows as the shield, as built.
+- Crash seen when equipping Diag Model again after Diag Perk (both slot 53).
+- Diag Model also crashed on the first equip of a later run, so the crash is intermittent. Diag Perk survived ten equips. Suspect: the claw model files. Next split: "PAX Diag Blades" and "PAX Diag Metal".
+- Wanted: ritual blades slid up so the first hook near the hilt lands on the edge of the block mount (script now slides them back 5; **not installed yet**). Later: a few small bolts, dots or screws as fasteners.
+- Split items "PAX Diag Blades" and "PAX Diag Metal" installed 2026-11-27. Previous plugin kept as `~/Downloads/PAXTest1.esp.before-split`.
+- "PAX Diag Blades" crashed on equip (owner, 2026-11-27). Metal not yet tested. A byte comparison with the working shield and the T-60 arm (offline) showed no structural fault in the blade model. Owner: if Metal does not crash, the ritual blades go on hold.
+- "PAX Diag Metal" did not crash (owner, 2026-11-27; number of tries not reported). **Ritual blades are on hold.** The fault looks to be in the blade shape (copied geometry or the weapon's material and shader), not in the writer as a whole. Assaultron also crashed and is built the same way; the officer claw is too.
+- Installed 2026-11-27, not yet tested: "PAX Diag Swap", the crashing blade shape with the T-60 metal material (`writeclaw.py --only source --paint metal`). Previous plugin kept as `~/Downloads/PAXTest1.esp.before-swap`.
+- "PAX Diag Swap" crashed on equip (owner, 2026-11-27), so the weapon material is not needed for the crash. Offline, the blade vertex data shows no bad values, unused vertices or empty triangles. Differences left between the claw writer and the working shield: 3 segments against 5, root node flags, file header source.
+- Installed 2026-11-27, not yet tested: "PAX Diag Pack", the crashing blades with the shield's packaging (`writeclaw.py --only source --like-shield`). Previous plugin kept as `~/Downloads/PAXTest1.esp.before-pack`.
+- "PAX Diag Pack" crashed on the first equip (owner, 2026-11-27): the shield's packaging does not cure it. Proposed next: a crash logger. A web search (not verified here) found Addictol Crash Logger (Nexus 84214), whose page says it supports 1.11.240; it needs Address Library for F4SE Plugins.
+
+### Claw crash cause (2026-11-27; fix installed)
+
+- Addictol Crash Logger 1.7.0 (installed on the Deck from its GitHub release) caught "PAX Diag Pack": access violation in `BSFixedString::operator=`, under `NiStream::LoadFixedString` and `BSLightingShaderProperty::LoadBinary`.
+- Cause (read in the files): a lighting shader holds two string references, its material name and a root material (offset 60 in these models). `writeclaw.py` rebuilt the string table and updated only the first, so the second pointed past the end. All claw and diag models had this, including "Diag Metal", which happened not to crash. The shield keeps the source's whole table.
+- Fixed in `writeclaw.py`, which now also checks both references on read-back. The five claw models and "Diag Pack" were rebuilt and installed; ritual claws now include the 5 unit slide back. Old models kept in `~/Downloads/PAX-claw-models.before-fix/`.
+- The ritual hold was a response to this crash; lifting it waits on the in-game test.
+- In game (owner, 2026-11-27): rebuilt "PAX Claw Angled" equipped ten times with no crash. Other claws still to be tried.
+
+### Claw looks in game (owner, 2026-11-27)
+
+- Screenshots show the ritual Angled, Assaultron and officer claws worn, textured.
+- Ritual Angled: good enough; the rough, welded-on look suits the blades. Wanted: slid up so they reach less far past the hand. Housing texture or detail later.
+- Assaultron: blades look right. Wanted: slid up until the points are about level with the knuckles; **three** parallel blades, same orientation. Later, a housing shaped after a robot (sentry bot, Protectron, Assaultron or Mr Handy).
+- Officer: a bit long, slide up. Coil and wires are liked; wanted about four batteries in a line.
+- Built for this (not yet seen in game): slide back 11 (ritual), 19.2 (Assaultron), 12 (officer); knuckles are about 35 along the forearm.
+- Installed 2026-11-27, not yet seen in game: ritual (In, Out, Angled), officer with four batteries, three-blade Assaultron. Parts of a blade behind a cut inside the housing are left off. Old models kept in `~/Downloads/PAX-claw-models.before-slide/`.
+- Owner idea (2026-11-27): officer claw mounted in **two laser pistol bodies**, blades out of the muzzles, extra wires. Mocked up offline (`placeclaw.py --claw officer_laser`, `~/Downloads/PAX-claw-previews/laser/`), pistol parts `laserreceiver.nif` and `laserpistolbarrel.nif`; no batteries in this version. Owner: very amusing, the silly-and-dangerous Fallout mix they enjoy; the pistols could sit closer (mockup moved from 3.4 to 2.5 off the middle). `writeclaw.py` cannot write it yet (some pistol shapes have another vertex layout or a node rotation).
+
+### Claw looks, second pass (owner, 2026-11-27)
+
+- Screenshots: ritual angle good but the join looks flimsy (wanted: blades parallel to the block, or straps over the join, perhaps a flatter top or matching bevel). Assaultron a little short. Officer length is right: tips should land between the start and the end of the fingers.
+- Calibration: in the game's relaxed pose a tip near 45 along the forearm lands among the fingers; the earlier "knuckles at 35" target was too short.
+- Installed, not yet seen in game: Angled ritual on a straight block with 45 degree faces, blades lying on them under two straps with bolt heads; Assaultron tips at 45. In and Out ritual not rebuilt. Old models in `~/Downloads/PAX-claw-models.before-straps/`.
+- Wanted later: a rounded, robot-like Assaultron housing; perhaps the back of the power fist as a detail.
+
+- In game (owner, 2026-11-27): placement is good on all the current claws; the straps over the ritual blades are liked.
+- The "PAX Diag" crash test items (IDs 840 to 84B) were removed from the test plugin.
+
+### Shishkebab claw look (owner, 2026-11-27)
+
+- Wanted: angled blades like the ritual Angled claw, because the Shishkebab blade arcs with a curve. Not yet mocked up.
+
 ## Open questions
 
 - Spending a real perk point: how does a new perk get offered? Adding to the vanilla perk chart may not be possible without changing the interface; a holotape or terminal would need script.
