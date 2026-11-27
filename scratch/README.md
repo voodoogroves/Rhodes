@@ -37,3 +37,4 @@ Add a line when an idea gets a folder or its first handoff.
 |---|---|---|
 | `pax` | `concept-spec.md`, `modules.md`, `power-armor-durability.md` (Gemini, unvalidated), `notes-future-ideas.md` (parked ideas) | `handoff.md` |
 | `regalia-of-mystery` | `concept-spec.md`, `checkpoint.md` | `checkpoint.md` predates this convention |
+| `outfits` | `handoff.md` (scripts in `scripts/nif/`) | `handoff.md` |
