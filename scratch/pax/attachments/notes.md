@@ -424,3 +424,4 @@ To decide:
 - **Backup recipes (owner, 2026-11-27):** a bit of a hunt is fine, with cover for accidental scrapping. Chemistry station: teddy bear from cloth 10, leather 3, adhesive 3; cooking pot from steel 10, copper 3; hubcap from aluminum 8, steel 4, screws 4. Records read, they scrap into cloth 3 + leather 1, steel 2 + copper 1, aluminum 2 + screws 2. Amounts are the assistant's. Not checked: whether workbench crafting can consume the Kremvh's Tooth blade mod.
 
 - Backups and the "Scrappy" name: installed 2026-11-27, not yet tested; previous plugin kept as `~/Downloads/PAXTest1.esp.before-backups`.
+- In game (owner, 2026-11-27): all four tests pass (three backup recipes with their costs, each makes the normal item, the stitched bear is accepted by the leg recipe, the leg is named "Scrappy Raider Left Leg"). The leg still shows the Overboss placeholder shape, as built.
