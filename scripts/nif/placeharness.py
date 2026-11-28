@@ -45,11 +45,12 @@ PIECES = (
     (STREET, "setdressing/dmndclutter/dmndstreetsign01", (0, -1, 0), (0, 0, 1),     # lettered face
      (-13.0, -2.0, 67.0), (-0.3, 0.95, 0.0), (-0.65, -0.2, 0.73), 27.0, -0.3,
      ((-0.85, 0.0), (0.85, 0.0)), (), None),
+    # The pan's round part lies over the knee's side, its handle running up the thigh.
     (PAN, "setdressing/playerhouse/playerhouse_potsfryingpan01", (0, 0, -1), (0, 1, 0),
-     (13.0, -2.0, 67.0), (0.99, 0.12, 0.0), (0.02, -0.2, 1.0), 23.0, 1.0,
+     (12.5, -3.0, 66.2), (1.0, 0.08, 0.0), (0.14, 0.07, -1.0), 30.0, 1.0,
      ((0.0, 0.62),), (0.3,), None),
     (CAP, "vehicles/automotive/automotivehubcap01", None, None,
-     (15.0, -3.0, 30.0), (0.36, 0.93, 0.0), (0.0, 0.0, 1.0), 15.0, 1.4,
+     (15.0, -3.0, 30.0), (0.36, 0.93, 0.0), (0.0, 0.0, 1.0), 20.0, 2.0,
      ((0.0, 0.0),), (), "chain"),
     (BEAR, "setdressing/teddybear/toyteddybeardirty01", (0, -1, 0), (0, 0, 1),
      (-16.0, -4.0, 30.0), (-0.97, 0.22, 0.0), (-0.02, -0.08, 1.0), 20.0, 2.5,

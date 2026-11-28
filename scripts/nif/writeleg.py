@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write the Scrappy left leg: the base game's Raider left leg with junk merged in. Standard library.
+"""Write a Scrappy leg: the base game's Raider leg with junk merged in. Standard library.
 
   python3 -I writeleg.py MESHES OUT.nif
 
@@ -10,7 +10,8 @@ thigh. The vanilla leg's blocks are kept byte for byte and new blocks are added
 after them: for each piece of junk a skinned shape wholly weighted to one leg bone (stored in that
 bone's coordinates, identity skin transform), its skin, bone data, shader, textures and, where the
 source has one, alpha settings. Step 2 adds the teddy bear on the calf; step 3 a ragged
-chain-link cage round the calf and the bear, and bolt heads on the sign. The output is derived from game files: keep it out of every repo.
+chain-link cage round the calf and the bear, and bolt heads on the sign. --leg right writes the
+right leg instead: the frying pan on the thigh and the hubcap chained to the calf. The output is derived from game files: keep it out of every repo.
 """
 import argparse
 import math
@@ -27,7 +28,7 @@ carried, shape_data, sphere, block_of = (claw[n] for n in ("carried", "shape_dat
 header_parts, place = shield["header_parts"], harness["place"]
 SKINNED, STATIC, SKINNED_FLAG, ROOT_MATERIAL, NODE_HEAD = (
     claw["SKINNED_LAYOUT"], claw["STATIC_LAYOUT"], claw["SKINNED_FLAG"], claw["ROOT_MATERIAL"], claw["NODE_HEAD"])
-LEG = "actors/powerarmor/characterassets/mods/pa_raider_lleg.nif"
+LEG = "actors/powerarmor/characterassets/mods/pa_raider_%sleg.nif"
 CHAIN_SOURCE = "actors/dlc04/overbosspowerarmor/overboss_lleg.nif"
 CHAIN_SHAPE = "ChainLleg:0"
 DENSITY = 0.0176                       # texture distance per model unit, as on the Overboss leg
@@ -36,7 +37,8 @@ CAGE_LOW, CAGE_HIGH, CAGE_TORN = 22.0, 39.5, 5.0     # heights, and how far the 
 COLUMNS, ROWS = 36, 6
 SPLITS = {"STREET": 3}                 # times each triangle is cut in four, so a flat board can bend
 # The junk: the harness piece's colour name, and the leg bone it rides on.
-JUNK = (("STREET", "LLeg_Thigh"), ("BEAR", "LLeg_Calf"))
+JUNK = {"left": (("STREET", "LLeg_Thigh"), ("BEAR", "LLeg_Calf")),
+        "right": (("PAN", "RLeg_Thigh"), ("CAP", "RLeg_Calf"))}
 
 
 def split(positions, raw, tris, times):
@@ -80,134 +82,8 @@ def shape_block(name, flags, vertices, tris, skin, shader, alpha):
             + body + faces)
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("meshes")
-    ap.add_argument("out")
-    args = ap.parse_args()
-    meshes = args.meshes
-    if os.path.isdir(os.path.join(meshes, "meshes")):
-        meshes = os.path.join(meshes, "meshes")
-    pa = os.path.join(meshes, "actors/powerarmor/characterassets")
-    bones = place["skeleton"](os.path.join(pa, "skeleton.nif"))
-    # The same surface the mockup rests the junk on.
-    surface = []
-    for name in ("frame.nif",) + tuple("mods/pa_raider_%s.nif" % n for n in ("body", "helmet", "lleg", "rleg")):
-        for q in place["posed"](os.path.join(pa, name), bones):
-            for t in q["tris"]:
-                if any(place["dominant"](q, i).startswith(("LArm", "RArm", "L_", "R_")) for i in t):
-                    continue
-                a, b, c = (q["verts"][i] for i in t)
-                surface += [tuple(a[k] + (b[k] - a[k]) * i / 3 + (c[k] - a[k]) * j / 3 for k in range(3))
-                            for i in range(4) for j in range(4 - i)]
-
-    leg = Nif(os.path.join(meshes, LEG))
-    blocks = [bytes(block_of(leg, i)) for i in range(len(leg.blocks))]
-    names = [b[0] for b in leg.blocks]
-    strings = list(leg.strings)
-    kept = len(blocks)
-
-    def string(s):
-        if s not in strings:
-            strings.append(s)
-        return strings.index(s)
-    vanilla_shape = next(i for i, n in enumerate(names) if n.endswith("TriShape"))
-    shape_flags = struct.unpack_from("<I", blocks[vanilla_shape], 12)[0]
-    added, expected = [], []
-    junk_parts = []                        # the mockup's own parts, in model coordinates
-
-    def add(label, bone, vertices, tris, shader_from, shader_at, alpha_at, clear=0):
-        """Append one skinned shape on `bone`, with a copy of another model's shader."""
-        node = next(i for i, n in enumerate(names) if n in NODES and leg.av_object(i)[0] == bone)
-        shader = block_of(shader_from, shader_at)
-        textures = struct.unpack_from("<i", shader, 40)[0]
-        if shader_from.blocks[textures][0] != "BSShaderTextureSet" or struct.unpack_from("<Ii", shader, 8) != (0, -1):
-            raise SystemExit("unexpected shader layout")
-        # A shader starts with its type; the material name is at 4, the root material at 60.
-        # Every string reference must point into the new table: the game crashes otherwise.
-        refs = []
-        for at in (4, ROOT_MATERIAL):
-            old = struct.unpack_from("<i", shader, at)[0]
-            text = shader_from.string(old) if old >= 0 else None
-            struct.pack_into("<i", shader, at, -1 if text is None else string(text))
-            refs.append(text)
-        expected.append(tuple(refs))
-        struct.pack_into("<I", shader, 16, struct.unpack_from("<I", shader, 16)[0] | SKINNED_FLAG)
-        struct.pack_into("<I", shader, 20, struct.unpack_from("<I", shader, 20)[0] & ~clear)
-        first = len(blocks)
-        struct.pack_into("<i", shader, 40, first + 4)
-        if len(vertices) > 65535:
-            raise SystemExit("too many vertices")
-        centre = sphere([v[0] for v in vertices])
-        new = [("BSTriShape", shape_block(string("PAXScrappy%d:0" % len(added)), shape_flags, vertices, tris,
-                                          first + 1, first + 3, first + 5 if alpha_at >= 0 else -1)),
-               ("BSSkin::Instance", ints(0, first + 2) + struct.pack("<I", 1) + ints(node) + struct.pack("<I", 0)),
-               ("BSSkin::BoneData", struct.pack("<I17f", 1, *centre, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)),
-               ("BSLightingShaderProperty", bytes(shader)),
-               ("BSShaderTextureSet", bytes(block_of(shader_from, textures)))]
-        if alpha_at >= 0:
-            alpha = block_of(shader_from, alpha_at)
-            name, extra, controller = struct.unpack_from("<iIi", alpha)
-            if shader_from.blocks[alpha_at][0] != "NiAlphaProperty" or (extra, controller) != (0, -1):
-                raise SystemExit("unexpected alpha settings")
-            struct.pack_into("<i", alpha, 0, -1 if name < 0 else string(shader_from.string(name)))
-            new.append(("NiAlphaProperty", bytes(alpha)))
-        for kind, body in new:
-            names.append(kind)
-            blocks.append(body)
-        added.append((first, bone, len(vertices), len(tris)))
-        print("%s on %s: %d vertices, %d triangles, %s" % (label, bone, len(vertices), len(tris),
-                                                          refs[0] or "textures in the model"))
-
-
-    for colour, bone in JUNK:
-        piece = next(p for p in harness["PIECES"] if p[0] == harness[colour])
-        mapping = []
-        junk_parts += harness["fit"](piece, meshes, surface, mapping)
-        source = Nif(os.path.join(meshes, piece[1] + ".nif"))
-        # The same shapes and triangles the mockup keeps (for the street sign, one board).
-        for kept_shape in harness["model"](meshes, piece[1]):
-            data = shape_data(source, kept_shape["name"])
-            if data["desc"] != STATIC:
-                raise SystemExit("%s: unexpected vertex layout %x" % (kept_shape["name"], data["desc"]))
-            used = sorted({i for t in kept_shape["tris"] for i in t})
-            index = {old: n for n, old in enumerate(used)}
-            # Positions with the source's node transforms applied, as the mockup placed them. Its
-            # normals are used as stored, so the nodes may move and scale it but not turn it.
-            node_at = next(i for i, b in enumerate(source.blocks)
-                           if b[0].endswith("TriShape") and source.av_object(i)[0] == kept_shape["name"])
-            parents = source.parents()
-            while True:
-                if any(abs(a - b) > 1e-4 for a, b in zip(source.av_object(node_at)[1][1], (1, 0, 0, 0, 1, 0, 0, 0, 1))):
-                    raise SystemExit("%s: a source node is rotated; not handled" % kept_shape["name"])
-                if node_at not in parents:
-                    break
-                node_at = parents[node_at]
-            positions, raw, tris = split([kept_shape["verts"][i] for i in used], [data["vertices"][i] for i in used],
-                                         [tuple(index[i] for i in t) for t in kept_shape["tris"]],
-                                         SPLITS.get(colour, 0))
-            data["local"] = (data["local"][0], (1, 0, 0, 0, 1, 0, 0, 0, 1))
-            part = {"used": list(range(len(positions))), "source": {"verts": positions},
-                    "fn": lambda v, f=mapping[0], b=bone: place["to_bone"](bones[b], f(v))}
-            vertices = carried(part, {"local": data["local"], "vertices": raw}, lambda p: p)
-            facing = sum(claw["dot"](claw["cross"](claw["sub"](vertices[b][0], vertices[a][0]),
-                                                   claw["sub"](vertices[c][0], vertices[a][0])),
-                                     tuple(sum(vertices[i][2][k] for i in (a, b, c)) for k in range(3))) > 0
-                         for a, b, c in tris)
-            print("%s: triangles facing with their normals: %d of %d" % (colour, facing, len(tris)))
-            if facing < 0.9 * len(tris):
-                raise SystemExit("winding disagrees with the normals")
-            shape_at = next(i for i, b in enumerate(source.blocks)
-                            if b[0].endswith("TriShape") and source.av_object(i)[0] == kept_shape["name"])
-            alpha_at = struct.unpack_from("<i", source.d, source.av_object(shape_at)[2] + 24)[0]
-            add(colour, bone, vertices, tris, source, data["shader"], alpha_at)
-
-    def in_bone(bone, p, *directions):
-        origin = place["to_bone"](bones[bone], p)
-        return (origin, *(claw["unit"](claw["sub"](place["to_bone"](bones[bone], tuple(p[k] + d[k] for k in range(3))),
-                                                    origin)) for d in directions))
-
-    # The cage: a chain-link band round the calf and the bear, torn along the top.
+def cage(meshes, surface, junk_parts, bones, in_bone, add):
+    """The left calf's chain-link band, round the calf and the bear, torn along the top."""
     solid = [p for p in surface if p[0] < 0]
     for colour, q in junk_parts:
         if colour == harness["BEAR"]:
@@ -267,28 +143,186 @@ def main():
     chain_shader, chain_alpha = struct.unpack_from("<2i", chain.d, chain.av_object(chain_at)[2] + 20)
     add("CAGE", "LLeg_Calf", vertices, tris, chain, chain_shader, chain_alpha, VERTEX_COLOURS)
 
-    # Bolt heads where the mockup has them on the sign, in the leg's own metal.
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("meshes")
+    ap.add_argument("out")
+    ap.add_argument("--leg", default="left", choices=("left", "right"))
+    args = ap.parse_args()
+    meshes = args.meshes
+    if os.path.isdir(os.path.join(meshes, "meshes")):
+        meshes = os.path.join(meshes, "meshes")
+    pa = os.path.join(meshes, "actors/powerarmor/characterassets")
+    bones = place["skeleton"](os.path.join(pa, "skeleton.nif"))
+    # The same surface the mockup rests the junk on.
+    surface = []
+    for name in ("frame.nif",) + tuple("mods/pa_raider_%s.nif" % n for n in ("body", "helmet", "lleg", "rleg")):
+        for q in place["posed"](os.path.join(pa, name), bones):
+            for t in q["tris"]:
+                if any(place["dominant"](q, i).startswith(("LArm", "RArm", "L_", "R_")) for i in t):
+                    continue
+                a, b, c = (q["verts"][i] for i in t)
+                surface += [tuple(a[k] + (b[k] - a[k]) * i / 3 + (c[k] - a[k]) * j / 3 for k in range(3))
+                            for i in range(4) for j in range(4 - i)]
+
+    leg_path = LEG % args.leg[0]
+    leg = Nif(os.path.join(meshes, leg_path))
+    blocks = [bytes(block_of(leg, i)) for i in range(len(leg.blocks))]
+    names = [b[0] for b in leg.blocks]
+    strings = list(leg.strings)
+    kept = len(blocks)
+
+    def string(s):
+        if s not in strings:
+            strings.append(s)
+        return strings.index(s)
+    vanilla_shape = next(i for i, n in enumerate(names) if n.endswith("TriShape"))
+    shape_flags = struct.unpack_from("<I", blocks[vanilla_shape], 12)[0]
+    added, expected = [], []
+    junk_parts = []                        # the mockup's own parts, in model coordinates
+
+    def add(label, bone, vertices, tris, shader_from, shader_at, alpha_at, clear=0):
+        """Append one skinned shape on `bone`, with a copy of another model's shader."""
+        node = next(i for i, n in enumerate(names) if n in NODES and leg.av_object(i)[0] == bone)
+        shader = block_of(shader_from, shader_at)
+        textures = struct.unpack_from("<i", shader, 40)[0]
+        if shader_from.blocks[textures][0] != "BSShaderTextureSet" or struct.unpack_from("<Ii", shader, 8) != (0, -1):
+            raise SystemExit("unexpected shader layout")
+        # A shader starts with its type; the material name is at 4, the root material at 60.
+        # Every string reference must point into the new table: the game crashes otherwise.
+        refs = []
+        for at in (4, ROOT_MATERIAL):
+            old = struct.unpack_from("<i", shader, at)[0]
+            text = shader_from.string(old) if old >= 0 else None
+            struct.pack_into("<i", shader, at, -1 if text is None else string(text))
+            refs.append(text)
+        expected.append(tuple(refs))
+        struct.pack_into("<I", shader, 16, struct.unpack_from("<I", shader, 16)[0] | SKINNED_FLAG)
+        struct.pack_into("<I", shader, 20, struct.unpack_from("<I", shader, 20)[0] & ~clear)
+        first = len(blocks)
+        struct.pack_into("<i", shader, 40, first + 4)
+        if len(vertices) > 65535:
+            raise SystemExit("too many vertices")
+        centre = sphere([v[0] for v in vertices])
+        new = [("BSTriShape", shape_block(string("PAXScrappy%d:0" % len(added)), shape_flags, vertices, tris,
+                                          first + 1, first + 3, first + 5 if alpha_at >= 0 else -1)),
+               ("BSSkin::Instance", ints(0, first + 2) + struct.pack("<I", 1) + ints(node) + struct.pack("<I", 0)),
+               ("BSSkin::BoneData", struct.pack("<I17f", 1, *centre, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)),
+               ("BSLightingShaderProperty", bytes(shader)),
+               ("BSShaderTextureSet", bytes(block_of(shader_from, textures)))]
+        if alpha_at >= 0:
+            alpha = block_of(shader_from, alpha_at)
+            name, extra, controller = struct.unpack_from("<iIi", alpha)
+            if shader_from.blocks[alpha_at][0] != "NiAlphaProperty" or (extra, controller) != (0, -1):
+                raise SystemExit("unexpected alpha settings")
+            struct.pack_into("<i", alpha, 0, -1 if name < 0 else string(shader_from.string(name)))
+            new.append(("NiAlphaProperty", bytes(alpha)))
+        for kind, body in new:
+            names.append(kind)
+            blocks.append(body)
+        added.append((first, bone, len(vertices), len(tris)))
+        print("%s on %s: %d vertices, %d triangles, %s" % (label, bone, len(vertices), len(tris),
+                                                          refs[0] or "textures in the model"))
+
+
+    for colour, bone in JUNK[args.leg]:
+        piece = next(p for p in harness["PIECES"] if p[0] == harness[colour])
+        mapping = []
+        junk_parts += harness["fit"](piece, meshes, surface, mapping)
+        source = Nif(os.path.join(meshes, piece[1] + ".nif"))
+        # The same shapes and triangles the mockup keeps (for the street sign, one board).
+        for kept_shape in harness["model"](meshes, piece[1]):
+            data = shape_data(source, kept_shape["name"])
+            if data["desc"] != STATIC:
+                raise SystemExit("%s: unexpected vertex layout %x" % (kept_shape["name"], data["desc"]))
+            used = sorted({i for t in kept_shape["tris"] for i in t})
+            index = {old: n for n, old in enumerate(used)}
+            # Positions with the source's node transforms applied, as the mockup placed them; the
+            # stored directions are turned by the same nodes' rotations.
+            node_at = next(i for i, b in enumerate(source.blocks)
+                           if b[0].endswith("TriShape") and source.av_object(i)[0] == kept_shape["name"])
+            parents, turns = source.parents(), []
+            while True:
+                turns.append(source.av_object(node_at)[1][1])
+                if node_at not in parents:
+                    break
+                node_at = parents[node_at]
+
+            def turned(v):
+                # Twice: nifpreview's shapes already carry the node transforms and the harness's
+                # model() applies them again, so the positions have them twice.
+                for r in turns * 2:
+                    v = tuple(sum(r[3 * a + b] * v[b] for b in range(3)) for a in range(3))
+                return v
+            packed = lambda v: bytes(max(0, min(255, round((x + 1) * 127.5))) for x in v)
+            stored = []
+            for vertex in data["vertices"]:
+                value = lambda b: tuple(x / 127.5 - 1 for x in b)
+                normal, tangent = turned(value(vertex[12:15])), turned(value(vertex[16:19]))
+                bit = turned((struct.unpack_from("<e", vertex, 6)[0], vertex[15] / 127.5 - 1,
+                              vertex[19] / 127.5 - 1))
+                stored.append(vertex[:6] + struct.pack("<e", bit[0]) + vertex[8:12] + packed(normal)
+                              + packed(bit[1:2]) + packed(tangent) + packed(bit[2:3]))
+            positions, raw, tris = split([kept_shape["verts"][i] for i in used], [stored[i] for i in used],
+                                         [tuple(index[i] for i in t) for t in kept_shape["tris"]],
+                                         SPLITS.get(colour, 0))
+            data["local"] = (data["local"][0], (1, 0, 0, 0, 1, 0, 0, 0, 1))
+            part = {"used": list(range(len(positions))), "source": {"verts": positions},
+                    "fn": lambda v, f=mapping[0], b=bone: place["to_bone"](bones[b], f(v))}
+            vertices = carried(part, {"local": data["local"], "vertices": raw}, lambda p: p)
+            facing = sum(claw["dot"](claw["cross"](claw["sub"](vertices[b][0], vertices[a][0]),
+                                                   claw["sub"](vertices[c][0], vertices[a][0])),
+                                     tuple(sum(vertices[i][2][k] for i in (a, b, c)) for k in range(3))) > 0
+                         for a, b, c in tris)
+            print("%s: triangles facing with their normals: %d of %d" % (colour, facing, len(tris)))
+            if facing < 0.9 * len(tris):
+                raise SystemExit("winding disagrees with the normals")
+            shape_at = next(i for i, b in enumerate(source.blocks)
+                            if b[0].endswith("TriShape") and source.av_object(i)[0] == kept_shape["name"])
+            alpha_at = struct.unpack_from("<i", source.d, source.av_object(shape_at)[2] + 24)[0]
+            add(colour, bone, vertices, tris, source, data["shader"], alpha_at)
+
+    def in_bone(bone, p, *directions):
+        origin = place["to_bone"](bones[bone], p)
+        return (origin, *(claw["unit"](claw["sub"](place["to_bone"](bones[bone], tuple(p[k] + d[k] for k in range(3))),
+                                                    origin)) for d in directions))
+
+    if args.leg == "left":
+        cage(meshes, surface, junk_parts, bones, in_bone, add)
+    metal = {}                             # bone -> the mockup's bolts, straps and chain links
+    if args.leg == "left":
+        metal["LLeg_Thigh"] = [q for c, q in junk_parts if c == harness["BOLT"]]
+    else:
+        for colour, bone in JUNK["right"]:
+            piece = next(p for p in harness["PIECES"] if p[0] == harness[colour])
+            fitted = harness["fit"](piece, meshes, surface)
+            metal[bone] = [q for c, q in fitted if c in (harness["BOLT"], harness["BAND"])]
+            if piece[11] == "chain":
+                own = [p for p in fitted if p[0] == piece[0]]
+                metal[bone] += [q for c, q in harness["wrap"](piece, own, surface) if c == harness["CHAIN"]]
+    # Bolt heads, straps and chain where the mockup has them, in the leg's own metal.
     leg_data = shape_data(leg, leg.av_object(vanilla_shape)[0])
-    posed = place["posed"](os.path.join(meshes, LEG), bones)[0]
-    bolts = [q for colour, q in junk_parts if colour == harness["BOLT"]]
-    vertices, tris = [], []
-    for q in bolts:
-        centre = tuple(sum(v[k] for v in q["verts"]) / len(q["verts"]) for k in range(3))
-        near = min(range(len(posed["verts"])), key=lambda i: math.dist(posed["verts"][i], centre))
-        anchor = struct.unpack_from("<2e", leg_data["vertices"][near], 8)
-        local = {"verts": [place["to_bone"](bones["LLeg_Thigh"], v) for v in q["verts"]], "tris": q["tris"]}
-        # flat_faced spreads the texture round the part's own coordinates: centre them first.
-        mid = tuple(sum(v[k] for v in local["verts"]) / len(local["verts"]) for k in range(3))
-        shifted = {"verts": [(v[0] - mid[0] + 14, v[1] - mid[1], v[2] - mid[2]) for v in local["verts"]],
-                   "tris": local["tris"]}
-        faces, faced = claw["flat_faced"](shifted, None, anchor)
-        base = len(vertices)
-        vertices += [((p[0] + mid[0] - 14, p[1] + mid[1], p[2] + mid[2]), *rest) for p, *rest in faces]
-        tris += [tuple(base + i for i in t) for t in faced]
-    if not bolts:
-        raise SystemExit("FAIL: the mockup gave no bolts")
+    posed = place["posed"](os.path.join(meshes, leg_path), bones)[0]
     leg_shader = struct.unpack_from("<i", leg.d, leg.av_object(vanilla_shape)[2] + 20)[0]
-    add("BOLTS", "LLeg_Thigh", vertices, tris, leg, leg_shader, -1)
+    for bone, solids in metal.items():
+        vertices, tris = [], []
+        for q in solids:
+            centre = tuple(sum(v[k] for v in q["verts"]) / len(q["verts"]) for k in range(3))
+            near = min(range(len(posed["verts"])), key=lambda i: math.dist(posed["verts"][i], centre))
+            anchor = struct.unpack_from("<2e", leg_data["vertices"][near], 8)
+            local = [place["to_bone"](bones[bone], v) for v in q["verts"]]
+            # flat_faced spreads the texture round the part's own coordinates: centre them first.
+            mid = tuple(sum(v[k] for v in local) / len(local) for k in range(3))
+            shifted = {"verts": [(v[0] - mid[0] + 14, v[1] - mid[1], v[2] - mid[2]) for v in local],
+                       "tris": q["tris"]}
+            faces, faced = claw["flat_faced"](shifted, None, anchor)
+            base = len(vertices)
+            vertices += [((p[0] + mid[0] - 14, p[1] + mid[1], p[2] + mid[2]), *rest) for p, *rest in faces]
+            tris += [tuple(base + i for i in t) for t in faced]
+        if not solids:
+            raise SystemExit("FAIL: the mockup gave no metal for " + bone)
+        add("METAL", bone, vertices, tris, leg, leg_shader, -1)
 
     root = blocks[0]
     # Name, extra data list, controller, flags, transform, collision, then the children.

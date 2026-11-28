@@ -43,6 +43,9 @@ Round 5, crafted power armor piece spike, no scripts:
   (scripts/nif/writeleg.py), put at Meshes\\PAX\\Armor\\ScrappyLeftLeg.nif in the mod.
   Chemistry station recipe.
 
+  "Scrappy Raider Right Leg" is the same from the Raider right leg, its recipe asking for a cooking
+  pot and a hubcap; its model goes at Meshes\\PAX\\Armor\\ScrappyRightLeg.nif.
+
   Backup recipes at the chemistry station make a teddy bear, a cooking pot or a hubcap from many
   more components than they scrap into.
 
@@ -313,24 +316,36 @@ def naming():
     return record("INNR", OWN_NAMING, b"".join(body))
 
 
-def crafted_leg():
-    """The new piece, its model mod and its recipe."""
+RIGHT_LEG_MODEL = r"PAX\Armor\ScrappyRightLeg.nif"
+COOKING_POT, HUBCAP = 0x00059ABA, 0x0007E941        # the right leg's junk (it wears a frying pan)
+LEGS = [  # records (model mod, piece, recipe), vanilla piece and its mod, our model, editor ids, name, junk
+    ((OWN_LEG_MOD, OWN_LEG, OWN_LEG_RECIPE), RAIDER_LEFT_LEG, RAIDER_LEG_MOD, SPIKE_LEG_MODEL,
+     ("PAXScrapLegModel", "PAXScrapLegLeft", "PAXScrapLegRecipe"), LEG_NAME, (TEDDY_BEAR,)),
+    ((0x01000864, 0x01000865, 0x01000866), 0x00140C56, 0x00137B80, RIGHT_LEG_MODEL,
+     ("PAXScrapLegModelRight", "PAXScrapLegRight", "PAXScrapLegRecipeRight"),
+     "Scrappy Raider Right Leg", (COOKING_POT, HUBCAP)),
+]
+
+
+def crafted_leg(ids, piece, vanilla_mod, model, edids, name, junk):
+    """A new leg, its model mod and its recipe."""
+    own_mod, own, own_recipe = ids
     def vanilla(kind, wanted):
         return next(fields for _, formid, fields in esp.records(str(GAME), {kind}) if formid == wanted)
-    mod = dict(vanilla("OMOD", RAIDER_LEG_MOD))
-    omod = record("OMOD", OWN_LEG_MOD, b"".join([
-        text("EDID", "PAXScrapLegModel"), text("FULL", "Scrap Leg Frame"), text("DESC", ""),
-        text("MODL", SPIKE_LEG_MODEL), sub("DATA", mod["DATA"])]))
+    mod = dict(vanilla("OMOD", vanilla_mod))
+    omod = record("OMOD", own_mod, b"".join([
+        text("EDID", edids[0]), text("FULL", "Scrap Leg Frame"), text("DESC", ""),
+        text("MODL", model), sub("DATA", mod["DATA"])]))
     # One default combination: no keywords, three included mods (7 bytes each).
     combination = (struct.pack("<II", 3, 0) + bytes(4) + struct.pack("<hBBH", -1, 1, 0, 0)
-                   + b"".join(struct.pack("<IBBB", m, 0, 0, 1) for m in (OWN_LEG_MOD, LEG_LINING, LEG_PAINT)))
+                   + b"".join(struct.pack("<IBBB", m, 0, 0, 1) for m in (own_mod, LEG_LINING, LEG_PAINT)))
     body, seen = [], set()
-    for tag, data in vanilla("ARMO", RAIDER_LEFT_LEG):
+    for tag, data in vanilla("ARMO", piece):
         seen.add(tag)
         if tag == "EDID":
-            body.append(text("EDID", "PAXScrapLegLeft"))
+            body.append(text("EDID", edids[1]))
         elif tag == "FULL":
-            body.append(text("FULL", LEG_NAME))
+            body.append(text("FULL", name))
         elif tag == "DESC":
             body.append(text("DESC", ""))
         elif tag == "DATA":
@@ -350,15 +365,16 @@ def crafted_leg():
             body.append(sub(tag, data))
     if not {"DATA", "FNAM", "DAMA", "OBTE", "STOP"} <= seen:
         raise SystemExit("FAIL: the vanilla Raider leg record is not as expected")
-    armo = record("ARMO", OWN_LEG, b"".join(body))
+    armo = record("ARMO", own, b"".join(body))
     # The cost of welding it: the components of the vanilla Welded Plate recipe, plus steel.
     weld = next((dict(fields)["FVPA"] for _, _, fields in esp.records(str(GAME), {"COBJ"})
                  if esp.edid(fields) == "co_PA_Raider_Leg_Lining_B"), None)
     if weld is None:
         raise SystemExit("FAIL: the vanilla welded leg recipe was not found")
-    recipe = record("COBJ", OWN_LEG_RECIPE, b"".join([
-        text("EDID", "PAXScrapLegRecipe"), sub("FVPA", weld + struct.pack("<4I", STEEL, LEG_STEEL, TEDDY_BEAR, 1)),
-        text("DESC", "Spike: a crafted power armor leg."), u32("CNAM", OWN_LEG),
+    parts = struct.pack("<2I", STEEL, LEG_STEEL) + b"".join(struct.pack("<2I", item, 1) for item in junk)
+    recipe = record("COBJ", own_recipe, b"".join([
+        text("EDID", edids[2]), sub("FVPA", weld + parts),
+        text("DESC", "Spike: a crafted power armor leg."), u32("CNAM", own),
         u32("BNAM", CHEMLAB), u32("FNAM", RECIPE_UTILITY), u32("INTV", 1)]))
     return omod, armo, recipe
 
@@ -400,10 +416,10 @@ def build():
     drawback, perks, recipe = extras()
     claw = claws()
     swaps, swap_recipes = arm_swaps()
-    leg_mod, leg, leg_recipe = crafted_leg()
-    groups = [("MGEF", claw["MGEF"]), ("ENCH", [drawback] + claw["ENCH"]), ("ARMO", armor + claw["ARMO"] + [leg]),
-              ("ARMA", addons + claw["ARMA"]), ("COBJ", [recipe] + claw["COBJ"] + swap_recipes + [leg_recipe] + backups()),
-              ("PERK", perks + claw["PERK"]), ("OMOD", swaps + [leg_mod]), ("INNR", [naming()])]
+    leg_mods, legs, leg_recipes = map(list, zip(*(crafted_leg(*spec) for spec in LEGS)))
+    groups = [("MGEF", claw["MGEF"]), ("ENCH", [drawback] + claw["ENCH"]), ("ARMO", armor + claw["ARMO"] + legs),
+              ("ARMA", addons + claw["ARMA"]), ("COBJ", [recipe] + claw["COBJ"] + swap_recipes + leg_recipes + backups()),
+              ("PERK", perks + claw["PERK"]), ("OMOD", swaps + leg_mods), ("INNR", [naming()])]
     count = sum(len(r) for _, r in groups) + len(groups)        # records and groups
     header = record("TES4", 0, b"".join([
         sub("HEDR", struct.pack("<fiI", 1.0, count, 0x880)), text("CNAM", "PAX test"),
