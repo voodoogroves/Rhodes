@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write a Scrappy leg: the base game's Raider leg with junk merged in. Standard library.
+"""Write a Scrappy leg or torso: the base game's Raider piece with junk merged in. Standard library.
 
   python3 -I writeleg.py MESHES OUT.nif
 
@@ -11,7 +11,8 @@ after them: for each piece of junk a skinned shape wholly weighted to one leg bo
 bone's coordinates, identity skin transform), its skin, bone data, shader, textures and, where the
 source has one, alpha settings. Step 2 adds the teddy bear on the calf; step 3 a ragged
 chain-link cage round the calf and the bear, and bolt heads on the sign. --leg right writes the
-right leg instead: the frying pan on the thigh and the hubcap chained to the calf. The output is derived from game files: keep it out of every repo.
+right leg instead: the frying pan on the thigh and the hubcap chained to the calf. --piece torso
+writes the chest: the "Employees Only" sign beaten to the front and the lawn flamingo chained on the back. The output is derived from game files: keep it out of every repo.
 """
 import argparse
 import math
@@ -28,17 +29,21 @@ carried, shape_data, sphere, block_of = (claw[n] for n in ("carried", "shape_dat
 header_parts, place = shield["header_parts"], harness["place"]
 SKINNED, STATIC, SKINNED_FLAG, ROOT_MATERIAL, NODE_HEAD = (
     claw["SKINNED_LAYOUT"], claw["STATIC_LAYOUT"], claw["SKINNED_FLAG"], claw["ROOT_MATERIAL"], claw["NODE_HEAD"])
-LEG = "actors/powerarmor/characterassets/mods/pa_raider_%sleg.nif"
+ARMOR = {"left": "actors/powerarmor/characterassets/mods/pa_raider_lleg.nif",
+         "right": "actors/powerarmor/characterassets/mods/pa_raider_rleg.nif",
+         "torso": "actors/powerarmor/characterassets/mods/pa_raider_body.nif"}
+FLAMINGO = "setdressing/flamingo/lawnflamingo02static"
 CHAIN_SOURCE = "actors/dlc04/overbosspowerarmor/overboss_lleg.nif"
 CHAIN_SHAPE = "ChainLleg:0"
 DENSITY = 0.0176                       # texture distance per model unit, as on the Overboss leg
 VERTEX_COLOURS = 0x20                  # in the shader's second flag word; our vertices have none
 CAGE_LOW, CAGE_HIGH, CAGE_TORN = 22.0, 39.5, 5.0     # heights, and how far the top is torn down
 COLUMNS, ROWS = 36, 6
-SPLITS = {"STREET": 3}                 # times each triangle is cut in four, so a flat board can bend
+SPLITS = {"STREET": 3, "SIGN": 4}                      # times each triangle is cut in four, so a flat board can bend
 # The junk: the harness piece's colour name, and the leg bone it rides on.
 JUNK = {"left": (("STREET", "LLeg_Thigh"), ("BEAR", "LLeg_Calf")),
-        "right": (("PAN", "RLeg_Thigh"), ("CAP", "RLeg_Calf"))}
+        "right": (("PAN", "RLeg_Thigh"), ("CAP", "RLeg_Calf")),
+        "torso": (("SIGN", "Chest"), ("FLAMINGO", "Tank_Armor"))}
 
 
 def split(positions, raw, tris, times):
@@ -148,7 +153,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("meshes")
     ap.add_argument("out")
-    ap.add_argument("--leg", default="left", choices=("left", "right"))
+    ap.add_argument("--piece", "--leg", dest="leg", default="left", choices=("left", "right", "torso"))
     args = ap.parse_args()
     meshes = args.meshes
     if os.path.isdir(os.path.join(meshes, "meshes")):
@@ -166,7 +171,7 @@ def main():
                 surface += [tuple(a[k] + (b[k] - a[k]) * i / 3 + (c[k] - a[k]) * j / 3 for k in range(3))
                             for i in range(4) for j in range(4 - i)]
 
-    leg_path = LEG % args.leg[0]
+    leg_path = ARMOR[args.leg]
     leg = Nif(os.path.join(meshes, leg_path))
     blocks = [bytes(block_of(leg, i)) for i in range(len(leg.blocks))]
     names = [b[0] for b in leg.blocks]
@@ -187,7 +192,8 @@ def main():
         node = next(i for i, n in enumerate(names) if n in NODES and leg.av_object(i)[0] == bone)
         shader = block_of(shader_from, shader_at)
         textures = struct.unpack_from("<i", shader, 40)[0]
-        if shader_from.blocks[textures][0] != "BSShaderTextureSet" or struct.unpack_from("<Ii", shader, 8) != (0, -1):
+        if (textures >= 0 and shader_from.blocks[textures][0] != "BSShaderTextureSet") or \
+                struct.unpack_from("<Ii", shader, 8) != (0, -1):
             raise SystemExit("unexpected shader layout")
         # A shader starts with its type; the material name is at 4, the root material at 60.
         # Every string reference must point into the new table: the game crashes otherwise.
@@ -201,16 +207,18 @@ def main():
         struct.pack_into("<I", shader, 16, struct.unpack_from("<I", shader, 16)[0] | SKINNED_FLAG)
         struct.pack_into("<I", shader, 20, struct.unpack_from("<I", shader, 20)[0] & ~clear)
         first = len(blocks)
-        struct.pack_into("<i", shader, 40, first + 4)
+        struct.pack_into("<i", shader, 40, first + 4 if textures >= 0 else -1)
         if len(vertices) > 65535:
             raise SystemExit("too many vertices")
         centre = sphere([v[0] for v in vertices])
+        alpha_block = first + (5 if textures >= 0 else 4) if alpha_at >= 0 else -1
         new = [("BSTriShape", shape_block(string("PAXScrappy%d:0" % len(added)), shape_flags, vertices, tris,
-                                          first + 1, first + 3, first + 5 if alpha_at >= 0 else -1)),
+                                          first + 1, first + 3, alpha_block)),
                ("BSSkin::Instance", ints(0, first + 2) + struct.pack("<I", 1) + ints(node) + struct.pack("<I", 0)),
                ("BSSkin::BoneData", struct.pack("<I17f", 1, *centre, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)),
-               ("BSLightingShaderProperty", bytes(shader)),
-               ("BSShaderTextureSet", bytes(block_of(shader_from, textures)))]
+               ("BSLightingShaderProperty", bytes(shader))]
+        if textures >= 0:
+            new.append(("BSShaderTextureSet", bytes(block_of(shader_from, textures))))
         if alpha_at >= 0:
             alpha = block_of(shader_from, alpha_at)
             name, extra, controller = struct.unpack_from("<iIi", alpha)
@@ -226,13 +234,22 @@ def main():
                                                           refs[0] or "textures in the model"))
 
 
+    jobs, bird_parts = [], []
     for colour, bone in JUNK[args.leg]:
-        piece = next(p for p in harness["PIECES"] if p[0] == harness[colour])
-        mapping = []
-        junk_parts += harness["fit"](piece, meshes, surface, mapping)
-        source = Nif(os.path.join(meshes, piece[1] + ".nif"))
-        # The same shapes and triangles the mockup keeps (for the street sign, one board).
-        for kept_shape in harness["model"](meshes, piece[1]):
+        if colour == "FLAMINGO":
+            mapping = []
+            bird_parts = harness["flamingo"](meshes, surface, mapping)
+            shape, body, world = mapping[0]
+            jobs.append((colour, bone, FLAMINGO, [dict(shape, tris=body)], world))
+        else:
+            piece = next(p for p in harness["PIECES"] if p[0] == harness[colour])
+            mapping = []
+            junk_parts += harness["fit"](piece, meshes, surface, mapping)
+            # The same shapes and triangles the mockup keeps (for the street sign, one board).
+            jobs.append((colour, bone, piece[1], harness["model"](meshes, piece[1]), mapping[0]))
+    for colour, bone, path, kept_shapes, to_suit in jobs:
+        source = Nif(os.path.join(meshes, path + ".nif"))
+        for kept_shape in kept_shapes:
             data = shape_data(source, kept_shape["name"])
             if data["desc"] != STATIC:
                 raise SystemExit("%s: unexpected vertex layout %x" % (kept_shape["name"], data["desc"]))
@@ -269,7 +286,7 @@ def main():
                                          SPLITS.get(colour, 0))
             data["local"] = (data["local"][0], (1, 0, 0, 0, 1, 0, 0, 0, 1))
             part = {"used": list(range(len(positions))), "source": {"verts": positions},
-                    "fn": lambda v, f=mapping[0], b=bone: place["to_bone"](bones[b], f(v))}
+                    "fn": lambda v, f=to_suit, b=bone: place["to_bone"](bones[b], f(v))}
             vertices = carried(part, {"local": data["local"], "vertices": raw}, lambda p: p)
             facing = sum(claw["dot"](claw["cross"](claw["sub"](vertices[b][0], vertices[a][0]),
                                                    claw["sub"](vertices[c][0], vertices[a][0])),
@@ -293,6 +310,9 @@ def main():
     metal = {}                             # bone -> the mockup's bolts, straps and chain links
     if args.leg == "left":
         metal["LLeg_Thigh"] = [q for c, q in junk_parts if c == harness["BOLT"]]
+    elif args.leg == "torso":
+        metal["Chest"] = [q for c, q in junk_parts if c == harness["BOLT"]]
+        metal["Tank_Armor"] = [q for c, q in bird_parts if c == harness["CHAIN"]]
     else:
         for colour, bone in JUNK["right"]:
             piece = next(p for p in harness["PIECES"] if p[0] == harness[colour])

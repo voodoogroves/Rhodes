@@ -6,11 +6,11 @@
 MESHES holds these, extracted with baunpack from "Fallout4 - Meshes.ba2" (paths start meshes/ or
 at the folders below):
   actors/powerarmor/characterassets/{skeleton.nif, frame.nif, mods/pa_raider_*.nif}
-  setdressing/signage/highwaysign01.nif, setdressing/dmndclutter/dmndstreetsign01.nif,
+  setdressing/signage/signemployeesonly01.nif, setdressing/dmndclutter/dmndstreetsign01.nif,
   vehicles/automotive/automotivehubcap01.nif, setdressing/playerhouse/playerhouse_potsfryingpan01.nif,
   setdressing/teddybear/toyteddybeardirty01.nif, setdressing/flamingo/lawnflamingo02static.nif
 
-Writes harness_suit.png: a highway sign beaten to the chest, a street sign on the left thigh, a
+Writes harness_suit.png: an "Employees Only" sign beaten to the chest, a street sign on the left thigh, a
 frying pan on the right thigh, a hubcap chained to the right calf and a teddy bear caged in
 fencing on the left calf, and a lawn flamingo chained across the upper back above the fusion core. Model coordinates: X to the wearer's right, Y forward, Z up. Previews
 only: no game model is written. The pictures are
@@ -39,9 +39,9 @@ CHAINS = (((-15.0, 142.0), (15.0, 125.0)), ((-13.0, 125.0), (12.0, 146.0)))
 # it sinks in, where the bolts go (fractions of half width and half height), strap heights
 # (fractions), and what else holds it: None, "chain" or "fence".
 PIECES = (
-    (SIGN, "setdressing/signage/highwaysign01", (0, 1, 0), (0, 0, 1),
-     (2.0, 0.0, 118.0), (0.08, 1.0, 0.04), (0.14, 0.0, 1.0), 25.0, -0.5,
-     ((-0.82, 0.74), (0.84, 0.7), (-0.8, -0.72), (0.82, -0.76)), (), None),
+    (SIGN, "setdressing/signage/signemployeesonly01", (0, 1, 0), (0, 0, 1),     # "Employees Only"
+     (2.0, 0.0, 118.0), (0.08, 1.0, 0.04), (0.14, 0.0, 1.0), 27.0, -0.5,
+     ((-0.86, 0.66), (0.87, 0.63), (-0.85, -0.66), (0.86, -0.68)), (), None),
     (STREET, "setdressing/dmndclutter/dmndstreetsign01", (0, -1, 0), (0, 0, 1),     # lettered face
      (-13.0, -2.0, 67.0), (-0.3, 0.95, 0.0), (-0.65, -0.2, 0.73), 27.0, -0.3,
      ((-0.85, 0.0), (0.85, 0.0)), (), None),
@@ -316,7 +316,7 @@ def wrap(piece, parts, surface):
     return out
 
 
-def flamingo(meshes, surface):
+def flamingo(meshes, surface, mapping=None):
     """A lawn flamingo slung across the upper back on a slant, head up past the wearer's right
     shoulder, lashed on with chain. Nothing comes down over the fusion core."""
     shape = model(meshes, "setdressing/flamingo/lawnflamingo02static")[0]
@@ -343,6 +343,8 @@ def flamingo(meshes, surface):
     def world(v):
         x, y, z = flat(v)
         return (x + BIRD_X, y + depth, z + lift)
+    if mapping is not None:                    # for a model writer: the bird's shape and placing
+        mapping.append((shape, body, world))
     out = [(BIRD_COLOUR, moved(shape, body, world))]
     points = [world(v) for v in used]
     print("flamingo: x %.0f..%.0f z %.0f..%.0f; lowest near the core %.0f" % (

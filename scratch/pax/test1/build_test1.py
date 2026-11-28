@@ -46,6 +46,9 @@ Round 5, crafted power armor piece spike, no scripts:
   "Scrappy Raider Right Leg" is the same from the Raider right leg, its recipe asking for a cooking
   pot and a hubcap; its model goes at Meshes\\PAX\\Armor\\ScrappyRightLeg.nif.
 
+  "Scrappy Raider Torso" likewise from the Raider torso (320 / 290 / 290 welded; six aluminum and
+  eight steel and six plastic); its model goes at Meshes\\PAX\\Armor\\ScrappyTorso.nif.
+
   Backup recipes at the chemistry station make a teddy bear, a cooking pot or a hubcap from many
   more components than they scrap into.
 
@@ -317,19 +320,30 @@ def naming():
 
 
 RIGHT_LEG_MODEL = r"PAX\Armor\ScrappyRightLeg.nif"
+PLASTIC = 0x0001FAB7                                # component, for the flamingo
 COOKING_POT, HUBCAP = 0x00059ABA, 0x0007E941        # the right leg's junk (it wears a frying pan)
+# health, armor, energy as crafted; welded-lining mod; vanilla welding recipe; extra steel
+LIMB = (LEG_HEALTH, LEG_ARMOR, LEG_ENERGY, LEG_LINING, "co_PA_Raider_Leg_Lining_B", LEG_STEEL)
+TORSO = (220, 270, 290, 0x0018418E, "co_PA_Raider_Torso_Lining_B", 8)   # 320 / 290 / 290 welded
 LEGS = [  # records (model mod, piece, recipe), vanilla piece and its mod, our model, editor ids, name, junk
     ((OWN_LEG_MOD, OWN_LEG, OWN_LEG_RECIPE), RAIDER_LEFT_LEG, RAIDER_LEG_MOD, SPIKE_LEG_MODEL,
-     ("PAXScrapLegModel", "PAXScrapLegLeft", "PAXScrapLegRecipe"), LEG_NAME, (TEDDY_BEAR,)),
+     ("PAXScrapLegModel", "PAXScrapLegLeft", "PAXScrapLegRecipe"), LEG_NAME,
+     ((TEDDY_BEAR, 1),), LIMB),
     ((0x01000864, 0x01000865, 0x01000866), 0x00140C56, 0x00137B80, RIGHT_LEG_MODEL,
      ("PAXScrapLegModelRight", "PAXScrapLegRight", "PAXScrapLegRecipeRight"),
-     "Scrappy Raider Right Leg", (COOKING_POT, HUBCAP)),
+     "Scrappy Raider Right Leg", ((COOKING_POT, 1), (HUBCAP, 1)), LIMB),
+    # The torso wears a road sign and a lawn flamingo, which are no inventory items: metal for the
+    # sign and plastic for the bird.
+    ((0x01000867, 0x01000868, 0x01000869), 0x00140C57, 0x00137B7C, r"PAX\Armor\ScrappyTorso.nif",
+     ("PAXScrapTorsoModel", "PAXScrapTorso", "PAXScrapTorsoRecipe"),
+     "Scrappy Raider Torso", ((PLASTIC, 6),), TORSO),
 ]
 
 
-def crafted_leg(ids, piece, vanilla_mod, model, edids, name, junk):
-    """A new leg, its model mod and its recipe."""
+def crafted_leg(ids, piece, vanilla_mod, model, edids, name, junk, stats):
+    """A new leg or torso, its model mod and its recipe."""
     own_mod, own, own_recipe = ids
+    health_, armor_, energy_, lining, weld_recipe, steel = stats
     def vanilla(kind, wanted):
         return next(fields for _, formid, fields in esp.records(str(GAME), {kind}) if formid == wanted)
     mod = dict(vanilla("OMOD", vanilla_mod))
@@ -338,7 +352,7 @@ def crafted_leg(ids, piece, vanilla_mod, model, edids, name, junk):
         text("MODL", model), sub("DATA", mod["DATA"])]))
     # One default combination: no keywords, three included mods (7 bytes each).
     combination = (struct.pack("<II", 3, 0) + bytes(4) + struct.pack("<hBBH", -1, 1, 0, 0)
-                   + b"".join(struct.pack("<IBBB", m, 0, 0, 1) for m in (own_mod, LEG_LINING, LEG_PAINT)))
+                   + b"".join(struct.pack("<IBBB", m, 0, 0, 1) for m in (own_mod, lining, LEG_PAINT)))
     body, seen = [], set()
     for tag, data in vanilla("ARMO", piece):
         seen.add(tag)
@@ -350,12 +364,12 @@ def crafted_leg(ids, piece, vanilla_mod, model, edids, name, junk):
             body.append(text("DESC", ""))
         elif tag == "DATA":
             value, weight, health = struct.unpack("<IfI", data)
-            body.append(sub(tag, struct.pack("<IfI", value, weight, LEG_HEALTH)))
+            body.append(sub(tag, struct.pack("<IfI", value, weight, health_)))
         elif tag == "FNAM":
-            body.append(sub(tag, struct.pack("<H", LEG_ARMOR) + data[2:]))
+            body.append(sub(tag, struct.pack("<H", armor_) + data[2:]))
         elif tag == "DAMA":
             pairs = [struct.unpack_from("<II", data, i) for i in range(0, len(data), 8)]
-            body.append(sub(tag, b"".join(struct.pack("<II", kind, LEG_ENERGY
+            body.append(sub(tag, b"".join(struct.pack("<II", kind, energy_
                                                       if kind == ENERGY else amount) for kind, amount in pairs)))
         elif tag == "INRD":
             body.append(u32("INRD", OWN_NAMING))
@@ -368,13 +382,13 @@ def crafted_leg(ids, piece, vanilla_mod, model, edids, name, junk):
     armo = record("ARMO", own, b"".join(body))
     # The cost of welding it: the components of the vanilla Welded Plate recipe, plus steel.
     weld = next((dict(fields)["FVPA"] for _, _, fields in esp.records(str(GAME), {"COBJ"})
-                 if esp.edid(fields) == "co_PA_Raider_Leg_Lining_B"), None)
+                 if esp.edid(fields) == weld_recipe), None)
     if weld is None:
-        raise SystemExit("FAIL: the vanilla welded leg recipe was not found")
-    parts = struct.pack("<2I", STEEL, LEG_STEEL) + b"".join(struct.pack("<2I", item, 1) for item in junk)
+        raise SystemExit("FAIL: the vanilla welding recipe was not found")
+    parts = struct.pack("<2I", STEEL, steel) + b"".join(struct.pack("<2I", *item) for item in junk)
     recipe = record("COBJ", own_recipe, b"".join([
         text("EDID", edids[2]), sub("FVPA", weld + parts),
-        text("DESC", "Spike: a crafted power armor leg."), u32("CNAM", own),
+        text("DESC", "Spike: a crafted power armor piece."), u32("CNAM", own),
         u32("BNAM", CHEMLAB), u32("FNAM", RECIPE_UTILITY), u32("INTV", 1)]))
     return omod, armo, recipe
 
