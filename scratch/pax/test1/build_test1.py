@@ -32,15 +32,16 @@ Round 4, Raider right arm swap spike, no scripts and no new models:
   "PAX Raider Arm" points back at the vanilla Raider model. Each has a one-steel recipe. The
   question is whether the power armor station offers the slot and what the swap keeps.
 
-Round 5, crafted power armor piece spike, no scripts and no new models:
+Round 5, crafted power armor piece spike, no scripts:
   "Scrappy Raider Left Leg": a new armor piece copied from the vanilla Raider left leg, crafted with
   Welded Plate already on it. Its own values are health 110, armor 130 and energy resistance 150,
   so it comes out at 160 / 150 / 150 (above Raider II, armor just under Overboss). The recipe
   charges the vanilla welding components, steel and a teddy bear. It has its own copy of the power armor naming
   rules so it reads "Scrappy Raider" (English only, read from the game's string table at build time),
   and one combination that fits our own
-  leg model mod. That mod points at the Overboss left leg model (needs Nuka-World installed, not
-  as a master) so it is obvious whether the piece took it. Chemistry station recipe.
+  leg model mod. That mod points at our own model, the Raider left leg with junk merged in
+  (scripts/nif/writeleg.py), put at Meshes\\PAX\\Armor\\ScrappyLeftLeg.nif in the mod.
+  Chemistry station recipe.
 
   Backup recipes at the chemistry station make a teddy bear, a cooking pot or a hubcap from many
   more components than they scrap into.
@@ -258,7 +259,8 @@ RAIDER_LEFT_LEG, RAIDER_LEG_MOD = 0x00140C55, 0x00137B7E   # ARMO, OMOD PA_Raide
 LEG_LINING, LEG_PAINT = 0x0018418B, 0x00077D3A      # Welded Plate, and the vanilla leg's null mod
 LEG_STEEL = 3                                       # test amount, beside the welding aluminum
 TEDDY_BEAR = 0x00059B14                             # MISC TeddyBear, the junk this leg wears
-SPIKE_LEG_MODEL = r"Actors\DLC04\OverbossPowerArmor\Overboss_Lleg.nif"
+# Our model: build it with scripts/nif/writeleg.py and put it at this path under Meshes in the mod.
+SPIKE_LEG_MODEL = r"PAX\Armor\ScrappyLeftLeg.nif"
 OWN_LEG_MOD, OWN_LEG, OWN_LEG_RECIPE = 0x01000860, 0x01000861, 0x01000862
 LEG_HEALTH, LEG_ARMOR, LEG_ENERGY = 110, 130, 150  # as crafted, before the lining
 LEG_NAME = "Scrappy Raider Left Leg"

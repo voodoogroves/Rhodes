@@ -106,7 +106,7 @@ def prism(centre, out, radius, height, sides=6):
     return {"verts": verts, "tris": tris, "weights": [], "bones": []}
 
 
-def fit(piece, meshes, surface):
+def fit(piece, meshes, surface, mapping=None):
     colour, path, face, up_own, at, facing, up, size, sink, bolts, straps, _ = piece
     shapes = model(meshes, path)
     used = [s["verts"][i] for s in shapes for t in s["tris"] for i in t]
@@ -188,6 +188,8 @@ def fit(piece, meshes, surface):
                     split += [(a, ab, ca), (ab, b, bc), (ca, bc, c), (ab, bc, ca)]
                 tris = split
         return {"verts": [world(bend(v)) for v in verts], "tris": tris, "weights": [], "bones": []}
+    if mapping is not None:                    # for a model writer: where a model point ends up
+        mapping.append(lambda v: world(bend(local(v))))
     out = [(colour, pieces(s)) for s in shapes]
 
     def front(x, y):                           # the piece's outer face near (x, y)

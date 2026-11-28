@@ -425,3 +425,11 @@ To decide:
 
 - Backups and the "Scrappy" name: installed 2026-11-27, not yet tested; previous plugin kept as `~/Downloads/PAXTest1.esp.before-backups`.
 - In game (owner, 2026-11-27): all four tests pass (three backup recipes with their costs, each makes the normal item, the stitched bear is accepted by the leg recipe, the leg is named "Scrappy Raider Left Leg"). The leg still shows the Overboss placeholder shape, as built.
+
+### Real junk model, step 1: street sign on the left leg (installed 2026-11-27, not yet tested)
+- Plan, in steps: street sign; teddy bear; fencing cage and bolts.
+- `scripts/nif/writeleg.py` keeps the vanilla `pa_raider_lleg.nif` blocks byte for byte (one skinned `BSTriShape`, five bones) and appends, for the sign: a skinned `BSTriShape` wholly weighted to `LLeg_Thigh` (stored in bone coordinates, identity skin transform), its skin instance and bone data, the sign's shader, texture set and alpha settings; the root node gains one child and new strings go at the end of the table.
+- Read-back checks passed (vanilla blocks unchanged, shader strings in range, shape sits at the mockup position on the skeleton); offline preview `~/Downloads/PAX-claw-previews/leg/step1_sign.png`. The bent board shades unevenly in the preview.
+- The plugin's leg model mod now points at `PAX\Armor\ScrappyLeftLeg.nif`.
+- Previous plugin kept as `~/Downloads/PAXTest1.esp.before-junk-leg`.
+- **Step 1 passed in game (owner screenshot, 2026-11-27):** no crash; the Raider leg shows with the sign on the thigh, textured; the leg and bear crafted; on and off several times; the sign stays on the thigh. **A merged junk model works.** In the screenshot the sign reads as a dark rusty board, no lettering visible. Save and reload and a walk check not separately reported.
