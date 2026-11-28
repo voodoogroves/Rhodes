@@ -42,7 +42,7 @@ PIECES = (
     (SIGN, "setdressing/signage/highwaysign01", (0, 1, 0), (0, 0, 1),
      (2.0, 0.0, 118.0), (0.08, 1.0, 0.04), (0.14, 0.0, 1.0), 25.0, -0.5,
      ((-0.82, 0.74), (0.84, 0.7), (-0.8, -0.72), (0.82, -0.76)), (), None),
-    (STREET, "setdressing/dmndclutter/dmndstreetsign01", (0, 1, 0), (0, 0, 1),
+    (STREET, "setdressing/dmndclutter/dmndstreetsign01", (0, -1, 0), (0, 0, 1),     # lettered face
      (-13.0, -2.0, 67.0), (-0.3, 0.95, 0.0), (-0.65, -0.2, 0.73), 27.0, -0.3,
      ((-0.85, 0.0), (0.85, 0.0)), (), None),
     (PAN, "setdressing/playerhouse/playerhouse_potsfryingpan01", (0, 0, -1), (0, 1, 0),

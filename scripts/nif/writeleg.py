@@ -7,7 +7,7 @@ MESHES holds what placeharness.py asks for, extracted from "Fallout4 - Meshes.ba
 street sign on the thigh. The vanilla leg's blocks are kept byte for byte and new blocks are added
 after them: for each piece of junk a skinned shape wholly weighted to one leg bone (stored in that
 bone's coordinates, identity skin transform), its skin, bone data, shader, textures and, where the
-source has one, alpha settings. The output is derived from game files: keep it out of every repo.
+source has one, alpha settings. Step 2 adds the teddy bear on the calf. The output is derived from game files: keep it out of every repo.
 """
 import argparse
 import math
@@ -25,9 +25,9 @@ header_parts, place = shield["header_parts"], harness["place"]
 SKINNED, STATIC, SKINNED_FLAG, ROOT_MATERIAL, NODE_HEAD = (
     claw["SKINNED_LAYOUT"], claw["STATIC_LAYOUT"], claw["SKINNED_FLAG"], claw["ROOT_MATERIAL"], claw["NODE_HEAD"])
 LEG = "actors/powerarmor/characterassets/mods/pa_raider_lleg.nif"
-SPLITS = 3                             # times each sign triangle is cut in four, so it can bend
+SPLITS = {"STREET": 3}                 # times each triangle is cut in four, so a flat board can bend
 # The junk: the harness piece's colour name, and the leg bone it rides on.
-JUNK = (("STREET", "LLeg_Thigh"),)
+JUNK = (("STREET", "LLeg_Thigh"), ("BEAR", "LLeg_Calf"))
 
 
 def split(positions, raw, tris, times):
@@ -117,13 +117,23 @@ def main():
             data = shape_data(source, kept_shape["name"])
             if data["desc"] != STATIC:
                 raise SystemExit("%s: unexpected vertex layout %x" % (kept_shape["name"], data["desc"]))
-            plain = next(s for s in source.shapes() if s["name"] == kept_shape["name"])
             used = sorted({i for t in kept_shape["tris"] for i in t})
             index = {old: n for n, old in enumerate(used)}
-            positions, raw, tris = split([plain["verts"][i] for i in used], [data["vertices"][i] for i in used],
-                                         [tuple(index[i] for i in t) for t in kept_shape["tris"]], SPLITS)
-            if any(math.dist(plain["verts"][i], kept_shape["verts"][i]) > 1e-3 for i in used):
-                raise SystemExit("%s: the source has node transforms; not handled" % kept_shape["name"])
+            # Positions with the source's node transforms applied, as the mockup placed them. Its
+            # normals are used as stored, so the nodes may move and scale it but not turn it.
+            node_at = next(i for i, b in enumerate(source.blocks)
+                           if b[0].endswith("TriShape") and source.av_object(i)[0] == kept_shape["name"])
+            parents = source.parents()
+            while True:
+                if any(abs(a - b) > 1e-4 for a, b in zip(source.av_object(node_at)[1][1], (1, 0, 0, 0, 1, 0, 0, 0, 1))):
+                    raise SystemExit("%s: a source node is rotated; not handled" % kept_shape["name"])
+                if node_at not in parents:
+                    break
+                node_at = parents[node_at]
+            positions, raw, tris = split([kept_shape["verts"][i] for i in used], [data["vertices"][i] for i in used],
+                                         [tuple(index[i] for i in t) for t in kept_shape["tris"]],
+                                         SPLITS.get(colour, 0))
+            data["local"] = (data["local"][0], (1, 0, 0, 0, 1, 0, 0, 0, 1))
             part = {"used": list(range(len(positions))), "source": {"verts": positions},
                     "fn": lambda v, f=mapping[0], b=bone: place["to_bone"](bones[b], f(v))}
             vertices = carried(part, {"local": data["local"], "vertices": raw}, lambda p: p)
