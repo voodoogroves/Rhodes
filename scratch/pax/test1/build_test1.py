@@ -32,6 +32,19 @@ Round 4, Raider right arm swap spike, no scripts and no new models:
   "PAX Raider Arm" points back at the vanilla Raider model. Each has a one-steel recipe. The
   question is whether the power armor station offers the slot and what the swap keeps.
 
+Round 5, crafted power armor piece spike, no scripts and no new models:
+  "Scrappy Raider Left Leg": a new armor piece copied from the vanilla Raider left leg, crafted with
+  Welded Plate already on it. Its own values are health 110, armor 130 and energy resistance 150,
+  so it comes out at 160 / 150 / 150 (above Raider II, armor just under Overboss). The recipe
+  charges the vanilla welding components, steel and a teddy bear. It has its own copy of the power armor naming
+  rules so it reads "Scrappy Raider" (English only, read from the game's string table at build time),
+  and one combination that fits our own
+  leg model mod. That mod points at the Overboss left leg model (needs Nuka-World installed, not
+  as a master) so it is obvious whether the piece took it. Chemistry station recipe.
+
+  Backup recipes at the chemistry station make a teddy bear, a cooking pot or a hubcap from many
+  more components than they scrap into.
+
 Writes PAXTest1.esp (light; master Fallout4.esm) in a zip that MO2 can install. It holds only
 records that point at base game models; the add-perk magic effect's data is copied from
 Fallout4.esm at build time. The zip is build output: do not commit it.
@@ -39,6 +52,7 @@ Fallout4.esm at build time. The zip is build output: do not commit it.
 import struct
 import sys
 import zipfile
+import zlib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "scripts/esp"))
@@ -240,6 +254,132 @@ def arm_swaps():
     return mods, recipes
 
 
+RAIDER_LEFT_LEG, RAIDER_LEG_MOD = 0x00140C55, 0x00137B7E   # ARMO, OMOD PA_Raider_LLeg
+LEG_LINING, LEG_PAINT = 0x0018418B, 0x00077D3A      # Welded Plate, and the vanilla leg's null mod
+LEG_STEEL = 3                                       # test amount, beside the welding aluminum
+TEDDY_BEAR = 0x00059B14                             # MISC TeddyBear, the junk this leg wears
+SPIKE_LEG_MODEL = r"Actors\DLC04\OverbossPowerArmor\Overboss_Lleg.nif"
+OWN_LEG_MOD, OWN_LEG, OWN_LEG_RECIPE = 0x01000860, 0x01000861, 0x01000862
+LEG_HEALTH, LEG_ARMOR, LEG_ENERGY = 110, 130, 150  # as crafted, before the lining
+LEG_NAME = "Scrappy Raider Left Leg"
+PA_NAMING, OWN_NAMING = 0x00188160, 0x01000863     # INNR dn_PowerArmor and our copy of it
+NAME_SWAPS = {"Raider Power": "Scrappy Raider", "Raider Power II": "Scrappy Raider"}
+INTERFACE = GAME.with_name("Fallout4 - Interface.ba2")
+
+
+def english_strings():
+    """The base game's English string table, {id: text}, read from the interface archive."""
+    with open(INTERFACE, "rb") as f:
+        magic, _, kind, count, names_at = struct.unpack("<4sI4sIQ", f.read(24))
+        if magic != b"BTDX" or kind != b"GNRL":
+            raise SystemExit("FAIL: unexpected interface archive")
+        entries = [struct.unpack("<I4sIIQIII", f.read(36)) for _ in range(count)]
+        f.seek(names_at)
+        names = [f.read(struct.unpack("<H", f.read(2))[0]).decode("latin1").lower() for _ in range(count)]
+        entry = entries[names.index("strings\\fallout4_en.strings")]
+        offset, packed, size = entry[4], entry[5], entry[6]
+        f.seek(offset)
+        data = zlib.decompress(f.read(packed)) if packed else f.read(size)
+    total = struct.unpack_from("<I", data)[0]
+    start = 8 + 8 * total
+    out = {}
+    for i in range(total):
+        key, at = struct.unpack_from("<II", data, 8 + 8 * i)
+        out[key] = data[start + at:data.index(b"\0", start + at)]
+    return out
+
+
+def naming():
+    """Our copy of the power armor naming rules, with the Raider words changed."""
+    words = english_strings()
+    fields = next(fields for _, formid, fields in esp.records(str(GAME), {"INNR"}) if formid == PA_NAMING)
+    body, swapped = [], set()
+    for tag, data in fields:
+        if tag == "EDID":
+            body.append(text("EDID", "PAXScrapNaming"))
+        elif tag == "WNAM":
+            word = words.get(struct.unpack("<I", data)[0], b"")
+            old = word.decode("cp1252")
+            if old in NAME_SWAPS:
+                swapped.add(old)
+                word = NAME_SWAPS[old].encode("cp1252")
+            body.append(sub("WNAM", word + b"\0"))
+        else:
+            body.append(sub(tag, data))
+    if swapped != set(NAME_SWAPS):
+        raise SystemExit("FAIL: the naming rules do not hold the Raider words")
+    return record("INNR", OWN_NAMING, b"".join(body))
+
+
+def crafted_leg():
+    """The new piece, its model mod and its recipe."""
+    def vanilla(kind, wanted):
+        return next(fields for _, formid, fields in esp.records(str(GAME), {kind}) if formid == wanted)
+    mod = dict(vanilla("OMOD", RAIDER_LEG_MOD))
+    omod = record("OMOD", OWN_LEG_MOD, b"".join([
+        text("EDID", "PAXScrapLegModel"), text("FULL", "Scrap Leg Frame"), text("DESC", ""),
+        text("MODL", SPIKE_LEG_MODEL), sub("DATA", mod["DATA"])]))
+    # One default combination: no keywords, three included mods (7 bytes each).
+    combination = (struct.pack("<II", 3, 0) + bytes(4) + struct.pack("<hBBH", -1, 1, 0, 0)
+                   + b"".join(struct.pack("<IBBB", m, 0, 0, 1) for m in (OWN_LEG_MOD, LEG_LINING, LEG_PAINT)))
+    body, seen = [], set()
+    for tag, data in vanilla("ARMO", RAIDER_LEFT_LEG):
+        seen.add(tag)
+        if tag == "EDID":
+            body.append(text("EDID", "PAXScrapLegLeft"))
+        elif tag == "FULL":
+            body.append(text("FULL", LEG_NAME))
+        elif tag == "DESC":
+            body.append(text("DESC", ""))
+        elif tag == "DATA":
+            value, weight, health = struct.unpack("<IfI", data)
+            body.append(sub(tag, struct.pack("<IfI", value, weight, LEG_HEALTH)))
+        elif tag == "FNAM":
+            body.append(sub(tag, struct.pack("<H", LEG_ARMOR) + data[2:]))
+        elif tag == "DAMA":
+            pairs = [struct.unpack_from("<II", data, i) for i in range(0, len(data), 8)]
+            body.append(sub(tag, b"".join(struct.pack("<II", kind, LEG_ENERGY
+                                                      if kind == ENERGY else amount) for kind, amount in pairs)))
+        elif tag == "INRD":
+            body.append(u32("INRD", OWN_NAMING))
+        elif tag == "OBTE":
+            body += [u32("OBTE", 1), sub("OBTS", combination)]
+        elif tag != "OBTS":
+            body.append(sub(tag, data))
+    if not {"DATA", "FNAM", "DAMA", "OBTE", "STOP"} <= seen:
+        raise SystemExit("FAIL: the vanilla Raider leg record is not as expected")
+    armo = record("ARMO", OWN_LEG, b"".join(body))
+    # The cost of welding it: the components of the vanilla Welded Plate recipe, plus steel.
+    weld = next((dict(fields)["FVPA"] for _, _, fields in esp.records(str(GAME), {"COBJ"})
+                 if esp.edid(fields) == "co_PA_Raider_Leg_Lining_B"), None)
+    if weld is None:
+        raise SystemExit("FAIL: the vanilla welded leg recipe was not found")
+    recipe = record("COBJ", OWN_LEG_RECIPE, b"".join([
+        text("EDID", "PAXScrapLegRecipe"), sub("FVPA", weld + struct.pack("<4I", STEEL, LEG_STEEL, TEDDY_BEAR, 1)),
+        text("DESC", "Spike: a crafted power armor leg."), u32("CNAM", OWN_LEG),
+        u32("BNAM", CHEMLAB), u32("FNAM", RECIPE_UTILITY), u32("INTV", 1)]))
+    return omod, armo, recipe
+
+
+COPPER, LEATHER, CLOTH = 0x0001FA9C, 0x0001FAAE, 0x001223C7        # components
+ADHESIVE, ALUMINUM, SCREWS = 0x0001FAA5, 0x0001FA91, 0x0003D294
+# Backup recipes for the junk the scrappy pieces ask for, in case it gets scrapped. Each costs
+# several times what the item scraps into, so finding one stays the better deal.
+BACKUPS = [  # editor id, vanilla item made, cost; append only (form IDs from 0x870)
+    ("PAXStitchTeddy", TEDDY_BEAR, ((CLOTH, 10), (LEATHER, 3), (ADHESIVE, 3))),   # scraps: cloth 3, leather 1
+    ("PAXHammerPot", 0x00059ABA, ((STEEL, 10), (COPPER, 3))),                     # scraps: steel 2, copper 1
+    ("PAXHammerHubcap", 0x0007E941, ((ALUMINUM, 8), (STEEL, 4), (SCREWS, 4))),    # scraps: aluminum 2, screws 2
+]
+
+
+def backups():
+    return [record("COBJ", 0x01000870 + n, b"".join([
+        text("EDID", edid), sub("FVPA", b"".join(struct.pack("<2I", *part) for part in cost)),
+        text("DESC", "A stand-in for one lost to the scrap pile."), u32("CNAM", item),
+        u32("BNAM", CHEMLAB), u32("FNAM", RECIPE_UTILITY), u32("INTV", 1)]))
+        for n, (edid, item, cost) in enumerate(BACKUPS)]
+
+
 def build():
     armor, addons = [], []
     for n, (edid, name, slot, model, piece) in enumerate(ITEMS):
@@ -258,12 +398,13 @@ def build():
     drawback, perks, recipe = extras()
     claw = claws()
     swaps, swap_recipes = arm_swaps()
-    groups = [("MGEF", claw["MGEF"]), ("ENCH", [drawback] + claw["ENCH"]), ("ARMO", armor + claw["ARMO"]),
-              ("ARMA", addons + claw["ARMA"]), ("COBJ", [recipe] + claw["COBJ"] + swap_recipes),
-              ("PERK", perks + claw["PERK"]), ("OMOD", swaps)]
+    leg_mod, leg, leg_recipe = crafted_leg()
+    groups = [("MGEF", claw["MGEF"]), ("ENCH", [drawback] + claw["ENCH"]), ("ARMO", armor + claw["ARMO"] + [leg]),
+              ("ARMA", addons + claw["ARMA"]), ("COBJ", [recipe] + claw["COBJ"] + swap_recipes + [leg_recipe] + backups()),
+              ("PERK", perks + claw["PERK"]), ("OMOD", swaps + [leg_mod]), ("INNR", [naming()])]
     count = sum(len(r) for _, r in groups) + len(groups)        # records and groups
     header = record("TES4", 0, b"".join([
-        sub("HEDR", struct.pack("<fiI", 1.0, count, 0x860)), text("CNAM", "PAX test"),
+        sub("HEDR", struct.pack("<fiI", 1.0, count, 0x880)), text("CNAM", "PAX test"),
         text("MAST", "Fallout4.esm"), sub("DATA", bytes(8))]), flags=0x200)
     return header + b"".join(group(tag, records) for tag, records in groups)
 
